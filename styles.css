@@ -446,6 +446,35 @@ body::before {
     border-color: transparent var(--comic-cyan) transparent transparent;
 }
 
+/* Randomize Button */
+.randomize-btn {
+    position: absolute;
+    bottom: 50px;
+    right: 50px;
+    font-family: 'Bangers', cursive;
+    font-size: 1.2rem;
+    letter-spacing: 2px;
+    color: var(--comic-white);
+    text-shadow: var(--text-stroke);
+    background: linear-gradient(135deg, var(--comic-purple), var(--comic-red));
+    border: 5px solid var(--comic-black);
+    padding: 12px 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-dark), 0 0 15px rgba(170, 102, 255, 0.5);
+    transform: rotate(-2deg);
+}
+
+.randomize-btn:hover {
+    transform: rotate(0deg) scale(1.1);
+    background: linear-gradient(135deg, var(--comic-red), var(--comic-purple));
+    box-shadow: var(--shadow-dark), 0 0 25px rgba(255, 51, 102, 0.7);
+}
+
+.randomize-btn:active {
+    transform: rotate(0deg) scale(0.95);
+}
+
 /* Status Bar */
 .status-bar {
     position: absolute;
@@ -574,9 +603,15 @@ body::before {
 
 .carousel-slide.active {
     display: flex;
-    flex-direction: column;
+    gap: 30px;
     opacity: 1;
     animation: slideIn 0.5s ease-out;
+}
+
+/* Character screen uses column layout for hero grid */
+#character-screen .carousel-slide.active {
+    flex-direction: column;
+    gap: 0;
 }
 
 @keyframes slideIn {

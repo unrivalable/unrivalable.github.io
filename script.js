@@ -127,6 +127,14 @@ document.head.appendChild(menuClickStyle);
 
 // Comic book effects removed - keeping clean comic aesthetic
 
+// Randomize button
+const randomizeBtn = document.getElementById('randomize-btn');
+if (randomizeBtn) {
+    randomizeBtn.addEventListener('click', () => {
+        randomSelection();
+    });
+}
+
 // Keyboard navigation for menu
 let currentMenuIndex = 0;
 const homeMenuItems = Array.from(document.querySelectorAll('.menu-item'));
@@ -774,6 +782,54 @@ if (document.readyState === 'loading') {
     buildHeroCarousel();
 }
 
+// Random Selection Function
+function randomSelection() {
+    // Get all available heroes (from all classes with heroes)
+    const allHeroes = [];
+    heroesData.classes.forEach(heroClass => {
+        if (heroClass.hero_count > 0) {
+            heroClass.heroes.forEach(hero => {
+                allHeroes.push({
+                    hero: hero,
+                    className: heroClass.name
+                });
+            });
+        }
+    });
+
+    // Pick random hero
+    const randomHeroIndex = Math.floor(Math.random() * allHeroes.length);
+    const randomHeroData = allHeroes[randomHeroIndex];
+
+    selectedHero = {
+        name: randomHeroData.hero.name,
+        class: randomHeroData.className
+    };
+
+    // Update display
+    const selectedCharDisplay = document.getElementById('selected-character');
+    selectedCharDisplay.textContent = selectedHero.name;
+    selectedCharDisplay.style.animation = 'selectedPulse 0.5s ease-out';
+    setTimeout(() => {
+        selectedCharDisplay.style.animation = '';
+    }, 500);
+
+    // Pick random game mode
+    const gameModes = ['deathmatch', 'chexico', 'turfwar', 'squirt', 'hoedown', 'campaign', 'story'];
+    const randomModeIndex = Math.floor(Math.random() * gameModes.length);
+    selectedGameMode = gameModes[randomModeIndex];
+
+    // Update display
+    const selectedModeDisplay = document.getElementById('selected-gamemode');
+    selectedModeDisplay.textContent = gameModeNames[selectedGameMode];
+    selectedModeDisplay.style.animation = 'selectedPulse 0.5s ease-out';
+    setTimeout(() => {
+        selectedModeDisplay.style.animation = '';
+    }, 500);
+
+    console.log(`Random selection: ${selectedHero.name} (${selectedHero.class}) - ${gameModeNames[selectedGameMode]}`);
+}
+
 async function startGame() {
     if (!selectedHero) {
         alert("Please select a hero first!");
@@ -817,38 +873,37 @@ async function startGame() {
     // Setup Loading Screen
     const loadingBg = document.getElementById('loading-bg');
     const loadingHero = document.getElementById('loading-hero');
-    const progressBar = document.getElementById('progress-bar');
+    const progressFill = document.getElementById('progress-fill');
 
     loadingBg.style.backgroundImage = `url('${gameModeImgSrc}')`;
     loadingHero.src = heroImgSrc;
-    progressBar.style.width = '0%';
 
-    // Animate Progress Bar (15 seconds)
-    // We use a small interval to update width for smooth animation or just CSS transition
-    // CSS transition is set to 0.1s linear, so we need to update it continuously or change transition duration
+    // Reset progress fill
+    progressFill.style.transition = 'none';
+    progressFill.style.width = '0%';
 
-    // Better approach: Set transition to 15s linear and set width to 100%
-    progressBar.style.transition = 'width 15s linear';
+    // Force a reflow to ensure the width is reset
+    void progressFill.offsetHeight;
 
-    // Force reflow
-    progressBar.offsetHeight;
+    // Set transition for 10 second animation
+    progressFill.style.transition = 'width 10s linear';
 
-    // Start animation
-    setTimeout(() => {
-        progressBar.style.width = '100%';
-    }, 100);
+    // Start animation on next frame
+    requestAnimationFrame(() => {
+        progressFill.style.width = '100%';
+    });
 
-    // Wait 15 seconds then show Game Over
+    // Wait 10 seconds then show Game Over
     setTimeout(async () => {
         await showGameOver();
-    }, 15000);
+    }, 10000);
 }
 
 async function showGameOver() {
-    // Reset progress bar for next time (remove transition first)
-    const progressBar = document.getElementById('progress-bar');
-    progressBar.style.transition = 'none';
-    progressBar.style.width = '0%';
+    // Reset progress fill for next time (remove transition first)
+    const progressFill = document.getElementById('progress-fill');
+    progressFill.style.transition = 'none';
+    progressFill.style.width = '0%';
 
     transitionToScreen('loading-screen', 'game-over-screen');
 
