@@ -5,7 +5,8 @@
       "Bash(unzip:*)",
       "Bash(open index.html)",
       "Bash(ls:*)",
-      "Bash(python3:*)"
+      "Bash(python3:*)",
+      "Bash(open:*)"
     ]
   }
 }

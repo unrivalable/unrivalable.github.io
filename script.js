@@ -48,22 +48,36 @@ comicTransitionStyle.textContent = `
 document.head.appendChild(comicTransitionStyle);
 
 // Opening screen - Start game button
-const startOption = document.querySelector('.start-option');
-if (startOption) {
-    startOption.addEventListener('click', () => {
-        // Play click sound effect (you can add audio later)
-        transitionToScreen('opening-screen', 'home-screen');
-    });
-
-    // Add keyboard support
-    document.addEventListener('keydown', (e) => {
-        const openingScreen = document.getElementById('opening-screen');
-        if (openingScreen.classList.contains('active') && (e.key === 'Enter' || e.key === ' ')) {
-            e.preventDefault();
+// SAFE START BUTTON LOGIC
+document.addEventListener('DOMContentLoaded', () => {
+    console.log("DOM Loaded - Searching for Start Button...");
+    
+    const startOption = document.querySelector('.start-option');
+    
+    if (startOption) {
+        console.log("Start Button Found. Attaching listener.");
+        
+        startOption.addEventListener('click', (e) => {
+            console.log("Start Button Clicked!");
+            e.preventDefault(); // Stop any weird default behaviors
             transitionToScreen('opening-screen', 'home-screen');
-        }
-    });
-}
+        });
+
+        // Add keyboard support (Enter/Space)
+        document.addEventListener('keydown', (e) => {
+            const openingScreen = document.getElementById('opening-screen');
+            if (openingScreen && openingScreen.classList.contains('active')) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    console.log("Key Press Detected");
+                    e.preventDefault();
+                    transitionToScreen('opening-screen', 'home-screen');
+                }
+            }
+        });
+    } else {
+        console.error("CRITICAL ERROR: .start-option element not found in HTML!");
+    }
+});
 
 // Home screen menu items
 const menuItems = document.querySelectorAll('.menu-item');
@@ -81,7 +95,7 @@ menuItems.forEach(item => {
         switch(menuType) {
             case 'character':
                 console.log('Character selection clicked');
-                // Add your character selection logic here
+                transitionToScreen('home-screen', 'character-screen');
                 break;
             case 'gamemode':
                 console.log('Game mode clicked');
@@ -271,3 +285,423 @@ selectedPulseStyle.textContent = `
     }
 `;
 document.head.appendChild(selectedPulseStyle);
+
+// Hero Carousel System
+let currentHeroIndex = 0;
+let heroSlides = [];
+let selectedHero = null;
+
+// Class color mapping
+const classColors = {
+    'Destroyers': { primary: '#FF3366', secondary: '#FF8833' },
+    'Defenders': { primary: '#00BFFF', secondary: '#00FFFF' },
+    'Saboteurs': { primary: '#AA66FF', secondary: '#FF00FF' },
+    'Supporters': { primary: '#00FF88', secondary: '#FFD700' },
+    'Controllers': { primary: '#FFD700', secondary: '#FF8833' },
+    'Hawktalkers': { primary: '#00FFFF', secondary: '#AA66FF' }
+};
+
+// Embedded heroes data
+const heroesData = {
+  "metadata": {
+    "total_slides": 52,
+    "total_classes": 6,
+    "total_heroes": 45,
+    "complete_heroes": 27,
+    "incomplete_heroes": 18,
+    "completion_rate": "60.0%"
+  },
+  "classes": [
+    {
+      "name": "Destroyers",
+      "icon": "image2.png",
+      "hero_count": 5,
+      "heroes": [
+        {
+          "name": "Mr Unemployable",
+          "image": "mr-unemployable.jpg",
+          "abilities": "Main Attack: What goes forth\nThrows random objects from his inventory at enemies. If he misses, they stay on the ground\nAbility 1: Must come back\nWhen triggered, all items thrown zip back to him\nAbility 2: Big Ol Boomerang\nThrows a big ol boomerang that doesn't come back\nSuper: Vape Juice Storm\nRapidly chucks balls of radioactive vape juice around himself while simultaneously retracting them, creating a whirlwind of vape juice",
+          "slide": 3
+        },
+        {
+          "name": "Porthole",
+          "image": "porthole.jpg",
+          "abilities": "Main Attack: Porthole throw\nThrows a porthole forward\nAbility 1: A Hole new world\nPorthole drops a porthole on the ground, slipping through it and popping back out 3 meters behind\nAbility 2: Portastic Port-mine\nPorthole drops a Porthole on the ground. The porthole is invisible to enemies, and slows them on contact (3 uses)\nSuper: Underwater Genie\nPorthole summons Kneckakeckafallapulu, the underwater genie. He grants porthole one of three wishes, lasting for 20 seconds\nTrue Glass Form: Porthole's shots reveal enemies and deal double damage\nTrue Metal Form: Porthole's shots explode and deal area damage\nTrue Porthole Form: Porthole's shots bounce between enemies",
+          "slide": 5
+        },
+        {
+          "name": "The Triplets",
+          "image": "the-triplets.png",
+          "abilities": "Main Attack: Flap, Tackle, and Glop\nFootrun flaps his arms, Jetplace tackles forward and Junkrat shoots some fiery glop outta his crotch\nAbility 1: Switcherooski\nSwitches to the next Triplet\nAbility 2: Character Development\nFootrun dashes forward, becoming invisible for a few seconds (2 uses). Jetplace uses his portals to teleport behind an enemy. Junkrat fires some larger missiles outta his crotch.\nSuper: Into the Jetplace!\nThe triplets unite, joining hands and summoning a giant jetpack. They fly around the map dropping rockets outta his crotch and destruction.",
+          "slide": 8
+        },
+        {
+          "name": "Tickle Monster",
+          "image": "tickle-monster.jpg",
+          "abilities": "Main Attack: Tickle\nTickle\nAbility 1: High 8\nTickle Monster absolutely slaps somebody twice, first with the first five and then with the second 3\nAbility 2: Enhanced Peeling\nCan remove negative effects from himself and his teammates for a small amount of time\nSuper: ",
+          "slide": 9
+        },
+        {
+          "name": "Bee's Knees",
+          "image": "bees-knees.jpg",
+          "abilities": "Main Attack: Knee Combo\nKicks in a wide range, knees forward\nAbility 1: Flying Bee Drop\nJumps in the air and slams down with his knees forward, stinging enemies\nAbility 2: Float like a Butterfly\nSend a gust of air forward, creating an area of zero-gravity to trap enemies in\nSuper: Sting like a Knee\nLaunches rapid-fire stingers from his knees that poison enemies",
+          "slide": 11
+        }
+      ]
+    },
+    {
+      "name": "Defenders",
+      "icon": "image12.jpg",
+      "hero_count": 7,
+      "heroes": [
+        {
+          "name": "Handfoot",
+          "image": "handfoot.png",
+          "abilities": "Main Attack: Fantastic Fist-Feet Flurry\nA 4-hit combo where he punches and kicks\nAbility 1: Hands become feet\nSwitches around his hands and feet, becoming more than just a man (also increases attack damage).\nAbility 2: You'll never know\nHandfoot switches his hands and feet so fast that he absorbs projectiles\nSuper: Flick'a the Wrist\nHandfoot enters flowstate, whirling hands and feet so fast while moving forward. He becomes an unstoppable juggernaut of damage and health",
+          "slide": 13
+        },
+        {
+          "name": "Floss",
+          "image": "floss.png",
+          "abilities": "Main Attack: Who Spiked the Punch?\nFloss punches, spikily\nAbility 1: Absorption\nFor the next 10 seconds, Floss takes 1/3rd of damage from projectiles\nAbility 2: Tease and Joke\nFloss gets demoralized by the other team for sucking, drawing their attention and firepower to him\nSuper: Big Spike Thing\nThe Great Gatsby shoots Floss in the chest with a big spike thing. But then Floss shoots it back super fast out of him and it explodes",
+          "slide": 14
+        },
+        {
+          "name": "Man Guy",
+          "image": "man-guy.png",
+          "abilities": "Main Attack: Man Punch\nMan Guy punches with his long arm like a ma\nAbility 1: Self Harm\nMan Guy deals damage to himself, increasing his attack\nAbility 2: Super Bones\nMan Guy boosts his bones, taking less damage for the next three secs\nSuper: Guy Kick\nMan Guy does a big kick,l that breaks his leg if he hits it he can do it again with more damage",
+          "slide": 15
+        },
+        {
+          "name": "Ultraviolet",
+          "image": "ultraviolet.png",
+          "abilities": "Main Attack: Ultraviolet Umbrella \nUltraviolet stabs with his umbrella, then opens it creating a small shield for 1 sec\nAbility 1: Lavender Lash\nUltraviolet blinds the nearest enemy with his purpleness, blinding them\nAbility 2: Mount the Indigoat!\nUltraviolet mounts the indigoat, gaining increased health and speed for 5 secs\nSuper: Purpleness Explosion\nUltraviolet shines his purpleness, gaining a shield and taunting all nearby enemies into attacking him",
+          "slide": 17
+        },
+        {
+          "name": "Guy Yacht",
+          "image": "guy-yacht.png",
+          "abilities": "Main Attack: Squirt Gun\nGuy Yacht fires high pressure water from his squirt gun \nAbility 1: Bomboclat\nGuy Yacht flexes his cheeks, taking 80% less damage from behind for a 5 seconds\nAbility 2: Eyes up here\nGuy Yacht launches into the air and lands on his butt, buffing the defense of allies he lands around\nSuper: Fantastic Plastic\nUsing the plastic in his veins, Guy Yacht hardens his entire body, taking overwhelmingly less damage from all sources",
+          "slide": 18
+        },
+        {
+          "name": "Captain Trumpet",
+          "image": "captain-trumpet.png",
+          "abilities": "Main Attack: Clawsini Gatini\nCaptain trumpet scratches twice with cat claws\nAbility 1: Shellala Shellalo\nCaptain Trumpet gains a shield for 5 secs\nAbility 2: Rameo Chargeo\nCaptain trumpet dashes  forward with his ram horns\nSuper: Trumpets Sounding\nCaptain trumpet Gains a health boost and a random animal buff:\n-Bunnini - Super jump\n-Peacocko - Taunt at full health\n-Sovereign Snakearms- Main Attack poisons",
+          "slide": 20
+        },
+        {
+          "name": "Gym Shark",
+          "image": "gym-shark.png",
+          "abilities": "Main Attack: Barbell strikenado\nAbility 1:Bulgarian tail squatnado\nAbility 2: Sharknado\nSuper: ROIDNADO\nSwims under ground and eats one person",
+          "slide": 21
+        }
+      ]
+    },
+    {
+      "name": "Saboteurs",
+      "icon": "image22.jpg",
+      "hero_count": 5,
+      "heroes": [
+        {
+          "name": "Captain Crunch",
+          "image": "captain-crunch.png",
+          "abilities": "Main Attack: Get you by the Knife\nCaptain Crunch Stabs enemies with his knife\nAbility 1: Oops all berries\nCaptain Crunch spills berries on the ground, slowing enemies around him\nAbility 2: Crunch Surprise\nCaptain crunch hides in a bush, and his next knife has a dash and does extra damage \nSuper: Take you to his special island\nCaptain crunch Takes himself and the nearest enemy to his special island for 10 secs, where he has increased stats",
+          "slide": 23
+        },
+        {
+          "name": "Jonnakiss",
+          "image": "jonnakiss.jpg",
+          "abilities": "Main Attack: Grass Throw\nJonnakiss throws grass, dealing more damage the closer the enemy is\nAbility 1: Sharp Grass\nJonnakiss sharpens his grass so that it does max damage at all distances for the next three throws\nAbility 2: Thundercloud mode\nJonnakiss quickly becomes a cloud then immediately shoots down in a lightning bolt, dealing massive damage\nSuper: Eat the grass!\nJonnakiss eats his grass, turning him into a invincible cloud for 15 seconds, he comes down on the ground as it snows slowing enemies in his area",
+          "slide": 24
+        },
+        {
+          "name": "Displeased Avian",
+          "image": "displeased-avian.png",
+          "abilities": "Main Attack: CAW CAWWW\nA rapid, short range peck with infinite ammo\nAbility 1: WAAAA HEEY\nRed flings himself to a designated area with his slingshot, stunning enemies on land\nAbility 2: WOOOIA UUU UU UY\nRed slices in a wide berth with his wings, doing 50% of the max health of the squishiest enemy caught.\nSuper: AAAAAIIIIIIAAA\nRed perfectly mimics the sound of a bird, frightening Big Pig and sending him on a rampage through the map",
+          "slide": 25
+        },
+        {
+          "name": "MU†E-ÅNT",
+          "image": "mute-ant.png",
+          "abilities": "Main Attack: Ant-Rings\nMute-Ant throws one of his ant-rings a short distance \nAbility 1: Ant-Bot\nAnt-Bot scans the area around him, revealing hidden objects and zapping enemies\nAbility 2: Ant-friend\n(In ant-form) Mute-Ant gets carried around by his insect friend; Señor butterfly, allowing him to fly for 8 secs\nSuper: Ant-Man\nMute-ant speaks for 10 seconds transforming him into an ant that is so tiny it is invisible",
+          "slide": 27
+        },
+        {
+          "name": "Machete Man",
+          "image": "machete-man.png",
+          "abilities": "Main Attack: Machete\nMachete Man slashes with his machete\nAbility 1: Machete Throw\nMachete man throws his machete then backflips to get a new one\nAbility 2: Dementia Machete Backflip\nMachete man does a backflip and has 50 chance of dealing a ton of damage to himself or an enemy\nSuper:  Old Guy Backflip\nMachete man does a backflip, gaining an extra Mach e, extra damage and extra speed",
+          "slide": 29
+        }
+      ]
+    },
+    {
+      "name": "Supporters",
+      "icon": "image32.jpg",
+      "hero_count": 6,
+      "heroes": [
+        {
+          "name": "Burger King",
+          "image": "burger-king.png",
+          "abilities": "Main Attack: Double Spatula Surprise\nBurger King makes burgers, LT to make funky burgers for teammates, RT to make evil burgers for enemies.\nAbility 1: The Great\nBurger King makes a big burger, providing cover for teammates and can be consumed for health.\nAbility 2: The Gatsby\nBurger King draws a spatula circle, creating a burger zone for teammates to gain increased attack in.\nSuper: The Great and The Gatsby\nBurger King Greats a Gatsby Burger, turning any teammate into the Great Gatsby for 1 minute. While the Great Gatsby, teammates have much more health and damage.",
+          "slide": 33
+        },
+        {
+          "name": "Brain Freeze",
+          "image": "brain-freeze.png",
+          "abilities": "Main Attack: I'm Not Having Fun\nBrainfreeze, shocked at the prospect of not fun, swings out with a one-handed punch, gaining Fun on hit. \nAbility 1: Use the Bomb (costs 2 Fun)\nBrainfreeze finally uses the bomb he always carries around, dealing small splash damage.\nAbility 2: You Fly When I'm Having Fun (costs 1 Fun) \nBrainfreeze can levitate a teammate, healing them and raising them to any height for 5 seconds.\nSuper: Time Flies When Your Having Fun\nBrainfreeze takes a hit of straight Fun, causing himself to enter a state of bliss, summoning Time Flies to tell him and his teammates the time in game and in real life for 30 seconds",
+          "slide": 35
+        },
+        {
+          "name": "Didgeridon't",
+          "image": "didgeridont.png",
+          "abilities": "Main Attack: Didgeridon't Come Near\nDidgeridon't swings his Didgeridon't in a wide arc, causing fall damage on hit.\nAbility 1: Didgeridon't Mess Around\nDidgeridon't stretches his arms, increasing super charge rate for 5 seconds.\nAbility 2: Digerididn't and Digeriwon't\nDidgeridon't summons the ghosts of Digeripast and the ghost of digerifuture to perform a line dance. They are solid and can block attacks.\nSuper: Didgeridon't Take Fall Damage\nDidgeridon't raises his Didgeridon't above his head, and for 15 seconds his teammates don't take fall damage.",
+          "slide": 37
+        },
+        {
+          "name": "DishwasHER",
+          "image": "dishwasher.png",
+          "abilities": "Main Attack: Womanly Plate Throw\nDishwasHER throws a plate in a female-like manner\nAbility 1: CassHERole \nDishwasHER drops a casserole that heals her teammates \nAbility 2: Stealth Mode\nDishwasHER goes into stealth mode, getting melee whisk weapons and changing her outfit which does nothing \nSuper: Do the Laundry\nDishwasHER removes all negative effects from her teammates and heals them significantly",
+          "slide": 39
+        },
+        {
+          "name": "PowerPoint",
+          "image": "powerpoint.png",
+          "abilities": "Main Attack: Laser Taser Blaser Face\nPower point shoots a laser at an enemies face. If the enemy is wearing a blaser, it does double damage\nAbility 1: Minor Blind\nPowerPoint temporarily blinds one enemy, leaving a \"blind spot\" where they can't see for 5 seconds\nAbility 2: 3rd D vision\nPowerPoint sees through the first and the second D's, and him and his teammates can see enemies wherever they are on the map\nSuper: Super Distract\nPower point summons a random point on the map, and all other characers are sucked towards that point and can",
+          "slide": 40
+        },
+        {
+          "name": "Shan't Dance",
+          "image": "shant-dance.png",
+          "abilities": "Main Attack: Autissles\nShan't fires mini-missiles from his wheelchair\nAbility 1: Wheelchair Tow\nShan't attaches his wheelchair to another teammate, significantly boosting their movement speed\nAbility 2: Wheel Steel\nShan't shoots a wheel off of his wheelchair, providing cover for teammates behind them (2 uses)\nSuper: Motivational JUMP\nShan't, after charging all game, performs the biggest jump you've seen any guy do before. This incredible morale boost gives all teammates in the area incredible jump height, regeneration, and healing over time",
+          "slide": 41
+        }
+      ]
+    },
+    {
+      "name": "Controllers",
+      "icon": "image42.png",
+      "hero_count": 4,
+      "heroes": [
+        {
+          "name": "Faceplant",
+          "image": "faceplant.png",
+          "abilities": "Main Attack: Shovel Slash\nFaceplant attacks with shovel, dealing heavy melee damage and launching weaker vines out in front of him\nAbility 1:  Face full of Plant\nFaceplant Excretes a large amount of poisonous pollen from his face\nAbility 2: Plant full of Face \nFaceplant creates an area of plants who encourage his teammates, giving bonus attack and speed \nSuper: Plant full of Plant\nFaceplant creates an area that wraps enemies up vines, stunning them",
+          "slide": 44
+        },
+        {
+          "name": "Grom",
+          "image": "grom.png",
+          "abilities": "Main Attack: Bud Go Boom!\nGrom throws his walkie-talkie over obstacles at a long range that explodes into four piercing projectiles in a cross pattern.\nAbility 1: Watchtower\nUpon activation, Grom drops a turret that allows him and allies to see enemies inside bushes in its 10-tile radius.\nAbility 2: Radio Check\nActivating this Gadget allows Grom's next attack to fire three walkie-talkies in quick succession.\nSuper: Grom Bomb\nGrom throws a giant, longer-ranged bomb from his back over obstacles that explodes into four piercing projectiles in a cross pattern, similarly to his main attack.",
+          "slide": 45
+        },
+        {
+          "name": "Winter WonderGirl",
+          "image": "winter-wondergirl.png",
+          "abilities": "Main Attack: Super Snowglober\nWinter Wondergirl throws a snow globe, which breaks and pulls enemies in\nAbility 1: Shake it up\nWinter Wondergirl makes it snow around her, freezing enemies \nAbility 2: Rain down the sun fog \nWinter Wondergirl breaks a snowglobe with a lot of fog, causing a smoke bomb\nSuper:  Wonderlate the multisphere\nWinter Wondergirl builds a giant snow globe, any enemies in it take a ton of damage and are slowed",
+          "slide": 47
+        },
+        {
+          "name": "Smurtle Gurltle Cheesecake Woman",
+          "image": "smurtle-gurltle-cheesecake-woman.jpg",
+          "abilities": "Main Attack: Krazy Karate Kicks\nSGCW kicks with a three kick combo \nAbility 1: Super Ultra Tornado Spin\nNinja Mode - SGCW does a stunning spin kick \nTurtle Mode - SGCW spins around in her turtle shell and is invincible throughout\nAbility 2: Mega Tsunami Cheesecake\nNinja Mode - SGCW dashes forward spilling slowing cheesecake behind her\nTurtle Mode - SGCW consumes her cheesecake to gain health and movement speed\nSuper: Supersaiyan Ultra Cheesecake Weapon Ninja Gurl Explosion!\nSGCW switches to the other mode. Ninja Mode has low health and high speed. Turtle mode has low speed high health. SGCW gets a attack boost after switching",
+          "slide": 48
+        }
+      ]
+    },
+    {
+      "name": "Hawktalkers",
+      "icon": "image50.png",
+      "hero_count": 0,
+      "heroes": []
+    }
+  ]
+};
+
+function buildHeroCarousel() {
+    const carouselContent = document.getElementById('hero-carousel-content');
+    const indicatorsContainer = document.getElementById('hero-carousel-indicators');
+
+    if (!heroesData || !carouselContent) return;
+
+    // Clear existing content
+    carouselContent.innerHTML = '';
+    indicatorsContainer.innerHTML = '';
+    heroSlides = [];
+
+    let slideIndex = 0;
+
+    // Create slides for each class
+    heroesData.classes.forEach(heroClass => {
+        if (heroClass.hero_count === 0) return; // Skip classes with no heroes
+
+        const className = heroClass.name;
+        const classIcon = heroClass.icon;
+        const colors = classColors[className];
+
+        // Create a slide for each hero in the class
+        heroClass.heroes.forEach((hero, heroIndexInClass) => {
+            const slide = document.createElement('div');
+            slide.className = 'carousel-slide' + (slideIndex === 0 ? ' active' : '');
+            slide.setAttribute('data-hero', hero.name);
+            slide.setAttribute('data-class', className);
+
+            slide.innerHTML = `
+                <div class="carousel-image">
+                    <img src="images/heroes/${hero.image}" alt="${hero.name}">
+                    <div class="class-badge" style="background: linear-gradient(135deg, ${colors.primary}, ${colors.secondary});">
+                        <img src="images/classes/${className.toLowerCase()}.${classIcon.includes('.png') ? 'png' : 'jpg'}" alt="${className}">
+                        <span>${className.toUpperCase()}</span>
+                    </div>
+                </div>
+                <div class="carousel-info" style="border-left-color: ${colors.primary};">
+                    <h3 class="carousel-title" style="color: ${colors.primary}; text-shadow: var(--text-stroke), 3px 3px 0 ${colors.secondary}, 6px 6px 0 var(--comic-black);">
+                        ${hero.name}
+                    </h3>
+                    <div class="hero-abilities">
+                        ${formatAbilities(hero.abilities)}
+                    </div>
+                    <button class="select-mode-btn" style="background: ${colors.primary}; box-shadow: var(--shadow-dark), 0 0 15px ${colors.primary}80;">
+                        SELECT HERO
+                    </button>
+                </div>
+            `;
+
+            carouselContent.appendChild(slide);
+            heroSlides.push(slide);
+
+            // Create indicator
+            const indicator = document.createElement('span');
+            indicator.className = 'indicator' + (slideIndex === 0 ? ' active' : '');
+            indicator.setAttribute('data-index', slideIndex);
+            indicator.style.borderColor = colors.primary;
+            if (slideIndex === 0) {
+                indicator.style.background = colors.primary;
+            }
+            indicatorsContainer.appendChild(indicator);
+
+            slideIndex++;
+        });
+    });
+
+    // Add event listeners for hero selection
+    const selectHeroButtons = document.querySelectorAll('#hero-carousel-content .select-mode-btn');
+    selectHeroButtons.forEach(button => {
+        button.addEventListener('click', (e) => {
+            const slide = e.target.closest('.carousel-slide');
+            const heroName = slide.getAttribute('data-hero');
+            const className = slide.getAttribute('data-class');
+            selectedHero = { name: heroName, class: className };
+
+            console.log(`Selected hero: ${heroName} (${className})`);
+
+            // Update the home screen
+            const selectedDisplay = document.getElementById('selected-character');
+            selectedDisplay.textContent = heroName;
+            selectedDisplay.style.animation = 'selectedPulse 0.5s ease-out';
+            setTimeout(() => {
+                selectedDisplay.style.animation = '';
+            }, 500);
+
+            // Return to home screen
+            transitionToScreen('character-screen', 'home-screen');
+        });
+    });
+
+    // Add event listeners for navigation
+    setupHeroCarouselNavigation();
+}
+
+function formatAbilities(abilitiesText) {
+    // Split abilities by common patterns
+    const abilities = abilitiesText.split(/(?=Main Attack:|Ability 1:|Ability 2:|Super:)/);
+
+    let html = '<div class="abilities-list">';
+    abilities.forEach(ability => {
+        if (ability.trim()) {
+            const match = ability.match(/^(Main Attack|Ability \d|Super):\s*(.+)/s);
+            if (match) {
+                const label = match[1];
+                const description = match[2].trim();
+                html += `<div class="ability-item"><strong>${label}:</strong> ${description}</div>`;
+            }
+        }
+    });
+    html += '</div>';
+
+    return html;
+}
+
+function setupHeroCarouselNavigation() {
+    const prevButton = document.getElementById('hero-carousel-prev');
+    const nextButton = document.getElementById('hero-carousel-next');
+    const indicators = document.querySelectorAll('#hero-carousel-indicators .indicator');
+
+    if (prevButton) {
+        prevButton.addEventListener('click', () => {
+            let newIndex = currentHeroIndex - 1;
+            if (newIndex < 0) {
+                newIndex = heroSlides.length - 1;
+            }
+            showHeroSlide(newIndex);
+        });
+    }
+
+    if (nextButton) {
+        nextButton.addEventListener('click', () => {
+            let newIndex = currentHeroIndex + 1;
+            if (newIndex >= heroSlides.length) {
+                newIndex = 0;
+            }
+            showHeroSlide(newIndex);
+        });
+    }
+
+    indicators.forEach((indicator, index) => {
+        indicator.addEventListener('click', () => {
+            showHeroSlide(index);
+        });
+    });
+
+    // Keyboard navigation for hero carousel
+    document.addEventListener('keydown', (e) => {
+        const characterScreen = document.getElementById('character-screen');
+        if (!characterScreen || !characterScreen.classList.contains('active')) return;
+
+        if (e.key === 'ArrowLeft') {
+            e.preventDefault();
+            prevButton.click();
+        } else if (e.key === 'ArrowRight') {
+            e.preventDefault();
+            nextButton.click();
+        }
+    });
+}
+
+function showHeroSlide(index) {
+    const indicators = document.querySelectorAll('#hero-carousel-indicators .indicator');
+
+    // Remove active class from all slides and indicators
+    heroSlides.forEach(slide => slide.classList.remove('active'));
+    indicators.forEach(indicator => {
+        indicator.classList.remove('active');
+        indicator.style.background = 'rgba(0, 191, 255, 0.3)';
+    });
+
+    // Add active class to current slide and indicator
+    heroSlides[index].classList.add('active');
+    const heroClass = heroSlides[index].getAttribute('data-class');
+    const colors = classColors[heroClass];
+
+    indicators[index].classList.add('active');
+    indicators[index].style.background = colors.primary;
+
+    currentHeroIndex = index;
+}
+
+// Build carousel when DOM is loaded
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', buildHeroCarousel);
+} else {
+    buildHeroCarousel();
+}

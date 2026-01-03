@@ -222,6 +222,8 @@ body::before {
 /* Start Option */
 .start-option {
     cursor: pointer;
+    position: relative; /* Ensure z-index works */
+    z-index: 2000;      /* Force it above scanlines (which are 1000) */
 }
 
 .cursor-box {
@@ -882,6 +884,93 @@ body::before {
     box-shadow: var(--shadow-dark), 0 0 10px rgba(170, 102, 255, 0.5);
     transform: rotate(2deg);
     text-shadow: var(--text-stroke);
+}
+
+/* Hero Carousel Specific Styles */
+.class-badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    padding: 10px 20px;
+    border: 5px solid var(--comic-black);
+    box-shadow: var(--shadow-dark), var(--shadow-glow);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transform: rotate(3deg);
+    z-index: 10;
+    font-family: 'Bangers', cursive;
+    font-size: 1rem;
+    color: var(--comic-white);
+    text-shadow: var(--text-stroke);
+    animation: badgePulse 2s ease-in-out infinite;
+}
+
+.class-badge img {
+    width: 30px;
+    height: 30px;
+    object-fit: contain;
+    filter: drop-shadow(2px 2px 0 var(--comic-black));
+}
+
+@keyframes badgePulse {
+    0%, 100% {
+        transform: rotate(3deg) scale(1);
+    }
+    50% {
+        transform: rotate(3deg) scale(1.05);
+    }
+}
+
+.hero-abilities {
+    flex: 1;
+    overflow-y: auto;
+    margin-bottom: 20px;
+}
+
+.abilities-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.ability-item {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 0.95rem;
+    color: var(--comic-white);
+    line-height: 1.4;
+    padding: 8px 12px;
+    background: rgba(0, 191, 255, 0.1);
+    border-left: 4px solid var(--comic-cyan);
+    transform: skewX(-2deg);
+}
+
+.ability-item strong {
+    color: var(--comic-yellow);
+    font-size: 1.05rem;
+    text-shadow: var(--text-glow);
+    display: block;
+    margin-bottom: 4px;
+}
+
+/* Custom scrollbar for hero abilities */
+.hero-abilities::-webkit-scrollbar {
+    width: 6px;
+}
+
+.hero-abilities::-webkit-scrollbar-track {
+    background: rgba(0, 191, 255, 0.1);
+    border-radius: 3px;
+}
+
+.hero-abilities::-webkit-scrollbar-thumb {
+    background: var(--comic-cyan);
+    border-radius: 3px;
+    box-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+}
+
+.hero-abilities::-webkit-scrollbar-thumb:hover {
+    background: var(--comic-blue);
 }
 
 /* Responsive Design */
