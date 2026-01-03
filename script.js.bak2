@@ -399,13 +399,13 @@ const heroesData = {
       ]
     },
     {
-      "name": "Saboteur",
-      "icon": "saboteur.png",
+      "name": "Saboteurs",
+      "icon": "image22.jpg",
       "hero_count": 5,
       "heroes": [
         {
           "name": "Captain Crunch",
-          "image": "captain-crunch.jpg",
+          "image": "captain-crunch.png",
           "abilities": "Main Attack: Get you by the Knife\nCaptain Crunch Stabs enemies with his knife\nAbility 1: Oops all berries\nCaptain Crunch spills berries on the ground, slowing enemies around him\nAbility 2: Crunch Surprise\nCaptain crunch hides in a bush, and his next knife has a dash and does extra damage \nSuper: Take you to his special island\nCaptain crunch Takes himself and the nearest enemy to his special island for 10 secs, where he has increased stats",
           "slide": 23
         },
@@ -417,87 +417,87 @@ const heroesData = {
         },
         {
           "name": "Displeased Avian",
-          "image": "displeased -avian.jpg",
+          "image": "displeased-avian.png",
           "abilities": "Main Attack: CAW CAWWW\nA rapid, short range peck with infinite ammo\nAbility 1: WAAAA HEEY\nRed flings himself to a designated area with his slingshot, stunning enemies on land\nAbility 2: WOOOIA UUU UU UY\nRed slices in a wide berth with his wings, doing 50% of the max health of the squishiest enemy caught.\nSuper: AAAAAIIIIIIAAA\nRed perfectly mimics the sound of a bird, frightening Big Pig and sending him on a rampage through the map",
           "slide": 25
         },
         {
           "name": "MU†E-ÅNT",
-          "image": "mute-ant.jpg",
+          "image": "mute-ant.png",
           "abilities": "Main Attack: Ant-Rings\nMute-Ant throws one of his ant-rings a short distance \nAbility 1: Ant-Bot\nAnt-Bot scans the area around him, revealing hidden objects and zapping enemies\nAbility 2: Ant-friend\n(In ant-form) Mute-Ant gets carried around by his insect friend; Señor butterfly, allowing him to fly for 8 secs\nSuper: Ant-Man\nMute-ant speaks for 10 seconds transforming him into an ant that is so tiny it is invisible",
           "slide": 27
         },
         {
           "name": "Machete Man",
-          "image": "machete-man.jpg",
+          "image": "machete-man.png",
           "abilities": "Main Attack: Machete\nMachete Man slashes with his machete\nAbility 1: Machete Throw\nMachete man throws his machete then backflips to get a new one\nAbility 2: Dementia Machete Backflip\nMachete man does a backflip and has 50 chance of dealing a ton of damage to himself or an enemy\nSuper:  Old Guy Backflip\nMachete man does a backflip, gaining an extra Mach e, extra damage and extra speed",
           "slide": 29
         }
       ]
     },
     {
-      "name": "Supporter",
-      "icon": "supporter.png",
+      "name": "Supporters",
+      "icon": "image32.jpg",
       "hero_count": 6,
       "heroes": [
         {
           "name": "Burger King",
-          "image": "burger-king.jpg",
+          "image": "burger-king.png",
           "abilities": "Main Attack: Double Spatula Surprise\nBurger King makes burgers, LT to make funky burgers for teammates, RT to make evil burgers for enemies.\nAbility 1: The Great\nBurger King makes a big burger, providing cover for teammates and can be consumed for health.\nAbility 2: The Gatsby\nBurger King draws a spatula circle, creating a burger zone for teammates to gain increased attack in.\nSuper: The Great and The Gatsby\nBurger King Greats a Gatsby Burger, turning any teammate into the Great Gatsby for 1 minute. While the Great Gatsby, teammates have much more health and damage.",
           "slide": 33
         },
         {
           "name": "Brain Freeze",
-          "image": "brain-freeze.jpg",
+          "image": "brain-freeze.png",
           "abilities": "Main Attack: I'm Not Having Fun\nBrainfreeze, shocked at the prospect of not fun, swings out with a one-handed punch, gaining Fun on hit. \nAbility 1: Use the Bomb (costs 2 Fun)\nBrainfreeze finally uses the bomb he always carries around, dealing small splash damage.\nAbility 2: You Fly When I'm Having Fun (costs 1 Fun) \nBrainfreeze can levitate a teammate, healing them and raising them to any height for 5 seconds.\nSuper: Time Flies When Your Having Fun\nBrainfreeze takes a hit of straight Fun, causing himself to enter a state of bliss, summoning Time Flies to tell him and his teammates the time in game and in real life for 30 seconds",
           "slide": 35
         },
         {
           "name": "Didgeridon't",
-          "image": "digeridon't.jpg",
+          "image": "didgeridont.png",
           "abilities": "Main Attack: Didgeridon't Come Near\nDidgeridon't swings his Didgeridon't in a wide arc, causing fall damage on hit.\nAbility 1: Didgeridon't Mess Around\nDidgeridon't stretches his arms, increasing super charge rate for 5 seconds.\nAbility 2: Digerididn't and Digeriwon't\nDidgeridon't summons the ghosts of Digeripast and the ghost of digerifuture to perform a line dance. They are solid and can block attacks.\nSuper: Didgeridon't Take Fall Damage\nDidgeridon't raises his Didgeridon't above his head, and for 15 seconds his teammates don't take fall damage.",
           "slide": 37
         },
         {
           "name": "DishwasHER",
-          "image": "dishwasher.jpg",
+          "image": "dishwasher.png",
           "abilities": "Main Attack: Womanly Plate Throw\nDishwasHER throws a plate in a female-like manner\nAbility 1: CassHERole \nDishwasHER drops a casserole that heals her teammates \nAbility 2: Stealth Mode\nDishwasHER goes into stealth mode, getting melee whisk weapons and changing her outfit which does nothing \nSuper: Do the Laundry\nDishwasHER removes all negative effects from her teammates and heals them significantly",
           "slide": 39
         },
         {
           "name": "PowerPoint",
-          "image": "powerpoint.jpg",
+          "image": "powerpoint.png",
           "abilities": "Main Attack: Laser Taser Blaser Face\nPower point shoots a laser at an enemies face. If the enemy is wearing a blaser, it does double damage\nAbility 1: Minor Blind\nPowerPoint temporarily blinds one enemy, leaving a \"blind spot\" where they can't see for 5 seconds\nAbility 2: 3rd D vision\nPowerPoint sees through the first and the second D's, and him and his teammates can see enemies wherever they are on the map\nSuper: Super Distract\nPower point summons a random point on the map, and all other characers are sucked towards that point and can",
           "slide": 40
         },
         {
           "name": "Shan't Dance",
-          "image": "shan't-dance.jpg",
+          "image": "shant-dance.png",
           "abilities": "Main Attack: Autissles\nShan't fires mini-missiles from his wheelchair\nAbility 1: Wheelchair Tow\nShan't attaches his wheelchair to another teammate, significantly boosting their movement speed\nAbility 2: Wheel Steel\nShan't shoots a wheel off of his wheelchair, providing cover for teammates behind them (2 uses)\nSuper: Motivational JUMP\nShan't, after charging all game, performs the biggest jump you've seen any guy do before. This incredible morale boost gives all teammates in the area incredible jump height, regeneration, and healing over time",
           "slide": 41
         }
       ]
     },
     {
-      "name": "Controller",
-      "icon": "controller.png",
+      "name": "Controllers",
+      "icon": "image42.png",
       "hero_count": 4,
       "heroes": [
         {
           "name": "Faceplant",
-          "image": "faceplant.jpg",
+          "image": "faceplant.png",
           "abilities": "Main Attack: Shovel Slash\nFaceplant attacks with shovel, dealing heavy melee damage and launching weaker vines out in front of him\nAbility 1:  Face full of Plant\nFaceplant Excretes a large amount of poisonous pollen from his face\nAbility 2: Plant full of Face \nFaceplant creates an area of plants who encourage his teammates, giving bonus attack and speed \nSuper: Plant full of Plant\nFaceplant creates an area that wraps enemies up vines, stunning them",
           "slide": 44
         },
         {
           "name": "Grom",
-          "image": "grom.jpg",
+          "image": "grom.png",
           "abilities": "Main Attack: Bud Go Boom!\nGrom throws his walkie-talkie over obstacles at a long range that explodes into four piercing projectiles in a cross pattern.\nAbility 1: Watchtower\nUpon activation, Grom drops a turret that allows him and allies to see enemies inside bushes in its 10-tile radius.\nAbility 2: Radio Check\nActivating this Gadget allows Grom's next attack to fire three walkie-talkies in quick succession.\nSuper: Grom Bomb\nGrom throws a giant, longer-ranged bomb from his back over obstacles that explodes into four piercing projectiles in a cross pattern, similarly to his main attack.",
           "slide": 45
         },
         {
           "name": "Winter WonderGirl",
-          "image": "winter-wondergirl.jpg",
+          "image": "winter-wondergirl.png",
           "abilities": "Main Attack: Super Snowglober\nWinter Wondergirl throws a snow globe, which breaks and pulls enemies in\nAbility 1: Shake it up\nWinter Wondergirl makes it snow around her, freezing enemies \nAbility 2: Rain down the sun fog \nWinter Wondergirl breaks a snowglobe with a lot of fog, causing a smoke bomb\nSuper:  Wonderlate the multisphere\nWinter Wondergirl builds a giant snow globe, any enemies in it take a ton of damage and are slowed",
           "slide": 47
         },
@@ -510,8 +510,8 @@ const heroesData = {
       ]
     },
     {
-      "name": "Hawktalker",
-      "icon": "hawktalker.png",
+      "name": "Hawktalkers",
+      "icon": "image50.png",
       "hero_count": 0,
       "heroes": []
     }
@@ -531,7 +531,7 @@ function buildHeroCarousel() {
 
     let slideIndex = 0;
 
-    // Create one slide per class (with grid of heroes)
+    // Create slides for each class
     heroesData.classes.forEach(heroClass => {
         if (heroClass.hero_count === 0) return; // Skip classes with no heroes
 
@@ -539,56 +539,58 @@ function buildHeroCarousel() {
         const classIcon = heroClass.icon;
         const colors = classColors[className];
 
-        // Create slide for this class
-        const slide = document.createElement('div');
-        slide.className = 'carousel-slide' + (slideIndex === 0 ? ' active' : '');
-        slide.setAttribute('data-class', className);
+        // Create a slide for each hero in the class
+        heroClass.heroes.forEach((hero, heroIndexInClass) => {
+            const slide = document.createElement('div');
+            slide.className = 'carousel-slide' + (slideIndex === 0 ? ' active' : '');
+            slide.setAttribute('data-hero', hero.name);
+            slide.setAttribute('data-class', className);
 
-        // Build hero grid HTML
-        let heroGridHTML = '';
-        heroClass.heroes.forEach(hero => {
-            heroGridHTML += `
-                <div class="hero-card" data-hero="${hero.name}" data-class="${className}">
-                    <div class="hero-card-image">
-                        <img src="images/heroes/${hero.image}" alt="${hero.name}">
+            slide.innerHTML = `
+                <div class="carousel-image">
+                    <img src="images/heroes/${hero.image}" alt="${hero.name}">
+                    <div class="class-badge" style="background: linear-gradient(135deg, ${colors.primary}, ${colors.secondary});">
+                        <img src="images/classes/${className.toLowerCase()}.${classIcon.includes('.png') ? 'png' : 'jpg'}" alt="${className}">
+                        <span>${className.toUpperCase()}</span>
                     </div>
-                    <div class="hero-card-name">${hero.name}</div>
+                </div>
+                <div class="carousel-info" style="border-left-color: ${colors.primary};">
+                    <h3 class="carousel-title" style="color: ${colors.primary}; text-shadow: var(--text-stroke), 3px 3px 0 ${colors.secondary}, 6px 6px 0 var(--comic-black);">
+                        ${hero.name}
+                    </h3>
+                    <div class="hero-abilities">
+                        ${formatAbilities(hero.abilities)}
+                    </div>
+                    <button class="select-mode-btn" style="background: ${colors.primary}; box-shadow: var(--shadow-dark), 0 0 15px ${colors.primary}80;">
+                        SELECT HERO
+                    </button>
                 </div>
             `;
+
+            carouselContent.appendChild(slide);
+            heroSlides.push(slide);
+
+            // Create indicator
+            const indicator = document.createElement('span');
+            indicator.className = 'indicator' + (slideIndex === 0 ? ' active' : '');
+            indicator.setAttribute('data-index', slideIndex);
+            indicator.style.borderColor = colors.primary;
+            if (slideIndex === 0) {
+                indicator.style.background = colors.primary;
+            }
+            indicatorsContainer.appendChild(indicator);
+
+            slideIndex++;
         });
-
-        slide.innerHTML = `
-            <div class="class-header" style="background: linear-gradient(135deg, ${colors.primary}, ${colors.secondary});">
-                <img src="images/classes/${classIcon}" alt="${className}" class="class-icon">
-                <h2 class="class-name">${className.toUpperCase()}</h2>
-            </div>
-            <div class="hero-grid">
-                ${heroGridHTML}
-            </div>
-        `;
-
-        carouselContent.appendChild(slide);
-        heroSlides.push(slide);
-
-        // Create indicator for this class
-        const indicator = document.createElement('span');
-        indicator.className = 'indicator' + (slideIndex === 0 ? ' active' : '');
-        indicator.setAttribute('data-index', slideIndex);
-        indicator.style.borderColor = colors.primary;
-        if (slideIndex === 0) {
-            indicator.style.background = colors.primary;
-        }
-        indicatorsContainer.appendChild(indicator);
-
-        slideIndex++;
     });
 
-    // Add event listeners for hero card selection
-    const heroCards = document.querySelectorAll('.hero-card');
-    heroCards.forEach(card => {
-        card.addEventListener('click', (e) => {
-            const heroName = card.getAttribute('data-hero');
-            const className = card.getAttribute('data-class');
+    // Add event listeners for hero selection
+    const selectHeroButtons = document.querySelectorAll('#hero-carousel-content .select-mode-btn');
+    selectHeroButtons.forEach(button => {
+        button.addEventListener('click', (e) => {
+            const slide = e.target.closest('.carousel-slide');
+            const heroName = slide.getAttribute('data-hero');
+            const className = slide.getAttribute('data-class');
             selectedHero = { name: heroName, class: className };
 
             console.log(`Selected hero: ${heroName} (${className})`);

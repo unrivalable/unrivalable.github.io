@@ -570,12 +570,11 @@ body::before {
     display: none;
     opacity: 0;
     transition: opacity 0.5s ease;
-    /* Added gap for better spacing */
-    gap: 30px; 
 }
 
 .carousel-slide.active {
     display: flex;
+    flex-direction: column;
     opacity: 1;
     animation: slideIn 0.5s ease-out;
 }
@@ -970,6 +969,143 @@ body::before {
 }
 
 .hero-abilities::-webkit-scrollbar-thumb:hover {
+    background: var(--comic-blue);
+}
+
+/* Hero Grid Layout for Class-based Selection */
+.class-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+    margin-bottom: 30px;
+    border: 6px solid var(--comic-black);
+    box-shadow: var(--shadow-dark), var(--shadow-glow);
+    transform: rotate(-1deg);
+    position: relative;
+}
+
+.class-icon {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    filter: drop-shadow(3px 3px 0 var(--comic-black));
+}
+
+.class-name {
+    font-family: 'Bangers', cursive;
+    font-size: 3rem;
+    font-weight: 400;
+    letter-spacing: 3px;
+    color: var(--comic-white);
+    text-shadow: var(--text-stroke), 0 0 20px rgba(255, 255, 255, 0.5);
+    margin: 0;
+}
+
+.hero-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 20px;
+    padding: 20px;
+    max-height: calc(100% - 140px);
+    overflow-y: auto;
+}
+
+.hero-card {
+    background: rgba(10, 22, 40, 0.8);
+    border: 5px solid var(--comic-blue);
+    box-shadow: var(--shadow-dark), 0 0 10px rgba(0, 191, 255, 0.3);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    overflow: hidden;
+    transform: rotate(-1deg);
+    display: flex;
+    flex-direction: column;
+}
+
+.hero-card:hover {
+    transform: rotate(0deg) scale(1.05);
+    border-color: var(--comic-cyan);
+    box-shadow: var(--shadow-dark), 0 0 25px rgba(0, 255, 255, 0.6);
+    z-index: 10;
+}
+
+.hero-card-image {
+    width: 100%;
+    height: 0;
+    padding-bottom: 100%; /* Creates a square aspect ratio */
+    overflow: hidden;
+    position: relative;
+    background: rgba(0, 191, 255, 0.1);
+    flex-shrink: 0;
+}
+
+.hero-card-image::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(0, 191, 255, 0.2) 1px, transparent 1px);
+    background-size: 4px 4px;
+    pointer-events: none;
+    opacity: 0.3;
+}
+
+.hero-card-image img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: saturate(1.3) contrast(1.1) brightness(1.05);
+    transition: all 0.3s ease;
+}
+
+.hero-card:hover .hero-card-image img {
+    transform: scale(1.1);
+    filter: saturate(1.5) contrast(1.2) brightness(1.15);
+}
+
+.hero-card-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 400;
+    letter-spacing: 1px;
+    color: var(--comic-white);
+    text-align: center;
+    padding: 12px 8px;
+    background: rgba(0, 191, 255, 0.2);
+    border-top: 3px solid var(--comic-cyan);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    transition: all 0.3s ease;
+}
+
+.hero-card:hover .hero-card-name {
+    background: rgba(0, 255, 255, 0.3);
+    color: var(--comic-cyan);
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+}
+
+/* Custom scrollbar for hero grid */
+.hero-grid::-webkit-scrollbar {
+    width: 8px;
+}
+
+.hero-grid::-webkit-scrollbar-track {
+    background: rgba(0, 191, 255, 0.1);
+    border-radius: 4px;
+}
+
+.hero-grid::-webkit-scrollbar-thumb {
+    background: var(--comic-cyan);
+    border-radius: 4px;
+    box-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+}
+
+.hero-grid::-webkit-scrollbar-thumb:hover {
     background: var(--comic-blue);
 }
 
