@@ -237,6 +237,31 @@
                 <span class="indicator" data-index="6"></span>
             </div>
         </div>
+
+        <!-- Character Details Modal -->
+        <div id="character-details-modal" class="modal-overlay">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="modal-hero-name" class="screen-title">HERO NAME</h2>
+                    <div id="modal-hero-class" class="class-badge">CLASS</div>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-image-container">
+                        <img id="modal-hero-image" src="" alt="Hero Image">
+                    </div>
+                    <div class="modal-info">
+                        <h3 class="abilities-title">ABILITIES</h3>
+                        <div id="modal-hero-abilities" class="abilities-list">
+                            <!-- Abilities will be injected here -->
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="modal-cancel-btn" class="back-button">CANCEL</button>
+                    <button id="modal-select-btn" class="select-mode-btn">SELECT CHARACTER</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="script.js"></script>
