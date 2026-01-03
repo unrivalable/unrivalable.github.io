@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unrivalable - Unemployables</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Bebas+Neue&family=Permanent+Marker&family=Bungee&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Comic Book Panel Container -->
+    <div class="crt-container">
+        <!-- Halftone Overlay -->
+        <div class="scanlines"></div>
+        <div class="vignette"></div>
+
+        <!-- Opening Screen -->
+        <div id="opening-screen" class="screen active">
+            <div class="glitch-wrapper">
+                <div class="franchise-name">UNEMPLOYABLES</div>
+                <h1 class="game-title" data-text="UNRIVALABLE">
+                    UNRIVALABLE
+                </h1>
+            </div>
+
+            <div class="start-option">
+                <div class="cursor-box">
+                    <span class="cursor-bracket">[</span>
+                    <span class="start-text">START GAME</span>
+                    <span class="cursor-bracket">]</span>
+                </div>
+            </div>
+
+            <div class="decorative-line top"></div>
+            <div class="decorative-line bottom"></div>
+        </div>
+
+        <!-- Home Screen -->
+        <div id="home-screen" class="screen">
+            <div class="home-header">
+                <div class="franchise-name small">UNEMPLOYABLES</div>
+                <h2 class="home-title">UNRIVALABLE</h2>
+            </div>
+
+            <div class="menu-container">
+                <div class="menu-item" data-menu="character">
+                    <div class="menu-icon">▶</div>
+                    <div class="menu-label">CHARACTER SELECTION</div>
+                    <div class="menu-glow"></div>
+                </div>
+
+                <div class="menu-item" data-menu="gamemode">
+                    <div class="menu-icon">▶</div>
+                    <div class="menu-label">GAME MODE</div>
+                    <div class="menu-selected" id="selected-gamemode">None Selected</div>
+                    <div class="menu-glow"></div>
+                </div>
+
+                <div class="menu-item start-button" data-menu="start">
+                    <div class="menu-icon">►</div>
+                    <div class="menu-label">START GAME</div>
+                    <div class="menu-glow"></div>
+                </div>
+            </div>
+
+            <div class="status-bar">
+                <span class="status-item">SYS_OK</span>
+                <span class="status-divider">|</span>
+                <span class="status-item">READY</span>
+                <span class="status-divider">|</span>
+                <span class="status-item blink">▮</span>
+            </div>
+        </div>
+
+        <!-- Game Mode Selection Screen -->
+        <div id="gamemode-screen" class="screen">
+            <div class="gamemode-header">
+                <div class="back-button" data-back="home-screen">
+                    <span class="back-arrow">◀</span> BACK
+                </div>
+                <h2 class="screen-title">SELECT GAME MODE</h2>
+            </div>
+
+            <div class="carousel-container">
+                <!-- Navigation Arrows -->
+                <button class="carousel-nav prev" id="carousel-prev">
+                    <span>◀</span>
+                </button>
+
+                <div class="carousel-content">
+                    <!-- Game Mode Slides -->
+                    <div class="carousel-slide active" data-mode="deathmatch">
+                        <div class="carousel-image">
+                            <img src="images/image1.png" alt="Dan Rhon Deathmatch">
+                        </div>
+                        <div class="carousel-info">
+                            <h3 class="carousel-title">Dan Rhon Deathmatch</h3>
+                            <div class="carousel-team">Team: 6 vs. 6</div>
+                            <div class="carousel-objective">
+                                <strong>Objective:</strong> Be the team with the most kills when time runs out. Winner receives the glory and the coveted love of Dan Rhon
+                            </div>
+                            <button class="select-mode-btn">SELECT THIS MODE</button>
+                        </div>
+                    </div>
+
+                    <div class="carousel-slide" data-mode="chexico">
+                        <div class="carousel-image">
+                            <img src="images/image2.png" alt="Charge on Chexico">
+                        </div>
+                        <div class="carousel-info">
+                            <h3 class="carousel-title">Charge on Chexico</h3>
+                            <div class="carousel-team">Team: 6 vs. 6</div>
+                            <div class="carousel-objective">
+                                <strong>Objective:</strong> Offense - Rush to the top of the Chexico temple and construct the statue of Colin Amazing. Defense - Stop the attacking team from building their statue until time runs out.
+                            </div>
+                            <button class="select-mode-btn">SELECT THIS MODE</button>
+                        </div>
+                    </div>
+
+                    <div class="carousel-slide" data-mode="turfwar">
+                        <div class="carousel-image">
+                            <img src="images/image3.png" alt="Tessarune Turf War">
+                        </div>
+                        <div class="carousel-info">
+                            <h3 class="carousel-title">Tessarune Turf War</h3>
+                            <div class="carousel-team">Team: 6 vs. 6</div>
+                            <div class="carousel-objective">
+                                <strong>Objective:</strong> Take control of both the Tessarune and Ressatune by stealing one from the other team and bringing it to your turf
+                            </div>
+                            <button class="select-mode-btn">SELECT THIS MODE</button>
+                        </div>
+                    </div>
+
+                    <div class="carousel-slide" data-mode="squirt">
+                        <div class="carousel-image">
+                            <img src="images/image4.png" alt="Squirt!">
+                        </div>
+                        <div class="carousel-info">
+                            <h3 class="carousel-title">Squirt!</h3>
+                            <div class="carousel-team">Team: 4 vs. 4</div>
+                            <div class="carousel-objective">
+                                <strong>Objective:</strong> Push the barrel across the rope to the opponent's side of the river. Do this by destroying the opponent's fire hydrants, water towers, and firefighters, while keeping yours alive
+                            </div>
+                            <button class="select-mode-btn">SELECT THIS MODE</button>
+                        </div>
+                    </div>
+
+                    <div class="carousel-slide" data-mode="hoedown">
+                        <div class="carousel-image">
+                            <img src="images/image5.png" alt="Duo Hoedown">
+                        </div>
+                        <div class="carousel-info">
+                            <h3 class="carousel-title">Duo Hoedown</h3>
+                            <div class="carousel-team">Team: 1 vs. 1</div>
+                            <div class="carousel-objective">
+                                <strong>Objective:</strong> Kill your opponent to gain some of their money bags. First person to steal 4 money bags wins.
+                            </div>
+                            <button class="select-mode-btn">SELECT THIS MODE</button>
+                        </div>
+                    </div>
+
+                    <div class="carousel-slide" data-mode="campaign">
+                        <div class="carousel-image">
+                            <img src="images/image6.png" alt="Campaign">
+                        </div>
+                        <div class="carousel-info">
+                            <h3 class="carousel-title">Campaign</h3>
+                            <div class="carousel-team">Team: 5 player free for all</div>
+                            <div class="carousel-objective">
+                                <strong>Objective:</strong> Beat your opponents in an 8 month long Venezuelan Presidential Campaign.
+                            </div>
+                            <button class="select-mode-btn">SELECT THIS MODE</button>
+                        </div>
+                    </div>
+
+                    <div class="carousel-slide" data-mode="story">
+                        <div class="carousel-image">
+                            <img src="images/image7.png" alt="Story mode">
+                        </div>
+                        <div class="carousel-info">
+                            <h3 class="carousel-title">Story Mode</h3>
+                            <div class="carousel-team">Team: 1-4 player co-op</div>
+                            <div class="carousel-objective">
+                                <strong>Objective:</strong> Destroy the undestroyables and defeat the darkest timeline to gain rewards and glory.
+                            </div>
+                            <button class="select-mode-btn">SELECT THIS MODE</button>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="carousel-nav next" id="carousel-next">
+                    <span>▶</span>
+                </button>
+            </div>
+
+            <!-- Carousel Indicators -->
+            <div class="carousel-indicators">
+                <span class="indicator active" data-index="0"></span>
+                <span class="indicator" data-index="1"></span>
+                <span class="indicator" data-index="2"></span>
+                <span class="indicator" data-index="3"></span>
+                <span class="indicator" data-index="4"></span>
+                <span class="indicator" data-index="5"></span>
+                <span class="indicator" data-index="6"></span>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

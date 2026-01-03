@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Skill(frontend-design)",
+      "Bash(unzip:*)",
+      "Bash(open index.html)",
+      "Bash(ls:*)",
+      "Bash(python3:*)"
+    ]
+  }
+}
