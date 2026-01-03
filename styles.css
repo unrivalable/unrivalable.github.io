@@ -617,6 +617,7 @@ body::before {
 }
 
 .carousel-image img {
+    flex: 1.2; 
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -626,7 +627,7 @@ body::before {
 /* Info Section - Adjusted flex ratio and sizing */
 .carousel-info {
     /* Changed from flex: 0.6 to flex: 1.2 so text is wider */
-    flex: 1.2; 
+    flex: 0.6; 
     display: flex;
     flex-direction: column;
     justify-content: center; /* Centers content vertically */
