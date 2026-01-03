@@ -952,6 +952,15 @@ body::before {
     margin-bottom: 4px;
 }
 
+.ability-desc {
+    display: block;
+    color: var(--comic-white);
+    font-family: sans-serif;
+    font-size: 0.9em;
+    white-space: normal;
+    min-height: 20px;
+}
+
 /* Custom scrollbar for hero abilities */
 .hero-abilities::-webkit-scrollbar {
     width: 6px;
@@ -1229,4 +1238,159 @@ body::before {
     aspect-ratio: 1 / 1;
     flex: 0 0 auto;
     width: auto;
+}
+
+/* Character Details Modal */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 5000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.modal-overlay.active {
+    display: flex;
+    opacity: 1;
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.modal-content {
+    width: 90%;
+    max-width: 1000px;
+    height: 85%;
+    background: var(--comic-dark-blue);
+    border: 8px solid var(--comic-blue);
+    box-shadow: 0 0 50px rgba(0, 191, 255, 0.4), var(--shadow-dark);
+    display: flex;
+    flex-direction: column;
+    padding: 25px;
+    position: relative;
+    transform: rotate(1deg);
+    animation: modalPop 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes modalPop {
+    from { transform: scale(0.8) rotate(-5deg); opacity: 0; }
+    to { transform: scale(1) rotate(1deg); opacity: 1; }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 4px solid var(--comic-cyan);
+    padding-bottom: 10px;
+}
+
+#modal-hero-name {
+    font-size: 3.5rem;
+    margin: 0;
+    transform: rotate(-1deg);
+}
+
+#modal-hero-class {
+    position: static;
+    transform: rotate(2deg);
+    font-size: 1.5rem;
+}
+
+.modal-body {
+    display: flex;
+    gap: 30px;
+    flex: 1;
+    overflow: hidden;
+}
+
+.modal-image-container {
+    flex: 0.8;
+    background: rgba(0, 191, 255, 0.1);
+    border: 4px solid var(--comic-blue);
+    position: relative;
+    overflow: hidden;
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+#modal-hero-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: saturate(1.2) contrast(1.1);
+}
+
+.modal-info {
+    flex: 1.2;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+.abilities-title {
+    font-family: 'Bangers', cursive;
+    font-size: 2rem;
+    color: var(--comic-yellow);
+    text-shadow: var(--text-stroke);
+    margin-bottom: 15px;
+    border-bottom: 2px dashed var(--comic-cyan);
+    padding-bottom: 5px;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 25px;
+    padding-top: 15px;
+    border-top: 4px solid var(--comic-cyan);
+}
+
+/* Responsive adjustments for modal */
+@media (max-width: 768px) {
+    .modal-content {
+        height: 95%;
+        padding: 15px;
+    }
+
+    .modal-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    #modal-hero-name {
+        font-size: 2.5rem;
+    }
+
+    .modal-body {
+        flex-direction: column;
+    }
+
+    .modal-image-container {
+        height: 250px;
+        flex: 0 0 auto;
+    }
+
+    .modal-footer {
+        flex-direction: column-reverse;
+        gap: 15px;
+    }
+
+    .modal-footer button {
+        width: 100%;
+        justify-content: center;
+    }
 }

@@ -589,20 +589,22 @@ function buildHeroCarousel() {
         card.addEventListener('click', (e) => {
             const heroName = card.getAttribute('data-hero');
             const className = card.getAttribute('data-class');
-            selectedHero = { name: heroName, class: className };
 
-            console.log(`Selected hero: ${heroName} (${className})`);
+            // Find hero data
+            let heroData = null;
+            heroesData.classes.forEach(c => {
+                if (c.name === className) {
+                    c.heroes.forEach(h => {
+                        if (h.name === heroName) {
+                            heroData = h;
+                        }
+                    });
+                }
+            });
 
-            // Update the home screen
-            const selectedDisplay = document.getElementById('selected-character');
-            selectedDisplay.textContent = heroName;
-            selectedDisplay.style.animation = 'selectedPulse 0.5s ease-out';
-            setTimeout(() => {
-                selectedDisplay.style.animation = '';
-            }, 500);
-
-            // Return to home screen
-            transitionToScreen('character-screen', 'home-screen');
+            if (heroData) {
+                openHeroModal(heroData, className);
+            }
         });
     });
 
@@ -621,7 +623,7 @@ function formatAbilities(abilitiesText) {
             if (match) {
                 const label = match[1];
                 const description = match[2].trim();
-                html += `<div class="ability-item"><strong>${label}:</strong> ${description}</div>`;
+                html += `<div class="ability-item"><strong>${label}:</strong> <div class="ability-desc">${description}</div></div>`;
             }
         }
     });
@@ -696,6 +698,74 @@ function showHeroSlide(index) {
 
     currentHeroIndex = index;
 }
+
+// Hero Details Modal Logic
+function openHeroModal(hero, className) {
+    const modal = document.getElementById('character-details-modal');
+    const modalName = document.getElementById('modal-hero-name');
+    const modalClass = document.getElementById('modal-hero-class');
+    const modalImage = document.getElementById('modal-hero-image');
+    const modalAbilities = document.getElementById('modal-hero-abilities');
+    const selectBtn = document.getElementById('modal-select-btn');
+    const cancelBtn = document.getElementById('modal-cancel-btn');
+
+    // Populate data
+    modalName.textContent = hero.name.toUpperCase();
+    modalClass.textContent = className.toUpperCase();
+
+    // Set class badge color
+    const colors = classColors[className];
+    modalClass.style.borderColor = colors.primary;
+    modalClass.style.color = colors.secondary;
+
+    modalImage.src = `images/heroes/${hero.image}`;
+    modalImage.alt = hero.name;
+
+    // Format abilities using the existing helper function
+    modalAbilities.innerHTML = formatAbilities(hero.abilities);
+
+    // Show modal
+    modal.classList.add('active');
+
+    // Clean up old listeners to prevent duplicates
+    const newSelectBtn = selectBtn.cloneNode(true);
+    selectBtn.parentNode.replaceChild(newSelectBtn, selectBtn);
+
+    const newCancelBtn = cancelBtn.cloneNode(true);
+    cancelBtn.parentNode.replaceChild(newCancelBtn, cancelBtn);
+
+    // Add new listeners
+    newSelectBtn.addEventListener('click', () => {
+        selectedHero = { name: hero.name, class: className };
+        console.log(`Selected hero via modal: ${hero.name} (${className})`);
+
+        // Update the home screen
+        const selectedDisplay = document.getElementById('selected-character');
+        selectedDisplay.textContent = hero.name;
+        selectedDisplay.style.animation = 'selectedPulse 0.5s ease-out';
+        setTimeout(() => {
+            selectedDisplay.style.animation = '';
+        }, 500);
+
+        // Hide modal and transition
+        modal.classList.remove('active');
+        transitionToScreen('character-screen', 'home-screen');
+    });
+
+    newCancelBtn.addEventListener('click', () => {
+        modal.classList.remove('active');
+    });
+}
+
+// Close modal on escape key
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        const modal = document.getElementById('character-details-modal');
+        if (modal && modal.classList.contains('active')) {
+            modal.classList.remove('active');
+        }
+    }
+});
 
 // Build carousel when DOM is loaded
 if (document.readyState === 'loading') {
