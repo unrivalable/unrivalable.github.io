@@ -1,0 +1,209 @@
+
+/* Loading Screen */
+#loading-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: 100;
+}
+
+.loading-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    filter: blur(3px) brightness(0.6);
+    z-index: 1;
+}
+
+.loading-hero-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2;
+}
+
+#loading-hero {
+    max-height: 90%;
+    max-width: 90%;
+    object-fit: contain;
+    filter: drop-shadow(0 0 20px rgba(0,0,0,0.8));
+    animation: heroBreathe 4s ease-in-out infinite;
+}
+
+@keyframes heroBreathe {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.03); }
+}
+
+.loading-ui {
+    position: absolute;
+    bottom: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.loading-text {
+    font-family: 'Bangers', cursive;
+    font-size: 3rem;
+    color: var(--comic-white);
+    text-shadow: var(--text-stroke), 3px 3px 0 var(--comic-black);
+    margin-bottom: 20px;
+    letter-spacing: 4px;
+    animation: blinkText 1s infinite;
+}
+
+@keyframes blinkText {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.progress-container {
+    width: 100%;
+    height: 30px;
+    background: var(--comic-dark-blue);
+    border: 4px solid var(--comic-white);
+    box-shadow: 5px 5px 0 var(--comic-black);
+    padding: 3px;
+    transform: skewX(-10deg);
+}
+
+.progress-bar {
+    width: 0%;
+    height: 100%;
+    background: repeating-linear-gradient(
+        45deg,
+        var(--comic-yellow),
+        var(--comic-yellow) 10px,
+        var(--comic-orange) 10px,
+        var(--comic-orange) 20px
+    );
+    transition: width 0.1s linear;
+}
+
+/* Game Over Screen */
+#game-over-screen {
+    background-color: #000;
+    z-index: 101;
+}
+
+.game-over-title {
+    font-family: 'Bangers', cursive;
+    font-size: 8rem;
+    color: var(--comic-red);
+    text-shadow:
+        var(--text-stroke),
+        5px 5px 0 var(--comic-white),
+        10px 10px 0 var(--comic-black);
+    animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both infinite;
+}
+
+@keyframes shake {
+    10%, 90% { transform: translate3d(-1px, 0, 0); }
+    20%, 80% { transform: translate3d(2px, 0, 0); }
+    30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+    40%, 60% { transform: translate3d(4px, 0, 0); }
+}
+
+.death-message-box {
+    background: var(--comic-white);
+    border: 6px solid var(--comic-black);
+    padding: 30px;
+    max-width: 800px;
+    margin: 20px auto;
+    position: relative;
+    box-shadow: 10px 10px 0 var(--comic-black);
+    transform: rotate(-1deg);
+}
+
+.death-message-box::before {
+    content: '';
+    position: absolute;
+    bottom: -20px;
+    left: 50%;
+    border-width: 20px 20px 0;
+    border-style: solid;
+    border-color: var(--comic-black) transparent;
+    display: block;
+    width: 0;
+}
+
+.death-message-box::after {
+    content: '';
+    position: absolute;
+    bottom: -13px;
+    left: 50%;
+    margin-left: 4px;
+    border-width: 16px 16px 0;
+    border-style: solid;
+    border-color: var(--comic-white) transparent;
+    display: block;
+    width: 0;
+}
+
+.death-message {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    color: var(--comic-black);
+    text-align: center;
+    line-height: 1.2;
+}
+
+#restart-btn {
+    width: auto;
+    min-width: 300px;
+    justify-content: center;
+}
+
+/* Killer Display on Game Over */
+.killer-container {
+    display: none; /* Hidden by default until loaded */
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+    animation: fadeIn 0.5s ease-out;
+}
+
+.killer-label {
+    font-family: 'Bangers', cursive;
+    font-size: 2rem;
+    color: var(--comic-red);
+    text-shadow: var(--text-stroke);
+    margin-bottom: 10px;
+    transform: rotate(-2deg);
+}
+
+.killer-image {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border: 5px solid var(--comic-white);
+    box-shadow: 5px 5px 0 var(--comic-black);
+    transform: rotate(2deg);
+    margin-bottom: 10px;
+    background: var(--comic-bg);
+}
+
+.killer-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem;
+    color: var(--comic-yellow);
+    text-shadow: 2px 2px 0 var(--comic-black);
+    letter-spacing: 2px;
+}

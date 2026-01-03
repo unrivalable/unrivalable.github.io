@@ -103,7 +103,7 @@ menuItems.forEach(item => {
                 break;
             case 'start':
                 console.log('Start game clicked');
-                // Add your start game logic here
+                startGame();
                 break;
         }
     });
@@ -773,3 +773,155 @@ if (document.readyState === 'loading') {
 } else {
     buildHeroCarousel();
 }
+
+async function startGame() {
+    if (!selectedHero) {
+        alert("Please select a hero first!");
+        // Shake the character menu item
+        const charItem = document.querySelector('[data-menu="character"]');
+        charItem.style.animation = 'shake 0.5s ease-in-out';
+        setTimeout(() => { charItem.style.animation = ''; }, 500);
+        return;
+    }
+
+    if (!selectedGameMode) {
+        alert("Please select a game mode first!");
+         // Shake the gamemode menu item
+        const modeItem = document.querySelector('[data-menu="gamemode"]');
+        modeItem.style.animation = 'shake 0.5s ease-in-out';
+        setTimeout(() => { modeItem.style.animation = ''; }, 500);
+        return;
+    }
+
+    // Get Game Mode Image
+    const gameModeSlide = document.querySelector(`.carousel-slide[data-mode="${selectedGameMode}"]`);
+    const gameModeImgSrc = gameModeSlide.querySelector('.carousel-image img').src;
+
+    // Get Hero Image
+    // Use helper to find hero object in heroesData
+    let heroObj = null;
+    heroesData.classes.forEach(c => {
+        c.heroes.forEach(h => {
+            if (h.name === selectedHero.name) {
+                heroObj = h;
+            }
+        });
+    });
+
+    // Fallback if not found (shouldn't happen)
+    const heroImgSrc = heroObj ? `images/heroes/${heroObj.image}` : '';
+
+    // Transition to Loading Screen
+    transitionToScreen('home-screen', 'loading-screen');
+
+    // Setup Loading Screen
+    const loadingBg = document.getElementById('loading-bg');
+    const loadingHero = document.getElementById('loading-hero');
+    const progressBar = document.getElementById('progress-bar');
+
+    loadingBg.style.backgroundImage = `url('${gameModeImgSrc}')`;
+    loadingHero.src = heroImgSrc;
+    progressBar.style.width = '0%';
+
+    // Animate Progress Bar (15 seconds)
+    // We use a small interval to update width for smooth animation or just CSS transition
+    // CSS transition is set to 0.1s linear, so we need to update it continuously or change transition duration
+
+    // Better approach: Set transition to 15s linear and set width to 100%
+    progressBar.style.transition = 'width 15s linear';
+
+    // Force reflow
+    progressBar.offsetHeight;
+
+    // Start animation
+    setTimeout(() => {
+        progressBar.style.width = '100%';
+    }, 100);
+
+    // Wait 15 seconds then show Game Over
+    setTimeout(async () => {
+        await showGameOver();
+    }, 15000);
+}
+
+async function showGameOver() {
+    // Reset progress bar for next time (remove transition first)
+    const progressBar = document.getElementById('progress-bar');
+    progressBar.style.transition = 'none';
+    progressBar.style.width = '0%';
+
+    transitionToScreen('loading-screen', 'game-over-screen');
+
+    const deathMessageEl = document.getElementById('death-message');
+    const killerContainer = document.getElementById('killer-container');
+    const killerImage = document.getElementById('killer-image');
+    const killerNameDisplay = document.getElementById('killer-name');
+
+    deathMessageEl.textContent = "Loading death message...";
+    killerContainer.style.display = 'none';
+
+    try {
+        const response = await fetch('death_messages.json');
+        if (!response.ok) throw new Error('Failed to load death messages');
+        const deathMessages = await response.json();
+
+        // Filter out the selected hero from keys
+        const otherHeroes = Object.keys(deathMessages).filter(name => name !== selectedHero.name);
+
+        if (otherHeroes.length === 0) {
+             deathMessageEl.textContent = "You died alone.";
+             return;
+        }
+
+        // Randomly select a hero
+        const randomHeroName = otherHeroes[Math.floor(Math.random() * otherHeroes.length)];
+        const heroMessages = deathMessages[randomHeroName];
+
+        // Randomly select a message from that hero
+        const messageKeys = Object.keys(heroMessages);
+        const randomMessageKey = messageKeys[Math.floor(Math.random() * messageKeys.length)];
+        const message = heroMessages[randomMessageKey];
+
+        deathMessageEl.textContent = message;
+
+        // Find killer image
+        let killerHeroObj = null;
+        heroesData.classes.forEach(c => {
+            c.heroes.forEach(h => {
+                if (h.name === randomHeroName) {
+                    killerHeroObj = h;
+                }
+            });
+        });
+
+        if (killerHeroObj) {
+            killerImage.src = `images/heroes/${killerHeroObj.image}`;
+            killerNameDisplay.textContent = randomHeroName;
+            killerContainer.style.display = 'flex';
+        } else {
+            console.log("Killer image not found for:", randomHeroName);
+            // Optional: Show a default "Unknown" image or just keep hidden
+        }
+
+    } catch (error) {
+        console.error("Error loading death messages:", error);
+        deathMessageEl.textContent = "You died. (Error loading specific death message)";
+    }
+}
+
+// Restart Button Logic
+document.getElementById('restart-btn').addEventListener('click', () => {
+    transitionToScreen('game-over-screen', 'home-screen');
+    // Optional: Reset selections or keep them? Keeping them is usually friendlier.
+});
+
+// Add shake animation
+const shakeStyle = document.createElement('style');
+shakeStyle.textContent = `
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-5px); }
+        75% { transform: translateX(5px); }
+    }
+`;
+document.head.appendChild(shakeStyle);
