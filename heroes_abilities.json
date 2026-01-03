@@ -19,6 +19,10 @@
               "name": "What goes forth",
               "description": "Throws random objects from his inventory at enemies. If he misses, they stay on the ground"
             },
+            "passive": {
+              "name": "",
+              "description": ""
+            },
             "ability_1": {
               "name": "Must come back",
               "description": "When triggered, all items thrown zip back to him"
@@ -41,6 +45,10 @@
             "main_attack": {
               "name": "Well Regulated Militia",
               "description": "Fires a burst from his assault rifle"
+            },
+            "passive": {
+              "name": "",
+              "description": ""
             },
             "ability_1": {
               "name": "Bear Strike",
@@ -65,6 +73,10 @@
               "name": "Porthole throw",
               "description": "Throws a porthole forward"
             },
+            "passive": {
+              "name": "",
+              "description": ""
+            },
             "ability_1": {
               "name": "A Hole new world",
               "description": "Porthole drops a porthole on the ground, slipping through it and popping back out 3 meters behind"
@@ -85,6 +97,10 @@
           "class": "Destroyer",
           "abilities": {
             "main_attack": {
+              "name": "",
+              "description": ""
+            },
+            "passive": {
               "name": "",
               "description": ""
             },
@@ -111,6 +127,10 @@
               "name": "",
               "description": ""
             },
+            "passive": {
+              "name": "",
+              "description": ""
+            },
             "ability_1": {
               "name": "",
               "description": ""
@@ -133,6 +153,10 @@
             "main_attack": {
               "name": "Flap, Tackle, and Glop",
               "description": "Footrun flaps his arms, Jetplace tackles forward and Junkrat shoots some fiery glop outta his crotch"
+            },
+            "passive": {
+              "name": "",
+              "description": ""
             },
             "ability_1": {
               "name": "Switcherooski",
@@ -157,6 +181,10 @@
               "name": "Tickle",
               "description": "Tickle"
             },
+            "passive": {
+              "name": "",
+              "description": ""
+            },
             "ability_1": {
               "name": "High 8",
               "description": "Tickle Monster absolutely slaps somebody twice, first with the first five and then with the second 3"
@@ -177,6 +205,10 @@
           "class": "Destroyer",
           "abilities": {
             "main_attack": {
+              "name": "",
+              "description": ""
+            },
+            "passive": {
               "name": "",
               "description": ""
             },
@@ -202,6 +234,10 @@
             "main_attack": {
               "name": "Knee Combo",
               "description": "Kicks in a wide range, knees forward"
+            },
+            "passive": {
+              "name": "",
+              "description": ""
             },
             "ability_1": {
               "name": "Flying Bee Drop",
@@ -233,6 +269,10 @@
               "name": "Fantastic Fist-Feet Flurry",
               "description": "A 4-hit combo where he punches and kicks"
             },
+            "passive": {
+              "name": "",
+              "description": ""
+            },
             "ability_1": {
               "name": "Hands become feet",
               "description": "Switches around his hands and feet, becoming more than just a man (also increases attack damage)."
@@ -255,6 +295,10 @@
             "main_attack": {
               "name": "Who Spiked the Punch?",
               "description": "Floss punches, spikily"
+            },
+            "passive": {
+              "name": "Flossback",
+              "description": "Enemies take 1/32nd of all damage they inflict on floss via projectiles"
             },
             "ability_1": {
               "name": "Absorption",
@@ -279,6 +323,10 @@
               "name": "Man Punch",
               "description": "Man Guy punches with his long arm like a ma"
             },
+            "passive": {
+              "name": "Manliness",
+              "description": "Man Guy gains increased max health whenever he takes damage, it resets when he dies"
+            },
             "ability_1": {
               "name": "Self Harm",
               "description": "Man Guy deals damage to himself, increasing his attack"
@@ -301,6 +349,10 @@
             "main_attack": {
               "name": "SLAMΜΟ",
               "description": "Chair Beard slammos down with his chair beard, slightly knocking enemies back"
+            },
+            "passive": {
+              "name": "",
+              "description": ""
             },
             "ability_1": {
               "name": "Sit down and rest",
@@ -325,6 +377,10 @@
               "name": "Ultraviolet Umbrella",
               "description": "Ultraviolet stabs with his umbrella, then opens it creating a small shield for 1 sec"
             },
+            "passive": {
+              "name": "",
+              "description": ""
+            },
             "ability_1": {
               "name": "Lavender Lash",
               "description": "Ultraviolet blinds the nearest enemy with his purpleness, blinding them"
@@ -347,6 +403,10 @@
             "main_attack": {
               "name": "Squirt Gun",
               "description": "Guy Yacht fires high pressure water from his squirt gun"
+            },
+            "passive": {
+              "name": "",
+              "description": ""
             },
             "ability_1": {
               "name": "Bomboclat",
@@ -371,6 +431,10 @@
               "name": "Swole Wheat",
               "description": "Yeast backhands both ways with the back of his hands"
             },
+            "passive": {
+              "name": "Yeast",
+              "description": "Gains bread passively, or faster by dealing damage. Consuming bread with ALT increases damage and density"
+            },
             "ability_1": {
               "name": "Open Sesame",
               "description": "Yeast throws a handful of sesame seeds in a short, wide range, stunning enemies"
@@ -394,6 +458,10 @@
               "name": "Clawsini Gatini",
               "description": "Captain trumpet scratches twice with cat claws"
             },
+            "passive": {
+              "name": "",
+              "description": ""
+            },
             "ability_1": {
               "name": "Shellala Shellalo",
               "description": "Captain Trumpet gains a shield for 5 secs"
@@ -416,6 +484,10 @@
             "main_attack": {
               "name": "Barbell strikenado",
               "description": "Gym shark swings in a circle attacking enemies with his barbell"
+            },
+            "passive": {
+              "name": "",
+              "description": ""
             },
             "ability_1": {
               "name": "Bulgarian tail squatnado",
@@ -447,6 +519,10 @@
               "name": "Get you by the Knife",
               "description": "Captain Crunch Stabs enemies with his knife"
             },
+            "passive": {
+              "name": "",
+              "description": ""
+            },
             "ability_1": {
               "name": "Oops all berries",
               "description": "Captain Crunch spills berries on the ground, slowing enemies around him"
@@ -469,6 +545,10 @@
             "main_attack": {
               "name": "Grass Throw",
               "description": "Jonnakiss throws grass, dealing more damage the closer the enemy is"
+            },
+            "passive": {
+              "name": "",
+              "description": ""
             },
             "ability_1": {
               "name": "Sharp Grass",
@@ -493,6 +573,10 @@
               "name": "CAW CAWWW",
               "description": "A rapid, short range peck with infinite ammo"
             },
+            "passive": {
+              "name": "",
+              "description": ""
+            },
             "ability_1": {
               "name": "WAAAA HEEY",
               "description": "Red flings himself to a designated area with his slingshot, stunning enemies on land"
@@ -513,6 +597,10 @@
           "class": "Saboteur",
           "abilities": {
             "main_attack": {
+              "name": "",
+              "description": ""
+            },
+            "passive": {
               "name": "",
               "description": ""
             },
@@ -539,6 +627,10 @@
               "name": "Ant-Rings",
               "description": "Mute-Ant throws one of his ant-rings a short distance"
             },
+            "passive": {
+              "name": "Mute",
+              "description": "Mute-Ant can't communicate with teammates"
+            },
             "ability_1": {
               "name": "Ant-Bot",
               "description": "Ant-Bot scans the area around him, revealing hidden objects and zapping enemies"
@@ -561,6 +653,10 @@
             "main_attack": {
               "name": "Tort for Four &",
               "description": "Contortoise does a quick 4-hit combo, but strikes with unusual body part."
+            },
+            "passive": {
+              "name": "",
+              "description": ""
             },
             "ability_1": {
               "name": "Sneakcret Scuttle",
@@ -585,6 +681,10 @@
               "name": "Machete",
               "description": "Machete Man slashes with his machete"
             },
+            "passive": {
+              "name": "",
+              "description": ""
+            },
             "ability_1": {
               "name": "Machete Throw",
               "description": "Machete man throws his machete then backflips to get a new one"
@@ -608,6 +708,10 @@
               "name": "",
               "description": ""
             },
+            "passive": {
+              "name": "",
+              "description": ""
+            },
             "ability_1": {
               "name": "",
               "description": ""
@@ -628,6 +732,10 @@
           "class": "Saboteur",
           "abilities": {
             "main_attack": {
+              "name": "",
+              "description": ""
+            },
+            "passive": {
               "name": "",
               "description": ""
             },
@@ -661,6 +769,10 @@
               "name": "Double Spatula Surprise",
               "description": "Burger King makes burgers, LT to make funky burgers for teammates, RT to make evil burgers for enemies."
             },
+            "passive": {
+              "name": "",
+              "description": ""
+            },
             "ability_1": {
               "name": "The Great",
               "description": "Burger King makes a big burger, providing cover for teammates and can be consumed for health."
@@ -682,6 +794,10 @@
           "abilities": {
             "main_attack": {
               "name": "Good Shock or Bad Shock?",
+              "description": ""
+            },
+            "passive": {
+              "name": "",
               "description": ""
             },
             "ability_1": {
@@ -707,6 +823,10 @@
               "name": "I'm Not Having Fun",
               "description": "Brainfreeze, shocked at the prospect of not fun, swings out with a one-handed punch, gaining Fun on hit."
             },
+            "passive": {
+              "name": "",
+              "description": ""
+            },
             "ability_1": {
               "name": "Use the Bomb",
               "description": "Costs 2 Fun. Brainfreeze finally uses the bomb he always carries around, dealing small splash damage."
@@ -727,6 +847,10 @@
           "class": "Supporter",
           "abilities": {
             "main_attack": {
+              "name": "",
+              "description": ""
+            },
+            "passive": {
               "name": "",
               "description": ""
             },
@@ -753,6 +877,10 @@
               "name": "Didgeridon't Come Near",
               "description": "Didgeridon't swings his Didgeridon't in a wide arc, causing fall damage on hit."
             },
+            "passive": {
+              "name": "",
+              "description": ""
+            },
             "ability_1": {
               "name": "Didgeridon't Mess Around",
               "description": "Didgeridon't stretches his arms, increasing super charge rate for 5 seconds."
@@ -773,6 +901,10 @@
           "class": "Supporter",
           "abilities": {
             "main_attack": {
+              "name": "",
+              "description": ""
+            },
+            "passive": {
               "name": "",
               "description": ""
             },
@@ -799,6 +931,10 @@
               "name": "Womanly Plate Throw",
               "description": "DishwasHER throws a plate in a female-like manner"
             },
+            "passive": {
+              "name": "",
+              "description": ""
+            },
             "ability_1": {
               "name": "Cass HERole",
               "description": "DishwasHER drops a casserole that heals her teammates"
@@ -822,6 +958,10 @@
               "name": "Laser Taser Blaser Face",
               "description": "Power point shoots a laser at an enemies face. If the enemy is wearing a blaser, it does double damage"
             },
+            "passive": {
+              "name": "",
+              "description": ""
+            },
             "ability_1": {
               "name": "Minor Blind",
               "description": "PowerPoint temporarily blinds one enemy, leaving a 'blind spot' where they can't see for 5 seconds"
@@ -844,6 +984,10 @@
             "main_attack": {
               "name": "Autissles",
               "description": "Shan't fires mini-missiles from his wheelchair"
+            },
+            "passive": {
+              "name": "",
+              "description": ""
             },
             "ability_1": {
               "name": "Wheelchair Tow",
@@ -875,6 +1019,10 @@
               "name": "",
               "description": ""
             },
+            "passive": {
+              "name": "",
+              "description": ""
+            },
             "ability_1": {
               "name": "",
               "description": ""
@@ -897,6 +1045,10 @@
             "main_attack": {
               "name": "Shovel Slash",
               "description": "Faceplant attacks with shovel, dealing heavy melee damage and launching weaker vines out in front of him"
+            },
+            "passive": {
+              "name": "",
+              "description": ""
             },
             "ability_1": {
               "name": "Face full of Plant",
@@ -921,6 +1073,10 @@
               "name": "Bud Go Boom!",
               "description": "Grom throws his walkie-talkie over obstacles at a long range that explodes into four piercing projectiles in a cross pattern."
             },
+            "passive": {
+              "name": "",
+              "description": ""
+            },
             "ability_1": {
               "name": "Watchtower",
               "description": "Upon activation, Grom drops a turret that allows him and allies to see enemies inside bushes in its 10-tile radius."
@@ -943,6 +1099,10 @@
             "main_attack": {
               "name": "Baguette",
               "description": "She uses her baguette to hit"
+            },
+            "passive": {
+              "name": "",
+              "description": ""
             },
             "ability_1": {
               "name": "Hucked Mime",
@@ -967,6 +1127,10 @@
               "name": "Super Snowglober",
               "description": "Winter Wondergirl throws a snow globe, which breaks and pulls enemies in"
             },
+            "passive": {
+              "name": "",
+              "description": ""
+            },
             "ability_1": {
               "name": "Shake it up",
               "description": "Winter Wondergirl makes it snow around her, freezing enemies"
@@ -990,6 +1154,10 @@
               "name": "Krazy Karate Kicks",
               "description": "SGCW kicks with a three kick combo"
             },
+            "passive": {
+              "name": "",
+              "description": ""
+            },
             "ability_1": {
               "name": "Super Ultra Tornado Spin",
               "description": "Ninja Mode - SGCW does a stunning spin kick \nTurtle Mode - SGCW spins around in her turtle shell and is invincible throughout"
@@ -1010,6 +1178,10 @@
           "class": "Controller",
           "abilities": {
             "main_attack": {
+              "name": "",
+              "description": ""
+            },
+            "passive": {
               "name": "",
               "description": ""
             },
@@ -1043,6 +1215,10 @@
               "name": "",
               "description": ""
             },
+            "passive": {
+              "name": "",
+              "description": ""
+            },
             "ability_1": {
               "name": "",
               "description": ""
@@ -1063,6 +1239,10 @@
           "class": "Hawktalker",
           "abilities": {
             "main_attack": {
+              "name": "",
+              "description": ""
+            },
+            "passive": {
               "name": "",
               "description": ""
             },
