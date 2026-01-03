@@ -1087,3 +1087,10 @@ body::before {
         font-size: 0.75rem;
     }
 }
+
+/* Make character selection images square */
+#character-screen .carousel-image {
+    aspect-ratio: 1 / 1;
+    flex: 0 0 auto;
+    width: auto;
+}
