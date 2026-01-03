@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "total_heroes": 27,
+    "total_heroes": 46,
     "total_classes": 6,
     "description": "Structured ability data for all Unrivalable heroes"
   },
@@ -8,7 +8,7 @@
     {
       "name": "Destroyer",
       "icon": "destroyer.png",
-      "hero_count": 5,
+      "hero_count": 9,
       "heroes": [
         {
           "name": "Mr Unemployable",
@@ -34,6 +34,29 @@
           }
         },
         {
+          "name": "James Madison",
+          "image": "james-madison.jpg",
+          "class": "Destroyer",
+          "abilities": {
+            "main_attack": {
+              "name": "Well Regulated Militia",
+              "description": "Fires a burst from his assault rifle"
+            },
+            "ability_1": {
+              "name": "Bear Strike",
+              "description": "James Madison unleashed a feral strike with his bear arms, dealing massive damage up close"
+            },
+            "ability_2": {
+              "name": "Amend",
+              "description": "James Madison signs off on his bill, marking an enemy for amendment. If their HP drops to a low enough percentage they are immediately killed"
+            },
+            "super": {
+              "name": "Double Jeopardy",
+              "description": "James Madison grabs the nearest enemy and puts them in the game show Jeopardy. If they win once, he puts them in again and shoots them. If they lose they die"
+            }
+          }
+        },
+        {
           "name": "Porthole",
           "image": "porthole.jpg",
           "class": "Destroyer",
@@ -53,6 +76,52 @@
             "super": {
               "name": "Underwater Genie",
               "description": "Porthole summons Kneckakeckafallapulu, the underwater genie. He grants porthole one of three wishes, lasting for 20 seconds\nTrue Glass Form: Porthole's shots reveal enemies and deal double damage\nTrue Metal Form: Porthole's shots explode and deal area damage\nTrue Porthole Form: Porthole's shots bounce between enemies"
+            }
+          }
+        },
+        {
+          "name": "Bitey Whiteys",
+          "image": "bitey-whiteys.jpg",
+          "class": "Destroyer",
+          "abilities": {
+            "main_attack": {
+              "name": "",
+              "description": ""
+            },
+            "ability_1": {
+              "name": "",
+              "description": ""
+            },
+            "ability_2": {
+              "name": "",
+              "description": ""
+            },
+            "super": {
+              "name": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "name": "Iron Pan",
+          "image": "iron-pan.jpg",
+          "class": "Destroyer",
+          "abilities": {
+            "main_attack": {
+              "name": "",
+              "description": ""
+            },
+            "ability_1": {
+              "name": "",
+              "description": ""
+            },
+            "ability_2": {
+              "name": "",
+              "description": ""
+            },
+            "super": {
+              "name": "",
+              "description": ""
             }
           }
         },
@@ -97,6 +166,29 @@
               "description": "Can remove negative effects from himself and his teammates for a small amount of time"
             },
             "super": {
+              "name": "Tickle Train",
+              "description": "Everybody in the area must board a train, specifically a tickle one, and gets violently tickled"
+            }
+          }
+        },
+        {
+          "name": "Shoulder Blade",
+          "image": "shoulder-blade.jpg",
+          "class": "Destroyer",
+          "abilities": {
+            "main_attack": {
+              "name": "",
+              "description": ""
+            },
+            "ability_1": {
+              "name": "",
+              "description": ""
+            },
+            "ability_2": {
+              "name": "",
+              "description": ""
+            },
+            "super": {
               "name": "",
               "description": ""
             }
@@ -130,7 +222,7 @@
     {
       "name": "Defender",
       "icon": "defender.png",
-      "hero_count": 7,
+      "hero_count": 9,
       "heroes": [
         {
           "name": "Handfoot",
@@ -202,6 +294,29 @@
           }
         },
         {
+          "name": "Chair Beard",
+          "image": "chair-beard.jpg",
+          "class": "Defender",
+          "abilities": {
+            "main_attack": {
+              "name": "SLAMΜΟ",
+              "description": "Chair Beard slammos down with his chair beard, slightly knocking enemies back"
+            },
+            "ability_1": {
+              "name": "Sit down and rest",
+              "description": "Chair Beard sits down, relaxes, and the positive vibes stop enemies from entering"
+            },
+            "ability_2": {
+              "name": "Whack Whack Whack",
+              "description": "Chair Beard whacks 3 times, and the 3rd hit sends enemies flying"
+            },
+            "super": {
+              "name": "Anything can be a chair",
+              "description": "Chair Beard covers himself in his beard, effectively turning himself into a chair. All enemies in the radius sit on him and then get launched off at Mach 5"
+            }
+          }
+        },
+        {
           "name": "Ultraviolet",
           "image": "ultraviolet.jpg",
           "class": "Defender",
@@ -248,6 +363,29 @@
           }
         },
         {
+          "name": "Yeast",
+          "image": "yeast.jpg",
+          "class": "Defender",
+          "abilities": {
+            "main_attack": {
+              "name": "Swole Wheat",
+              "description": "Yeast backhands both ways with the back of his hands"
+            },
+            "ability_1": {
+              "name": "Open Sesame",
+              "description": "Yeast throws a handful of sesame seeds in a short, wide range, stunning enemies"
+            },
+            "ability_2": {
+              "name": "RISE",
+              "description": "Increases bread gained from damage for 8 seconds"
+            },
+            "super": {
+              "name": "Gluten Tolerance",
+              "description": "Become giant and bready for 30 seconds. Increases max health and knockback resistance. Can only use Swole Wheat, but it does more damage"
+            }
+          }
+        },
+        {
           "name": "Captain Trumpet",
           "image": "captain-trumpet.jpg",
           "class": "Defender",
@@ -262,7 +400,7 @@
             },
             "ability_2": {
               "name": "Rameo Chargeo",
-              "description": "Captain trumpet dashes  forward with his ram horns"
+              "description": "Captain trumpet dashes forward with his ram horns"
             },
             "super": {
               "name": "Trumpets Sounding",
@@ -277,19 +415,19 @@
           "abilities": {
             "main_attack": {
               "name": "Barbell strikenado",
-              "description": ""
+              "description": "Gym shark swings in a circle attacking enemies with his barbell"
             },
             "ability_1": {
               "name": "Bulgarian tail squatnado",
-              "description": ""
+              "description": "Gym shark swings with his tail, all enemies that get hit move as if they are in water for 3 secs"
             },
             "ability_2": {
               "name": "Sharknado",
-              "description": ""
+              "description": "Gym shark gets a space sharknado around him, he takes less damage and damages any enemies standing too close"
             },
             "super": {
               "name": "ROIDNADO",
-              "description": "Swims under ground and eats one person"
+              "description": "Swims under ground and eats one person, killing them"
             }
           }
         }
@@ -298,7 +436,7 @@
     {
       "name": "Saboteur",
       "icon": "saboteur.png",
-      "hero_count": 5,
+      "hero_count": 9,
       "heroes": [
         {
           "name": "Captain Crunch",
@@ -348,7 +486,7 @@
         },
         {
           "name": "Displeased Avian",
-          "image": "displeased -avian.jpg",
+          "image": "displeased-avian.jpg",
           "class": "Saboteur",
           "abilities": {
             "main_attack": {
@@ -366,6 +504,29 @@
             "super": {
               "name": "AAAAAIIIIIIAAA",
               "description": "Red perfectly mimics the sound of a bird, frightening Big Pig and sending him on a rampage through the map"
+            }
+          }
+        },
+        {
+          "name": "Voodude",
+          "image": "voodude.jpg",
+          "class": "Saboteur",
+          "abilities": {
+            "main_attack": {
+              "name": "",
+              "description": ""
+            },
+            "ability_1": {
+              "name": "",
+              "description": ""
+            },
+            "ability_2": {
+              "name": "",
+              "description": ""
+            },
+            "super": {
+              "name": "",
+              "description": ""
             }
           }
         },
@@ -393,6 +554,29 @@
           }
         },
         {
+          "name": "Contortoise",
+          "image": "contortoise.jpg",
+          "class": "Saboteur",
+          "abilities": {
+            "main_attack": {
+              "name": "Tort for Four &",
+              "description": "Contortoise does a quick 4-hit combo, but strikes with unusual body part."
+            },
+            "ability_1": {
+              "name": "Sneakcret Scuttle",
+              "description": "Contortoise drops to all fours and scuttles forward sneakcretly, gaining movement speed. This ability has no cooldown."
+            },
+            "ability_2": {
+              "name": "Clack, Smack, Rattle",
+              "description": "Contortoise does all the aforementioned actions with his weird ahh joints, stunning the nearest enemy and delivering a smack for small damage."
+            },
+            "super": {
+              "name": "Be Weird and Bend A Lot",
+              "description": "Contortoise bends a lot in a wide area, jumping from enemy to enemy in the zone, grappling and dealing damage to them."
+            }
+          }
+        },
+        {
           "name": "Machete Man",
           "image": "machete-man.jpg",
           "class": "Saboteur",
@@ -414,13 +598,59 @@
               "description": "Machete man does a backflip, gaining an extra Mach e, extra damage and extra speed"
             }
           }
+        },
+        {
+          "name": "Grup Scrooge",
+          "image": "grup-scrooge.jpg",
+          "class": "Saboteur",
+          "abilities": {
+            "main_attack": {
+              "name": "",
+              "description": ""
+            },
+            "ability_1": {
+              "name": "",
+              "description": ""
+            },
+            "ability_2": {
+              "name": "",
+              "description": ""
+            },
+            "super": {
+              "name": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "name": "Captain Christingle (Seasonal)",
+          "image": "captain-christingle.jpg",
+          "class": "Saboteur",
+          "abilities": {
+            "main_attack": {
+              "name": "",
+              "description": ""
+            },
+            "ability_1": {
+              "name": "",
+              "description": ""
+            },
+            "ability_2": {
+              "name": "",
+              "description": ""
+            },
+            "super": {
+              "name": "",
+              "description": ""
+            }
+          }
         }
       ]
     },
     {
       "name": "Supporter",
       "icon": "supporter.png",
-      "hero_count": 6,
+      "hero_count": 9,
       "heroes": [
         {
           "name": "Burger King",
@@ -446,6 +676,29 @@
           }
         },
         {
+          "name": "Defrilibatorator",
+          "image": "defrilibatorator.jpg",
+          "class": "Supporter",
+          "abilities": {
+            "main_attack": {
+              "name": "Good Shock or Bad Shock?",
+              "description": ""
+            },
+            "ability_1": {
+              "name": "",
+              "description": ""
+            },
+            "ability_2": {
+              "name": "",
+              "description": ""
+            },
+            "super": {
+              "name": "",
+              "description": ""
+            }
+          }
+        },
+        {
           "name": "Brain Freeze",
           "image": "brain-freeze.jpg",
           "class": "Supporter",
@@ -455,12 +708,12 @@
               "description": "Brainfreeze, shocked at the prospect of not fun, swings out with a one-handed punch, gaining Fun on hit."
             },
             "ability_1": {
-              "name": "Use the Bomb (costs 2 Fun)",
-              "description": "Brainfreeze finally uses the bomb he always carries around, dealing small splash damage."
+              "name": "Use the Bomb",
+              "description": "Costs 2 Fun. Brainfreeze finally uses the bomb he always carries around, dealing small splash damage."
             },
             "ability_2": {
-              "name": "You Fly When I'm Having Fun (costs 1 Fun)",
-              "description": "Brainfreeze can levitate a teammate, healing them and raising them to any height for 5 seconds."
+              "name": "You Fly When I'm Having Fun",
+              "description": "Costs 1 Fun. Brainfreeze can levitate a teammate, healing them and raising them to any height for 5 seconds."
             },
             "super": {
               "name": "Time Flies When Your Having Fun",
@@ -469,8 +722,31 @@
           }
         },
         {
+          "name": "Speedo",
+          "image": "speedo.jpg",
+          "class": "Supporter",
+          "abilities": {
+            "main_attack": {
+              "name": "",
+              "description": ""
+            },
+            "ability_1": {
+              "name": "",
+              "description": ""
+            },
+            "ability_2": {
+              "name": "",
+              "description": ""
+            },
+            "super": {
+              "name": "",
+              "description": ""
+            }
+          }
+        },
+        {
           "name": "Didgeridon't",
-          "image": "digeridon't.jpg",
+          "image": "didgeridont.jpg",
           "class": "Supporter",
           "abilities": {
             "main_attack": {
@@ -492,6 +768,29 @@
           }
         },
         {
+          "name": "Corn Maiden",
+          "image": "corn-maiden.jpg",
+          "class": "Supporter",
+          "abilities": {
+            "main_attack": {
+              "name": "",
+              "description": ""
+            },
+            "ability_1": {
+              "name": "",
+              "description": ""
+            },
+            "ability_2": {
+              "name": "",
+              "description": ""
+            },
+            "super": {
+              "name": "",
+              "description": ""
+            }
+          }
+        },
+        {
           "name": "DishwasHER",
           "image": "dishwasher.jpg",
           "class": "Supporter",
@@ -501,7 +800,7 @@
               "description": "DishwasHER throws a plate in a female-like manner"
             },
             "ability_1": {
-              "name": "CassHERole",
+              "name": "Cass HERole",
               "description": "DishwasHER drops a casserole that heals her teammates"
             },
             "ability_2": {
@@ -525,7 +824,7 @@
             },
             "ability_1": {
               "name": "Minor Blind",
-              "description": "PowerPoint temporarily blinds one enemy, leaving a \"blind spot\" where they can't see for 5 seconds"
+              "description": "PowerPoint temporarily blinds one enemy, leaving a 'blind spot' where they can't see for 5 seconds"
             },
             "ability_2": {
               "name": "3rd D vision",
@@ -533,13 +832,13 @@
             },
             "super": {
               "name": "Super Distract",
-              "description": "Power point summons a random point on the map, and all other characers are sucked towards that point and can"
+              "description": "Power point summons a random point on the map, and all other characers are sucked towards that point and can only see near that point"
             }
           }
         },
         {
           "name": "Shan't Dance",
-          "image": "shan't-dance.jpg",
+          "image": "shant-dance.jpg",
           "class": "Supporter",
           "abilities": {
             "main_attack": {
@@ -565,8 +864,31 @@
     {
       "name": "Controller",
       "icon": "controller.png",
-      "hero_count": 4,
+      "hero_count": 7,
       "heroes": [
+        {
+          "name": "Snow Angel",
+          "image": "snow-angel.jpg",
+          "class": "Controller",
+          "abilities": {
+            "main_attack": {
+              "name": "",
+              "description": ""
+            },
+            "ability_1": {
+              "name": "",
+              "description": ""
+            },
+            "ability_2": {
+              "name": "",
+              "description": ""
+            },
+            "super": {
+              "name": "",
+              "description": ""
+            }
+          }
+        },
         {
           "name": "Faceplant",
           "image": "faceplant.jpg",
@@ -614,6 +936,29 @@
           }
         },
         {
+          "name": "Jeanne Gris",
+          "image": "jeanne-gris.jpg",
+          "class": "Controller",
+          "abilities": {
+            "main_attack": {
+              "name": "Baguette",
+              "description": "She uses her baguette to hit"
+            },
+            "ability_1": {
+              "name": "Hucked Mime",
+              "description": "Jeanne Gris hucks a mime over walls and buildings"
+            },
+            "ability_2": {
+              "name": "Invisible Wall",
+              "description": "Jeanne Gris' mime makes a wall that protects her for a short time"
+            },
+            "super": {
+              "name": "Horde-a-mimes",
+              "description": "Jeanne Gris controls a horde of mimes and tramples anyone in her path"
+            }
+          }
+        },
+        {
           "name": "Winter WonderGirl",
           "image": "winter-wondergirl.jpg",
           "class": "Controller",
@@ -656,6 +1001,82 @@
             "super": {
               "name": "Supersaiyan Ultra Cheesecake Weapon Ninja Gurl Explosion!",
               "description": "SGCW switches to the other mode. Ninja Mode has low health and high speed. Turtle mode has low speed high health. SGCW gets a attack boost after switching"
+            }
+          }
+        },
+        {
+          "name": "Belt Tungus",
+          "image": "belt-tungus.jpg",
+          "class": "Controller",
+          "abilities": {
+            "main_attack": {
+              "name": "",
+              "description": ""
+            },
+            "ability_1": {
+              "name": "",
+              "description": ""
+            },
+            "ability_2": {
+              "name": "",
+              "description": ""
+            },
+            "super": {
+              "name": "",
+              "description": ""
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Hawktalker",
+      "icon": "hawktalker.png",
+      "hero_count": 2,
+      "heroes": [
+        {
+          "name": "Moonhawk",
+          "image": "moonhawk.jpg",
+          "class": "Hawktalker",
+          "abilities": {
+            "main_attack": {
+              "name": "",
+              "description": ""
+            },
+            "ability_1": {
+              "name": "",
+              "description": ""
+            },
+            "ability_2": {
+              "name": "",
+              "description": ""
+            },
+            "super": {
+              "name": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "name": "They",
+          "image": "they.jpg",
+          "class": "Hawktalker",
+          "abilities": {
+            "main_attack": {
+              "name": "",
+              "description": ""
+            },
+            "ability_1": {
+              "name": "",
+              "description": ""
+            },
+            "ability_2": {
+              "name": "",
+              "description": ""
+            },
+            "super": {
+              "name": "",
+              "description": ""
             }
           }
         }
