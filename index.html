@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Bebas+Neue&family=Permanent+Marker&family=Bungee&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="screens.css">
 </head>
 <body>
     <!-- Comic Book Panel Container -->
@@ -235,6 +236,38 @@
                 <span class="indicator" data-index="4"></span>
                 <span class="indicator" data-index="5"></span>
                 <span class="indicator" data-index="6"></span>
+            </div>
+        </div>
+
+        <!-- Loading Screen -->
+        <div id="loading-screen" class="screen">
+            <div class="loading-background" id="loading-bg"></div>
+            <div class="loading-hero-container">
+                <img id="loading-hero" src="" alt="Loading Hero">
+            </div>
+            <div class="loading-ui">
+                <h2 class="loading-text">LOADING...</h2>
+                <div class="progress-container">
+                    <div class="progress-bar" id="progress-bar"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Over Screen -->
+        <div id="game-over-screen" class="screen">
+            <div class="glitch-wrapper">
+                <h1 class="game-over-title">GAME OVER</h1>
+            </div>
+            <div id="killer-container" class="killer-container">
+                <div class="killer-label">KILLED BY</div>
+                <img id="killer-image" src="" alt="Killer" class="killer-image">
+                <div id="killer-name" class="killer-name"></div>
+            </div>
+            <div class="death-message-box">
+                <p id="death-message" class="death-message">...</p>
+            </div>
+            <div class="menu-item start-button" id="restart-btn" style="margin-top: 40px;">
+                <div class="menu-label">RETURN TO MENU</div>
             </div>
         </div>
 
