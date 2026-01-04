@@ -899,7 +899,7 @@ async function startGame() {
     const loadingHero = document.getElementById('loading-hero');
     const progressFill = document.getElementById('progress-fill');
     const hintText = document.getElementById('hint-text');
-
+    const progressText = document.getElementById('progress-text');
     loadingBg.style.backgroundImage = `url('${gameModeImgSrc}')`;
     loadingHero.src = heroImgSrc;
 
@@ -907,9 +907,10 @@ async function startGame() {
     const randomHintIndex = Math.floor(Math.random() * loadingHints.length);
     hintText.textContent = loadingHints[randomHintIndex];
 
-    // Reset progress fill
+    // Reset progress fill and text
     progressFill.style.transition = 'none';
     progressFill.style.width = '0%';
+    progressText.innerText = '0%';
 
     // Force a reflow to ensure the width is reset
     void progressFill.offsetHeight;
@@ -922,6 +923,27 @@ async function startGame() {
         progressFill.style.width = '100%';
     });
 
+    // Animate the text percentage
+    let startTime = null;
+    const duration = 10000; // 10s
+
+    function updateProgress(timestamp) {
+        if (!startTime) startTime = timestamp;
+        const elapsed = timestamp - startTime;
+        let progress = Math.min(elapsed / duration, 1);
+
+        // Update text
+        progressText.innerText = Math.floor(progress * 100) + '%';
+
+        // Continue animation if not finished and we are still on the loading screen
+        if (progress < 1 && document.getElementById('loading-screen').classList.contains('active')) {
+            requestAnimationFrame(updateProgress);
+        }
+    }
+
+    // Start the text animation loop
+    requestAnimationFrame(updateProgress);
+
     // Wait 10 seconds then show Game Over
     setTimeout(async () => {
         await showGameOver();
@@ -931,8 +953,10 @@ async function startGame() {
 async function showGameOver() {
     // Reset progress fill for next time (remove transition first)
     const progressFill = document.getElementById('progress-fill');
+    const progressText = document.getElementById('progress-text');
     progressFill.style.transition = 'none';
     progressFill.style.width = '0%';
+    if (progressText) progressText.innerText = '0%';
 
     transitionToScreen('loading-screen', 'game-over-screen');
 
