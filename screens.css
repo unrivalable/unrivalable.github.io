@@ -22,106 +22,159 @@
     z-index: 1;
 }
 
-.loading-hero-container {
+.lobby-container {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     z-index: 2;
+    padding: 40px;
 }
 
-#loading-hero {
-    max-height: 90%;
-    max-width: 90%;
-    object-fit: contain;
-    filter: drop-shadow(0 0 20px rgba(0,0,0,0.8));
-    animation: heroBreathe 4s ease-in-out infinite;
-}
-
-@keyframes heroBreathe {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.03); }
-}
-
-.loading-ui {
-    position: absolute;
-    bottom: 50px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 80%;
-    z-index: 3;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.loading-text {
+.lobby-status {
     font-family: 'Bangers', cursive;
-    font-size: 3rem;
+    font-size: 3.5rem;
     color: var(--comic-white);
     text-shadow: var(--text-stroke), 3px 3px 0 var(--comic-black);
-    margin-bottom: 20px;
+    margin-bottom: 40px;
     letter-spacing: 4px;
-    animation: blinkText 1s infinite;
 }
 
-@keyframes blinkText {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
+@keyframes pulse {
+    0%, 100% { box-shadow: 0 0 15px rgba(255, 215, 0, 0.8), 3px 3px 0 var(--comic-black); }
+    50% { box-shadow: 0 0 25px rgba(255, 215, 0, 1), 3px 3px 0 var(--comic-black); }
 }
 
-.progress-container {
+.teams-container {
+    display: flex;
+    gap: 60px;
     width: 100%;
-    height: 30px;
-    background: var(--comic-dark-blue);
-    border: 4px solid var(--comic-white);
-    box-shadow: 5px 5px 0 var(--comic-black);
-    padding: 3px;
-    transform: skewX(-10deg);
-    position: relative;
-    overflow: hidden;
+    max-width: 1200px;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
 }
 
-.progress-fill {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 0%;
-    height: 100%;
-    background: repeating-linear-gradient(
-        45deg,
-        var(--comic-yellow),
-        var(--comic-yellow) 10px,
-        var(--comic-red) 10px,
-        var(--comic-red) 20px
-    );
-    background-size: 28.28px 28.28px;
-    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3);
-    animation: scrollStripes 1s linear infinite;
-    /* Transition will be set dynamically by JavaScript */
-}
-
-@keyframes scrollStripes {
-    0% { background-position: 0 0; }
-    100% { background-position: 28.28px 0; }
-}
-
-.progress-text {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) skewX(10deg); /* Counter-skew */
-    color: var(--comic-white);
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.2rem;
-    text-shadow: 2px 2px 0 var(--comic-black);
-    z-index: 10;
+.ffa-container {
+    display: flex;
     width: 100%;
+    max-width: 600px;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+}
+
+.ffa-panel {
+    width: 100%;
+}
+
+.team-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.team-label {
+    font-family: 'Bangers', cursive;
+    font-size: 2rem;
+    color: var(--comic-yellow);
+    text-shadow: var(--text-stroke);
     text-align: center;
+    letter-spacing: 3px;
+}
+
+.player-slots {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.player-slot {
+    width: 100%;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px;
+    background: rgba(10, 22, 40, 0.8);
+    border: 3px solid var(--comic-blue);
+    box-shadow: 3px 3px 0 var(--comic-black);
+    transform: rotate(-1deg);
+    animation: slideIn 0.3s ease-out;
+}
+
+.player-slot.highlight {
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.3), rgba(255, 140, 0, 0.3));
+    border: 3px solid var(--comic-yellow);
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.8), 3px 3px 0 var(--comic-black);
+    animation: slideIn 0.3s ease-out, pulse 2s ease-in-out infinite;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-30px) rotate(-1deg);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0) rotate(-1deg);
+    }
+}
+
+.player-slot.enemy {
+    transform: rotate(1deg);
+    justify-content: flex-end;
+}
+
+.player-slot.enemy.animate {
+    animation: slideInRight 0.3s ease-out;
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px) rotate(1deg);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0) rotate(1deg);
+    }
+}
+
+.player-thumbnail {
+    width: 30px;
+    height: 30px;
+    object-fit: cover;
+    border: 2px solid var(--comic-cyan);
+    box-shadow: 0 0 5px rgba(0, 191, 255, 0.5);
+}
+
+.player-question {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.5);
+    border: 2px solid var(--comic-white);
+    font-family: 'Bangers', cursive;
+    font-size: 1.25rem;
+    color: var(--comic-white);
+    text-shadow: 1px 1px 0 var(--comic-black);
+}
+
+.player-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 0.85rem;
+    color: var(--comic-white);
+    text-shadow: 1px 1px 0 var(--comic-black);
+    letter-spacing: 0.5px;
 }
 
 .loading-hint {

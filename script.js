@@ -301,8 +301,8 @@ let selectedHero = null;
 
 // Class color mapping
 const classColors = {
-    'Destroyer': { primary: '#FF3366', secondary: '#FF8833' },
-    'Defender': { primary: '#00BFFF', secondary: '#00FFFF' },
+    'Destroyer': { primary: '#00BFFF', secondary: '#00FFFF' },
+    'Defender': { primary: '#FF3366', secondary: '#FF8833' },
     'Saboteur': { primary: '#AA66FF', secondary: '#FF00FF' },
     'Supporter': { primary: '#00FF88', secondary: '#FFD700' },
     'Controller': { primary: '#FFD700', secondary: '#FF8833' },
@@ -323,7 +323,7 @@ const heroesData = {
     {
       "name": "Destroyer",
       "icon": "destroyer.png",
-      "hero_count": 5,
+      "hero_count": 6,
       "heroes": [
         {
           "name": "Mr Unemployable",
@@ -354,13 +354,19 @@ const heroesData = {
           "image": "bees-knees.jpg",
           "abilities": "Main Attack: Knee Combo\nKicks in a wide range, knees forward\nAbility 1: Flying Bee Drop\nJumps in the air and slams down with his knees forward, stinging enemies\nAbility 2: Float like a Butterfly\nSend a gust of air forward, creating an area of zero-gravity to trap enemies in\nSuper: Sting like a Knee\nLaunches rapid-fire stingers from his knees that poison enemies",
           "slide": 11
+        },
+        {
+          "name": "James Madison",
+          "image": "james-madison.jpg",
+          "abilities": "Main Attack: Well Regulated Militia\nFires a burst from his assault rifle\nAbility 1: Bear Strike\nJames Madison unleashed a feral strike with his bear arms, dealing massive damage up close\nAbility 2: Amend\nJames Madison signs off on his bill, marking an enemy for amendment. If their HP drops to a low enough percentage they are immediately killed\nSuper: Double Jeopardy\nJames Madison grabs the nearest enemy and puts them in the game show Jeopardy. If they win once, he puts them in again and shoots them. If they lose they die",
+          "slide": 4
         }
       ]
     },
     {
       "name": "Defender",
       "icon": "defender.png",
-      "hero_count": 7,
+      "hero_count": 9,
       "heroes": [
         {
           "name": "Handfoot",
@@ -371,13 +377,13 @@ const heroesData = {
         {
           "name": "Floss",
           "image": "floss.jpg",
-          "abilities": "Main Attack: Who Spiked the Punch?\nFloss punches, spikily\nAbility 1: Absorption\nFor the next 10 seconds, Floss takes 1/3rd of damage from projectiles\nAbility 2: Tease and Joke\nFloss gets demoralized by the other team for sucking, drawing their attention and firepower to him\nSuper: Big Spike Thing\nThe Great Gatsby shoots Floss in the chest with a big spike thing. But then Floss shoots it back super fast out of him and it explodes",
+          "abilities": "Main Attack: Who Spiked the Punch?\nFloss punches, spikily\nPassive: Flossback\nEnemies take 1/32nd of all damage they inflict on floss via projectiles\nAbility 1: Absorption\nFor the next 10 seconds, Floss takes 1/3rd of damage from projectiles\nAbility 2: Tease and Joke\nFloss gets demoralized by the other team for sucking, drawing their attention and firepower to him\nSuper: Big Spike Thing\nThe Great Gatsby shoots Floss in the chest with a big spike thing. But then Floss shoots it back super fast out of him and it explodes",
           "slide": 14
         },
         {
           "name": "Man Guy",
           "image": "man-guy.jpg",
-          "abilities": "Main Attack: Man Punch\nMan Guy punches with his long arm like a ma\nAbility 1: Self Harm\nMan Guy deals damage to himself, increasing his attack\nAbility 2: Super Bones\nMan Guy boosts his bones, taking less damage for the next three secs\nSuper: Guy Kick\nMan Guy does a big kick,l that breaks his leg if he hits it he can do it again with more damage",
+          "abilities": "Main Attack: Man Punch\nMan Guy punches with his long arm like a ma\nPassive: Manliness\nMan Guy gains increased max health whenever he takes damage, it resets when he dies\nAbility 1: Self Harm\nMan Guy deals damage to himself, increasing his attack\nAbility 2: Super Bones\nMan Guy boosts his bones, taking less damage for the next three secs\nSuper: Guy Kick\nMan Guy does a big kick,l that breaks his leg if he hits it he can do it again with more damage",
           "slide": 15
         },
         {
@@ -403,13 +409,25 @@ const heroesData = {
           "image": "gym-shark.png",
           "abilities": "Main Attack: Barbell strikenado\nAbility 1:Bulgarian tail squatnado\nAbility 2: Sharknado\nSuper: ROIDNADO\nSwims under ground and eats one person",
           "slide": 21
+        },
+        {
+          "name": "Chair Beard",
+          "image": "chair-beard.jpg",
+          "abilities": "Main Attack: SLAMΜΟ\nChair Beard slammos down with his chair beard, slightly knocking enemies back\nAbility 1: Sit down and rest\nChair Beard sits down, relaxes, and the positive vibes stop enemies from entering\nAbility 2: Whack Whack Whack\nChair Beard whacks 3 times, and the 3rd hit sends enemies flying\nSuper: Anything can be a chair\nChair Beard covers himself in his beard, effectively turning himself into a chair. All enemies in the radius sit on him and then get launched off at Mach 5",
+          "slide": 16
+        },
+        {
+          "name": "Yeast",
+          "image": "yeast.jpg",
+          "abilities": "Main Attack: Swole Wheat\nYeast backhands both ways with the back of his hands\nPassive: Yeast\nGains bread passively, or faster by dealing damage. Consuming bread with ALT increases damage and density\nAbility 1: Open Sesame\nYeast throws a handful of sesame seeds in a short, wide range, stunning enemies\nAbility 2: RISE\nIncreases bread gained from damage for 8 seconds\nSuper: Gluten Tolerance\nBecome giant and bready for 30 seconds. Increases max health and knockback resistance. Can only use Swole Wheat, but it does more damage",
+          "slide": 19
         }
       ]
     },
     {
       "name": "Saboteur",
       "icon": "saboteur.png",
-      "hero_count": 5,
+      "hero_count": 6,
       "heroes": [
         {
           "name": "Captain Crunch",
@@ -432,7 +450,7 @@ const heroesData = {
         {
           "name": "MU†E-ÅNT",
           "image": "mute-ant.jpg",
-          "abilities": "Main Attack: Ant-Rings\nMute-Ant throws one of his ant-rings a short distance \nAbility 1: Ant-Bot\nAnt-Bot scans the area around him, revealing hidden objects and zapping enemies\nAbility 2: Ant-friend\n(In ant-form) Mute-Ant gets carried around by his insect friend; Señor butterfly, allowing him to fly for 8 secs\nSuper: Ant-Man\nMute-ant speaks for 10 seconds transforming him into an ant that is so tiny it is invisible",
+          "abilities": "Main Attack: Ant-Rings\nMute-Ant throws one of his ant-rings a short distance\nPassive: Mute\nMute-Ant can't communicate with teammates\nAbility 1: Ant-Bot\nAnt-Bot scans the area around him, revealing hidden objects and zapping enemies\nAbility 2: Ant-friend\n(In ant-form) Mute-Ant gets carried around by his insect friend; Señor butterfly, allowing him to fly for 8 secs\nSuper: Ant-Man\nMute-ant speaks for 10 seconds transforming him into an ant that is so tiny it is invisible",
           "slide": 27
         },
         {
@@ -440,6 +458,12 @@ const heroesData = {
           "image": "machete-man.jpg",
           "abilities": "Main Attack: Machete\nMachete Man slashes with his machete\nAbility 1: Machete Throw\nMachete man throws his machete then backflips to get a new one\nAbility 2: Dementia Machete Backflip\nMachete man does a backflip and has 50 chance of dealing a ton of damage to himself or an enemy\nSuper:  Old Guy Backflip\nMachete man does a backflip, gaining an extra Mach e, extra damage and extra speed",
           "slide": 29
+        },
+        {
+          "name": "Contortoise",
+          "image": "contortoise.jpg",
+          "abilities": "Main Attack: Tort for Four &\nContortoise does a quick 4-hit combo, but strikes with unusual body part.\nAbility 1: Sneakcret Scuttle\nContortoise drops to all fours and scuttles forward sneakcretly, gaining movement speed. This ability has no cooldown.\nAbility 2: Clack, Smack, Rattle\nContortoise does all the aforementioned actions with his weird ahh joints, stunning the nearest enemy and delivering a smack for small damage.\nSuper: Be Weird and Bend A Lot\nContortoise bends a lot in a wide area, jumping from enemy to enemy in the zone, grappling and dealing damage to them.",
+          "slide": 28
         }
       ]
     },
@@ -489,7 +513,7 @@ const heroesData = {
     {
       "name": "Controller",
       "icon": "controller.png",
-      "hero_count": 4,
+      "hero_count": 5,
       "heroes": [
         {
           "name": "Faceplant",
@@ -514,6 +538,12 @@ const heroesData = {
           "image": "smurtle-gurltle-cheesecake-woman.jpg",
           "abilities": "Main Attack: Krazy Karate Kicks\nSGCW kicks with a three kick combo \nAbility 1: Super Ultra Tornado Spin\nNinja Mode - SGCW does a stunning spin kick \nTurtle Mode - SGCW spins around in her turtle shell and is invincible throughout\nAbility 2: Mega Tsunami Cheesecake\nNinja Mode - SGCW dashes forward spilling slowing cheesecake behind her\nTurtle Mode - SGCW consumes her cheesecake to gain health and movement speed\nSuper: Supersaiyan Ultra Cheesecake Weapon Ninja Gurl Explosion!\nSGCW switches to the other mode. Ninja Mode has low health and high speed. Turtle mode has low speed high health. SGCW gets a attack boost after switching",
           "slide": 48
+        },
+        {
+          "name": "Jeanne Gris",
+          "image": "jeanne-gris.jpg",
+          "abilities": "Main Attack: Baguette\nShe uses her baguette to hit\nAbility 1: Hucked Mime\nJeanne Gris hucks a mime over walls and buildings\nAbility 2: Invisible Wall\nJeanne Gris' mime makes a wall that protects her for a short time\nSuper: Horde-a-mimes\nJeanne Gris controls a horde of mimes and tramples anyone in her path",
+          "slide": 46
         }
       ]
     },
@@ -558,7 +588,7 @@ function buildHeroCarousel() {
             heroGridHTML += `
                 <div class="hero-card" data-hero="${hero.name}" data-class="${className}">
                     <div class="hero-card-image">
-                        <img src="images/heroes/${hero.image}" alt="${hero.name}">
+                        <img src="images/heroes-thumbnails/${hero.image}" alt="${hero.name}">
                     </div>
                     <div class="hero-card-name">${hero.name}</div>
                 </div>
@@ -621,21 +651,44 @@ function buildHeroCarousel() {
 }
 
 function formatAbilities(abilitiesText) {
-    // Split abilities by common patterns
-    const abilities = abilitiesText.split(/(?=Main Attack:|Ability 1:|Ability 2:|Super:)/);
+    // Split abilities by common patterns, including Passive
+    const abilities = abilitiesText.split(/(?=Main Attack:|Passive:|Ability 1:|Ability 2:|Super:)/);
 
-    let html = '<div class="abilities-list">';
+    // Map ability types to colors
+    const abilityColors = {
+        'Main Attack': 'ability-blue',
+        'Passive': 'ability-purple',
+        'Ability 1': 'ability-green',
+        'Ability 2': 'ability-green',
+        'Super': 'ability-yellow'
+    };
+
+    let html = '';
     abilities.forEach(ability => {
         if (ability.trim()) {
-            const match = ability.match(/^(Main Attack|Ability \d|Super):\s*(.+)/s);
+            // Match pattern: "Type: Name\nDescription"
+            const match = ability.match(/^(Main Attack|Passive|Ability \d|Super):\s*([^\n]+)\n?(.+)?/s);
             if (match) {
-                const label = match[1];
-                const description = match[2].trim();
-                html += `<div class="ability-item"><strong>${label}:</strong> <div class="ability-desc">${description}</div></div>`;
+                const type = match[1];
+                const name = match[2].trim();
+                const description = match[3] ? match[3].trim() : '';
+
+                // Skip passive if it has no name
+                if (type === 'Passive' && !name) {
+                    return;
+                }
+
+                const colorClass = abilityColors[type] || '';
+
+                html += `
+                    <div class="ability-item">
+                        <div class="ability-name ${colorClass}">${name}</div>
+                        <div class="ability-desc">${description}</div>
+                    </div>
+                `;
             }
         }
     });
-    html += '</div>';
 
     return html;
 }
@@ -784,26 +837,25 @@ if (document.readyState === 'loading') {
 
 // Loading Screen Hints
 const loadingHints = [
-    "Pro tip: Tickle Monster's 'High 8' is mathematically impossible. He only has 8 fingers total.",
-    "Porthole's underwater genie is named Kneckakeckafallapulu. Good luck pronouncing that in voice chat.",
-    "Mr Unemployable throws random junk at enemies. He's basically your attic during spring cleaning.",
-    "The Triplets are technically one character. Child labor laws are weird in this universe.",
-    "Handfoot can switch his hands and feet. Your brain will hurt trying to visualize this.",
-    "Guy Yacht's plastic veins make him nearly invincible. Also probably violates several health codes.",
-    "Captain Crunch will take you to his 'special island.' We don't ask questions about the island.",
-    "Displeased Avian is just Angry Birds copyright infringement. Shhh, don't tell the lawyers.",
-    "Burger King makes evil burgers for enemies. Finally, a realistic portrayal of fast food.",
-    "Brain Freeze carries a bomb everywhere but rarely uses it. Classic Chekhov's explosive device.",
-    "Shan't Dance does the biggest jump you've ever seen. From a wheelchair. Physics has left the chat.",
-    "MU†E-ÅNT's super makes him so tiny he's invisible. Ant-Man lawyers have entered the chat.",
-    "Machete Man has a 50% chance to hurt himself with Dementia Backflip. That's not a bug, that's a feature.",
-    "In Dan Rhon Deathmatch, the winner receives 'the coveted love of Dan Rhon.' We don't know who Dan is either.",
-    "Charge on Chexico involves building a statue of 'Colin Amazing.' Another mystery person. Lore runs deep.",
-    "Tessarune Turf War: Steal the Tessarune and Ressatune. They're definitely not the same thing backwards.",
-    "Squirt mode is 4v4 with firefighters and water towers. OSHA violations have never been this fun.",
-    "Campaign mode is an 8-month Venezuelan presidential campaign. Prepare for political mudslinging. Literally.",
-    "Story Mode: Defeat the 'darkest timeline.' Somewhere, Community fans are nodding knowingly.",
-    "Fun fact: There are 27 playable heroes and infinite ways to embarrass yourself with their abilities."
+    "A helmet won't protect you from the Christmas pterodactyls, but a pure Christmas heart might.",
+    "You know what they says…",
+    "Thug Cows are more likely to attack when you're alone",
+    "Nanobots are the key to everything.",
+    "Opening doors earns you funktard points",
+    "We love you Dan Rhon",
+    "Space Sharks are violent and relentless creatures",
+    "Der Kinderlumpers' gonna getcha",
+    "Shorby eats raw fear for brunch",
+    "See Dr. Acula if you need healing",
+    "The Great Gatsby loves burgers",
+    "You can hide from Botany Beth in the dumpster",
+    "Winter Wondergirl starts with less voters in campaign mode",
+    "Destroying ice blocks grants you the satisfaction of being stronger than and ice block",
+    "You are bad and will probably lose",
+    "Cornelius Crime must be Stopped.",
+    "Brain Freeze can eat clowns to regain health",
+    "The Y-guys have special team up abilities",
+    "WAAAA HEEYA!!"
 ];
 
 // Random Selection Function
@@ -854,10 +906,29 @@ function randomSelection() {
     console.log(`Random selection: ${selectedHero.name} (${selectedHero.class}) - ${gameModeNames[selectedGameMode]}`);
 }
 
+// Game mode team configurations
+const gameModeTeams = {
+    'deathmatch': { allied: 6, enemy: 6 },
+    'chexico': { allied: 6, enemy: 6 },
+    'turfwar': { allied: 6, enemy: 6 },
+    'squirt': { allied: 4, enemy: 4 },
+    'hoedown': { allied: 1, enemy: 1 },
+    'campaign': { allied: 5, enemy: 0 }, // Free for all
+    'story': { allied: 4, enemy: 0 } // Co-op
+};
+
+// Random player names
+const playerNames = [
+    'xXShadowKillerXx', 'ProGamer123', 'NoobMaster', 'SnipeKing', 'TankBuster',
+    'HealBot3000', 'RushB', 'CampingExpert', 'LagLord', 'AFKWarrior',
+    'ButtonMasher', 'RageQuitter', 'TeamKiller', 'LootGoblin', 'SpawnCamper',
+    'TryHard2000', 'CasualPlayer', 'FirstTimer', 'VeteranGamer', 'RandomHero',
+    'BotPlayer', 'EZMode', 'HardcorePro', 'CheeseStrat', 'MetaSlave'
+];
+
 async function startGame() {
     if (!selectedHero) {
         alert("Please select a hero first!");
-        // Shake the character menu item
         const charItem = document.querySelector('[data-menu="character"]');
         charItem.style.animation = 'shake 0.5s ease-in-out';
         setTimeout(() => { charItem.style.animation = ''; }, 500);
@@ -866,7 +937,6 @@ async function startGame() {
 
     if (!selectedGameMode) {
         alert("Please select a game mode first!");
-         // Shake the gamemode menu item
         const modeItem = document.querySelector('[data-menu="gamemode"]');
         modeItem.style.animation = 'shake 0.5s ease-in-out';
         setTimeout(() => { modeItem.style.animation = ''; }, 500);
@@ -877,87 +947,235 @@ async function startGame() {
     const gameModeSlide = document.querySelector(`.carousel-slide[data-mode="${selectedGameMode}"]`);
     const gameModeImgSrc = gameModeSlide.querySelector('.carousel-image img').src;
 
-    // Get Hero Image
-    // Use helper to find hero object in heroesData
-    let heroObj = null;
-    heroesData.classes.forEach(c => {
-        c.heroes.forEach(h => {
-            if (h.name === selectedHero.name) {
-                heroObj = h;
-            }
-        });
-    });
-
-    // Fallback if not found (shouldn't happen)
-    const heroImgSrc = heroObj ? `images/heroes/${heroObj.image}` : '';
-
     // Transition to Loading Screen
     transitionToScreen('home-screen', 'loading-screen');
 
     // Setup Loading Screen
     const loadingBg = document.getElementById('loading-bg');
-    const loadingHero = document.getElementById('loading-hero');
-    const progressFill = document.getElementById('progress-fill');
+    const lobbyStatus = document.getElementById('lobby-status');
+    const teamsContainer = document.getElementById('teams-container');
+    const ffaContainer = document.getElementById('ffa-container');
+    const alliedPlayersContainer = document.getElementById('allied-players');
+    const enemyPlayersContainer = document.getElementById('enemy-players');
+    const ffaPlayersContainer = document.getElementById('ffa-players');
     const hintText = document.getElementById('hint-text');
-    const progressText = document.getElementById('progress-text');
+
     loadingBg.style.backgroundImage = `url('${gameModeImgSrc}')`;
-    loadingHero.src = heroImgSrc;
 
     // Display random hint
     const randomHintIndex = Math.floor(Math.random() * loadingHints.length);
     hintText.textContent = loadingHints[randomHintIndex];
 
-    // Reset progress fill and text
-    progressFill.style.transition = 'none';
-    progressFill.style.width = '0%';
-    progressText.innerText = '0%';
-
-    // Force a reflow to ensure the width is reset
-    void progressFill.offsetHeight;
-
-    // Set transition for 10 second animation
-    progressFill.style.transition = 'width 10s linear';
-
-    // Start animation on next frame
-    requestAnimationFrame(() => {
-        progressFill.style.width = '100%';
+    // Get player's selected hero data
+    let playerHeroObj = null;
+    heroesData.classes.forEach(c => {
+        c.heroes.forEach(h => {
+            if (h.name === selectedHero.name) {
+                playerHeroObj = h;
+            }
+        });
     });
 
-    // Animate the text percentage
-    let startTime = null;
-    const duration = 10000; // 10s
+    // Clear previous lobby
+    alliedPlayersContainer.innerHTML = '';
+    enemyPlayersContainer.innerHTML = '';
+    ffaPlayersContainer.innerHTML = '';
+    lobbyStatus.textContent = 'WAITING FOR PLAYERS...';
 
-    function updateProgress(timestamp) {
-        if (!startTime) startTime = timestamp;
-        const elapsed = timestamp - startTime;
-        let progress = Math.min(elapsed / duration, 1);
+    // Get team sizes for this game mode
+    const teamConfig = gameModeTeams[selectedGameMode] || { allied: 6, enemy: 6 };
 
-        // Update text
-        progressText.innerText = Math.floor(progress * 100) + '%';
+    // Check if this is a free-for-all mode (campaign or story)
+    const isFreeForAll = selectedGameMode === 'campaign' || selectedGameMode === 'story';
 
-        // Continue animation if not finished and we are still on the loading screen
-        if (progress < 1 && document.getElementById('loading-screen').classList.contains('active')) {
-            requestAnimationFrame(updateProgress);
-        }
+    if (isFreeForAll) {
+        // Show FFA container, hide teams container
+        teamsContainer.style.display = 'none';
+        ffaContainer.style.display = 'flex';
+
+        // Add Player 1 at the top
+        const player1Slot = document.createElement('div');
+        player1Slot.className = 'player-slot highlight';
+        player1Slot.innerHTML = `
+            <img src="images/heroes-thumbnails/${playerHeroObj.image}" alt="${selectedHero.name}" class="player-thumbnail">
+            <div class="player-name">Player 1</div>
+        `;
+        ffaPlayersContainer.appendChild(player1Slot);
+    } else {
+        // Show teams container, hide FFA container
+        teamsContainer.style.display = 'flex';
+        ffaContainer.style.display = 'none';
+
+        // Add Player 1 at the top of allied team
+        const player1Slot = document.createElement('div');
+        player1Slot.className = 'player-slot highlight';
+        player1Slot.innerHTML = `
+            <img src="images/heroes-thumbnails/${playerHeroObj.image}" alt="${selectedHero.name}" class="player-thumbnail">
+            <div class="player-name">Player 1</div>
+        `;
+        alliedPlayersContainer.appendChild(player1Slot);
     }
 
-    // Start the text animation loop
-    requestAnimationFrame(updateProgress);
+    const totalPlayers = isFreeForAll ? (teamConfig.allied - 1) : ((teamConfig.allied - 1) + teamConfig.enemy);
 
-    // Wait 10 seconds then show Game Over
-    setTimeout(async () => {
-        await showGameOver();
-    }, 10000);
+    // Get all available heroes with their names
+    const allHeroes = [];
+    heroesData.classes.forEach(c => {
+        c.heroes.forEach(h => {
+            allHeroes.push({ name: h.name, image: h.image });
+        });
+    });
+
+    // Shuffle player names
+    const shuffledNames = [...playerNames].sort(() => Math.random() - 0.5);
+
+    // Function to add a player
+    let playersAdded = 0;
+
+    if (isFreeForAll) {
+        // Free-for-all mode: all players visible with unique heroes
+        const usedFFAHeroes = [playerHeroObj.image]; // Start with player's hero
+        const ffaHeroes = []; // Store all FFA hero names for death messages
+
+        function addFFAPlayer() {
+            // Get a unique hero not already used
+            const availableHeroes = allHeroes.filter(h => !usedFFAHeroes.includes(h.image));
+            const randomHero = availableHeroes[Math.floor(Math.random() * availableHeroes.length)];
+            usedFFAHeroes.push(randomHero.image);
+            ffaHeroes.push(randomHero.name);
+
+            const playerName = shuffledNames[playersAdded % shuffledNames.length];
+
+            const slot = document.createElement('div');
+            slot.className = 'player-slot';
+            slot.innerHTML = `
+                <img src="images/heroes-thumbnails/${randomHero.image}" alt="Player" class="player-thumbnail">
+                <div class="player-name">${playerName}</div>
+            `;
+
+            ffaPlayersContainer.appendChild(slot);
+            playersAdded++;
+
+            // Check if all players have joined
+            if (playersAdded >= totalPlayers) {
+                // Store all other players for death messages (exclude player's own hero)
+                window.currentEnemyTeam = ffaHeroes;
+
+                setTimeout(() => {
+                    startCountdown();
+                }, 500);
+            } else {
+                // Schedule next player (1-3 seconds)
+                const delay = 1000 + Math.random() * 2000;
+                setTimeout(addFFAPlayer, delay);
+            }
+        }
+
+        // Start adding FFA players
+        addFFAPlayer();
+    } else {
+        // Team-based mode
+        const usedAlliedHeroes = [playerHeroObj.image]; // Start with player's hero
+        const usedEnemyHeroes = [];
+        const enemyTeamHeroes = []; // Store enemy hero names for death messages
+
+        let alliedPlayersAdded = 0;
+        let enemyPlayersAdded = 0;
+
+        function addPlayer() {
+            // Randomly choose which team to add to (if both teams still need players)
+            const alliedNeeded = (teamConfig.allied - 1) - alliedPlayersAdded;
+            const enemyNeeded = teamConfig.enemy - enemyPlayersAdded;
+
+            let isAllied;
+            if (alliedNeeded > 0 && enemyNeeded > 0) {
+                // Both teams need players - randomly choose
+                isAllied = Math.random() < 0.5;
+            } else if (alliedNeeded > 0) {
+                // Only allied needs players
+                isAllied = true;
+            } else {
+                // Only enemy needs players
+                isAllied = false;
+            }
+
+            const container = isAllied ? alliedPlayersContainer : enemyPlayersContainer;
+            const playerIndex = alliedPlayersAdded + enemyPlayersAdded;
+
+            const slot = document.createElement('div');
+            slot.className = isAllied ? 'player-slot' : 'player-slot enemy animate';
+
+            if (isAllied) {
+                // Allied player - get a unique hero not already used on this team
+                const availableHeroes = allHeroes.filter(h => !usedAlliedHeroes.includes(h.image));
+                const randomHero = availableHeroes[Math.floor(Math.random() * availableHeroes.length)];
+                usedAlliedHeroes.push(randomHero.image);
+
+                const playerName = shuffledNames[playerIndex % shuffledNames.length];
+
+                slot.innerHTML = `
+                    <img src="images/heroes-thumbnails/${randomHero.image}" alt="Player" class="player-thumbnail">
+                    <div class="player-name">${playerName}</div>
+                `;
+                alliedPlayersAdded++;
+            } else {
+                // Enemy player - get a unique hero not already used on this team
+                const availableHeroes = allHeroes.filter(h => !usedEnemyHeroes.includes(h.image));
+                const randomHero = availableHeroes[Math.floor(Math.random() * availableHeroes.length)];
+                usedEnemyHeroes.push(randomHero.image);
+                enemyTeamHeroes.push(randomHero.name); // Store name for death messages
+
+                const playerName = shuffledNames[playerIndex % shuffledNames.length];
+
+                slot.innerHTML = `
+                    <div class="player-name">${playerName}</div>
+                    <div class="player-question">?</div>
+                `;
+                enemyPlayersAdded++;
+            }
+
+            container.appendChild(slot);
+
+            // Check if all players have joined
+            if ((alliedPlayersAdded + enemyPlayersAdded) >= totalPlayers) {
+                // Store enemy team heroes globally for death messages
+                window.currentEnemyTeam = enemyTeamHeroes;
+
+                setTimeout(() => {
+                    startCountdown();
+                }, 500);
+            } else {
+                // Schedule next player (1-3 seconds)
+                const delay = 1000 + Math.random() * 2000;
+                setTimeout(addPlayer, delay);
+            }
+        }
+
+        // Start adding team players
+        addPlayer();
+    }
+
+    // Countdown function
+    function startCountdown() {
+        lobbyStatus.textContent = 'ALL PLAYERS READY!';
+
+        let count = 3;
+        const countdownInterval = setInterval(() => {
+            if (count > 0) {
+                lobbyStatus.textContent = count.toString();
+                count--;
+            } else {
+                clearInterval(countdownInterval);
+                lobbyStatus.textContent = 'FIGHT!';
+                setTimeout(async () => {
+                    await showGameOver();
+                }, 1000);
+            }
+        }, 1000);
+    }
 }
 
 async function showGameOver() {
-    // Reset progress fill for next time (remove transition first)
-    const progressFill = document.getElementById('progress-fill');
-    const progressText = document.getElementById('progress-text');
-    progressFill.style.transition = 'none';
-    progressFill.style.width = '0%';
-    if (progressText) progressText.innerText = '0%';
-
     transitionToScreen('loading-screen', 'game-over-screen');
 
     const deathMessageEl = document.getElementById('death-message');
@@ -973,16 +1191,19 @@ async function showGameOver() {
         if (!response.ok) throw new Error('Failed to load death messages');
         const deathMessages = await response.json();
 
-        // Filter out the selected hero from keys
-        const otherHeroes = Object.keys(deathMessages).filter(name => name !== selectedHero.name);
+        // Get enemy team heroes (stored during loading screen)
+        const enemyTeam = window.currentEnemyTeam || [];
 
-        if (otherHeroes.length === 0) {
+        // Filter to only enemy team heroes that have death messages
+        const enemyHeroesWithMessages = enemyTeam.filter(name => deathMessages[name]);
+
+        if (enemyHeroesWithMessages.length === 0) {
              deathMessageEl.textContent = "You died alone.";
              return;
         }
 
-        // Randomly select a hero
-        const randomHeroName = otherHeroes[Math.floor(Math.random() * otherHeroes.length)];
+        // Randomly select a hero from the enemy team
+        const randomHeroName = enemyHeroesWithMessages[Math.floor(Math.random() * enemyHeroesWithMessages.length)];
         const heroMessages = deathMessages[randomHeroName];
 
         // Randomly select a message from that hero

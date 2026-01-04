@@ -608,10 +608,11 @@ body::before {
     animation: slideIn 0.5s ease-out;
 }
 
-/* Character screen uses column layout for hero grid */
+/* Character screen uses row layout with sidebar */
 #character-screen .carousel-slide.active {
-    flex-direction: column;
-    gap: 0;
+    flex-direction: row;
+    gap: 20px;
+    align-items: stretch;
 }
 
 @keyframes slideIn {
@@ -969,31 +970,49 @@ body::before {
 }
 
 .ability-item {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 0.95rem;
-    color: var(--comic-white);
-    line-height: 1.4;
-    padding: 8px 12px;
-    background: rgba(0, 191, 255, 0.1);
-    border-left: 4px solid var(--comic-cyan);
-    transform: skewX(-2deg);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 12px 15px;
+    background: rgba(0, 0, 0, 0.3);
+    border-left: 5px solid var(--comic-cyan);
+    transform: skewX(-1deg);
 }
 
-.ability-item strong {
-    color: var(--comic-yellow);
-    font-size: 1.05rem;
-    text-shadow: var(--text-glow);
-    display: block;
+.ability-name {
+    font-family: 'Bangers', cursive;
+    font-size: 1.4rem;
+    letter-spacing: 1px;
+    text-shadow: var(--text-stroke);
     margin-bottom: 4px;
 }
 
+.ability-name.ability-blue {
+    color: var(--comic-cyan);
+    text-shadow: 2px 2px 0 var(--comic-black), 0 0 10px rgba(0, 191, 255, 0.6);
+}
+
+.ability-name.ability-green {
+    color: #00ff88;
+    text-shadow: 2px 2px 0 var(--comic-black), 0 0 10px rgba(0, 255, 136, 0.6);
+}
+
+.ability-name.ability-yellow {
+    color: var(--comic-yellow);
+    text-shadow: 2px 2px 0 var(--comic-black), 0 0 10px rgba(255, 215, 0, 0.6);
+}
+
+.ability-name.ability-purple {
+    color: #aa66ff;
+    text-shadow: 2px 2px 0 var(--comic-black), 0 0 10px rgba(170, 102, 255, 0.6);
+}
+
 .ability-desc {
-    display: block;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1rem;
+    line-height: 1.5;
     color: var(--comic-white);
-    font-family: sans-serif;
-    font-size: 0.9em;
-    white-space: normal;
-    min-height: 20px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
 
 /* Custom scrollbar for hero abilities */
@@ -1019,45 +1038,52 @@ body::before {
 /* Hero Grid Layout for Class-based Selection */
 .class-header {
     display: flex;
+    flex-direction: column;
     align-items: center;
+    justify-content: center;
     gap: 20px;
-    padding: 20px;
-    margin-bottom: 30px;
+    padding: 30px 20px;
     border: 6px solid var(--comic-black);
     box-shadow: var(--shadow-dark), var(--shadow-glow);
     transform: rotate(-1deg);
     position: relative;
+    flex-shrink: 0;
+    width: 180px;
+    writing-mode: horizontal-tb;
 }
 
 .class-icon {
-    width: 60px;
-    height: 60px;
+    width: 80px;
+    height: 80px;
     object-fit: contain;
     filter: drop-shadow(3px 3px 0 var(--comic-black));
 }
 
 .class-name {
     font-family: 'Bangers', cursive;
-    font-size: 3rem;
+    font-size: 2.5rem;
     font-weight: 400;
     letter-spacing: 3px;
     color: var(--comic-white);
     text-shadow: var(--text-stroke), 0 0 20px rgba(255, 255, 255, 0.5);
     margin: 0;
+    text-align: center;
+    line-height: 1.2;
 }
 
 .hero-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 15px;
     padding: 20px;
-    max-height: calc(100% - 140px);
+    flex: 1;
     overflow-y: auto;
+    align-content: start;
 }
 
 .hero-card {
     background: rgba(10, 22, 40, 0.8);
-    border: 5px solid var(--comic-blue);
+    border: 4px solid var(--comic-blue);
     box-shadow: var(--shadow-dark), 0 0 10px rgba(0, 191, 255, 0.3);
     cursor: pointer;
     transition: all 0.3s ease;
@@ -1115,12 +1141,12 @@ body::before {
 
 .hero-card-name {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.1rem;
+    font-size: 0.95rem;
     font-weight: 400;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
     color: var(--comic-white);
     text-align: center;
-    padding: 12px 8px;
+    padding: 8px 6px;
     background: rgba(0, 191, 255, 0.2);
     border-top: 3px solid var(--comic-cyan);
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
@@ -1207,6 +1233,28 @@ body::before {
     .carousel-slide.active {
         flex-direction: column;
         overflow-y: auto;
+    }
+
+    /* Mobile: make class header horizontal again */
+    .class-header {
+        flex-direction: row;
+        width: 100%;
+        padding: 15px;
+    }
+
+    .class-icon {
+        width: 50px;
+        height: 50px;
+    }
+
+    .class-name {
+        font-size: 2rem;
+    }
+
+    .hero-grid {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 10px;
+        padding: 15px;
     }
 
     /* Custom scrollbar for mobile carousel */
@@ -1362,7 +1410,7 @@ body::before {
 #modal-hero-image {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
     filter: saturate(1.2) contrast(1.1);
 }
 
