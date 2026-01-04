@@ -86,11 +86,11 @@
     overflow: hidden;
 }
 
-.progress-stripes {
+.progress-fill {
     position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
+    width: 0%;
     height: 100%;
     background: repeating-linear-gradient(
         45deg,
@@ -99,17 +99,29 @@
         var(--comic-red) 10px,
         var(--comic-red) 20px
     );
+    background-size: 28.28px 28.28px;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3);
+    animation: scrollStripes 1s linear infinite;
+    /* Transition will be set dynamically by JavaScript */
 }
 
-.progress-fill {
+@keyframes scrollStripes {
+    0% { background-position: 0 0; }
+    100% { background-position: 28.28px 0; }
+}
+
+.progress-text {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 0%;
-    height: 100%;
-    background: var(--comic-red);
-    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3);
-    /* Transition will be set dynamically by JavaScript */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) skewX(10deg); /* Counter-skew */
+    color: var(--comic-white);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.2rem;
+    text-shadow: 2px 2px 0 var(--comic-black);
+    z-index: 10;
+    width: 100%;
+    text-align: center;
 }
 
 /* Game Over Screen */
