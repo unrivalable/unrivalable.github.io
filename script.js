@@ -782,6 +782,30 @@ if (document.readyState === 'loading') {
     buildHeroCarousel();
 }
 
+// Loading Screen Hints
+const loadingHints = [
+    "Pro tip: Tickle Monster's 'High 8' is mathematically impossible. He only has 8 fingers total.",
+    "Porthole's underwater genie is named Kneckakeckafallapulu. Good luck pronouncing that in voice chat.",
+    "Mr Unemployable throws random junk at enemies. He's basically your attic during spring cleaning.",
+    "The Triplets are technically one character. Child labor laws are weird in this universe.",
+    "Handfoot can switch his hands and feet. Your brain will hurt trying to visualize this.",
+    "Guy Yacht's plastic veins make him nearly invincible. Also probably violates several health codes.",
+    "Captain Crunch will take you to his 'special island.' We don't ask questions about the island.",
+    "Displeased Avian is just Angry Birds copyright infringement. Shhh, don't tell the lawyers.",
+    "Burger King makes evil burgers for enemies. Finally, a realistic portrayal of fast food.",
+    "Brain Freeze carries a bomb everywhere but rarely uses it. Classic Chekhov's explosive device.",
+    "Shan't Dance does the biggest jump you've ever seen. From a wheelchair. Physics has left the chat.",
+    "MU†E-ÅNT's super makes him so tiny he's invisible. Ant-Man lawyers have entered the chat.",
+    "Machete Man has a 50% chance to hurt himself with Dementia Backflip. That's not a bug, that's a feature.",
+    "In Dan Rhon Deathmatch, the winner receives 'the coveted love of Dan Rhon.' We don't know who Dan is either.",
+    "Charge on Chexico involves building a statue of 'Colin Amazing.' Another mystery person. Lore runs deep.",
+    "Tessarune Turf War: Steal the Tessarune and Ressatune. They're definitely not the same thing backwards.",
+    "Squirt mode is 4v4 with firefighters and water towers. OSHA violations have never been this fun.",
+    "Campaign mode is an 8-month Venezuelan presidential campaign. Prepare for political mudslinging. Literally.",
+    "Story Mode: Defeat the 'darkest timeline.' Somewhere, Community fans are nodding knowingly.",
+    "Fun fact: There are 27 playable heroes and infinite ways to embarrass yourself with their abilities."
+];
+
 // Random Selection Function
 function randomSelection() {
     // Get all available heroes (from all classes with heroes)
@@ -874,9 +898,14 @@ async function startGame() {
     const loadingBg = document.getElementById('loading-bg');
     const loadingHero = document.getElementById('loading-hero');
     const progressFill = document.getElementById('progress-fill');
+    const hintText = document.getElementById('hint-text');
 
     loadingBg.style.backgroundImage = `url('${gameModeImgSrc}')`;
     loadingHero.src = heroImgSrc;
+
+    // Display random hint
+    const randomHintIndex = Math.floor(Math.random() * loadingHints.length);
+    hintText.textContent = loadingHints[randomHintIndex];
 
     // Reset progress fill
     progressFill.style.transition = 'none';

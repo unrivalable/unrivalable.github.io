@@ -112,6 +112,34 @@
     /* Transition will be set dynamically by JavaScript */
 }
 
+.loading-hint {
+    margin-top: 30px;
+    padding: 15px 20px;
+    background: rgba(10, 22, 40, 0.9);
+    border: 3px solid var(--comic-cyan);
+    border-left: 8px solid var(--comic-yellow);
+    box-shadow: 5px 5px 0 var(--comic-black), inset 0 0 20px rgba(0, 191, 255, 0.2);
+    transform: skewX(-3deg);
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.hint-label {
+    font-family: 'Bangers', cursive;
+    font-size: 1.3rem;
+    color: var(--comic-yellow);
+    text-shadow: var(--text-stroke);
+    margin-right: 10px;
+}
+
+.hint-text {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.1rem;
+    color: var(--comic-white);
+    line-height: 1.4;
+}
+
 /* Game Over Screen */
 #game-over-screen {
     background-color: #000;
