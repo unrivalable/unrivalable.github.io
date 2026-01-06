@@ -213,39 +213,39 @@
 
 .game-over-title {
     font-family: 'Bangers', cursive;
-    font-size: 8rem;
+    font-size: 4rem;
     color: var(--comic-red);
     text-shadow:
         var(--text-stroke),
-        5px 5px 0 var(--comic-white),
-        10px 10px 0 var(--comic-black);
+        2.5px 2.5px 0 var(--comic-white),
+        5px 5px 0 var(--comic-black);
     animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both infinite;
 }
 
 @keyframes shake {
-    10%, 90% { transform: translate3d(-1px, 0, 0); }
-    20%, 80% { transform: translate3d(2px, 0, 0); }
-    30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
-    40%, 60% { transform: translate3d(4px, 0, 0); }
+    10%, 90% { transform: translate3d(-0.5px, 0, 0); }
+    20%, 80% { transform: translate3d(1px, 0, 0); }
+    30%, 50%, 70% { transform: translate3d(-2px, 0, 0); }
+    40%, 60% { transform: translate3d(2px, 0, 0); }
 }
 
 .death-message-box {
     background: var(--comic-white);
-    border: 6px solid var(--comic-black);
-    padding: 30px;
-    max-width: 800px;
-    margin: 20px auto;
+    border: 3px solid var(--comic-black);
+    padding: 15px;
+    max-width: 400px;
+    margin: 10px auto;
     position: relative;
-    box-shadow: 10px 10px 0 var(--comic-black);
+    box-shadow: 5px 5px 0 var(--comic-black);
     transform: rotate(-1deg);
 }
 
 .death-message-box::before {
     content: '';
     position: absolute;
-    bottom: -20px;
+    bottom: -10px;
     left: 50%;
-    border-width: 20px 20px 0;
+    border-width: 10px 10px 0;
     border-style: solid;
     border-color: var(--comic-black) transparent;
     display: block;
@@ -255,10 +255,10 @@
 .death-message-box::after {
     content: '';
     position: absolute;
-    bottom: -13px;
+    bottom: -7px;
     left: 50%;
-    margin-left: 4px;
-    border-width: 16px 16px 0;
+    margin-left: 2px;
+    border-width: 8px 8px 0;
     border-style: solid;
     border-color: var(--comic-white) transparent;
     display: block;
@@ -267,7 +267,7 @@
 
 .death-message {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 2rem;
+    font-size: 1rem;
     color: var(--comic-black);
     text-align: center;
     line-height: 1.2;
@@ -275,7 +275,7 @@
 
 #restart-btn {
     width: auto;
-    min-width: 300px;
+    min-width: 150px;
     justify-content: center;
 }
 
@@ -284,34 +284,34 @@
     display: none; /* Hidden by default until loaded */
     flex-direction: column;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     animation: fadeIn 0.5s ease-out;
 }
 
 .killer-label {
     font-family: 'Bangers', cursive;
-    font-size: 2rem;
+    font-size: 1rem;
     color: var(--comic-red);
     text-shadow: var(--text-stroke);
-    margin-bottom: 10px;
+    margin-bottom: 5px;
     transform: rotate(-2deg);
 }
 
 .killer-image {
-    width: 150px;
-    height: 150px;
+    width: 75px;
+    height: 75px;
     object-fit: cover;
-    border: 5px solid var(--comic-white);
-    box-shadow: 5px 5px 0 var(--comic-black);
+    border: 3px solid var(--comic-white);
+    box-shadow: 3px 3px 0 var(--comic-black);
     transform: rotate(2deg);
-    margin-bottom: 10px;
+    margin-bottom: 5px;
     background: var(--comic-bg);
 }
 
 .killer-name {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.5rem;
+    font-size: 0.75rem;
     color: var(--comic-yellow);
-    text-shadow: 2px 2px 0 var(--comic-black);
-    letter-spacing: 2px;
+    text-shadow: 1px 1px 0 var(--comic-black);
+    letter-spacing: 1px;
 }

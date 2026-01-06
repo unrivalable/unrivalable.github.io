@@ -6,7 +6,8 @@
       "Bash(open index.html)",
       "Bash(ls:*)",
       "Bash(python3:*)",
-      "Bash(open:*)"
+      "Bash(open:*)",
+      "Bash(cat:*)"
     ]
   }
 }

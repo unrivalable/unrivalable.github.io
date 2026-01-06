@@ -597,24 +597,24 @@
           "class": "Saboteur",
           "abilities": {
             "main_attack": {
-              "name": "",
-              "description": ""
+              "name": "Dood Shood",
+              "description": "Voodude shoods his handgun, dealing small damage and marking with a voodoo mark on headshot"
             },
             "passive": {
               "name": "",
               "description": ""
             },
             "ability_1": {
-              "name": "",
-              "description": ""
+              "name": "Shank then Crank (feat. Spaceknife)",
+              "description": "Voodude dashes forward, and shanks the first enemy he hits with Spaceknife, and marking them with a voodoo mark which makes them take damage after 3 seconds that can be increased by attacking him. (3 uses)"
             },
             "ability_2": {
-              "name": "",
-              "description": ""
+              "name": "Dood Arrangement",
+              "description": "Voodude can arrange his dood into 5 different positions, each one with a different buff. He then throws the dude, teleporting to it on contact and in the position you choose."
             },
             "super": {
-              "name": "",
-              "description": ""
+              "name": "If you ain't voo, then you ain't doo",
+              "description": "Voodude imbues his dood with voo, then throws him, doing splash damage on contact, killing anyone with a voodoo mark or marking those who aren't marked yet."
             }
           }
         },
@@ -732,24 +732,24 @@
           "class": "Saboteur",
           "abilities": {
             "main_attack": {
-              "name": "",
-              "description": ""
+              "name": "Candy Spear",
+              "description": "Thrusts a sharpened candy cane forward, with long melee range and pierce"
             },
             "passive": {
               "name": "",
               "description": ""
             },
             "ability_1": {
-              "name": "",
-              "description": ""
+              "name": "The Dwindling Popularity of Wax Museums",
+              "description": "Launches a flaming Christingle, igniting enemies on hit and applying area burn damage"
             },
             "ability_2": {
-              "name": "",
-              "description": ""
+              "name": "The Importance of Dentists",
+              "description": "Captain Christingle switches his candy canes for toothpicks, allowing him to throw up to 4 for less damage."
             },
             "super": {
-              "name": "",
-              "description": ""
+              "name": "The Fashion Industry",
+              "description": "Captain Christingle binds all enemies in a target location, forcing them together and rooting them"
             }
           }
         }
@@ -901,24 +901,24 @@
           "class": "Supporter",
           "abilities": {
             "main_attack": {
-              "name": "",
-              "description": ""
+              "name": "North, East, South, West",
+              "description": "Launch a cardinal that splits on hit, shooting 4 cardinals in the 4 cardinal directions. Heals teammates and damages enemies"
             },
             "passive": {
               "name": "",
               "description": ""
             },
             "ability_1": {
-              "name": "",
-              "description": ""
+              "name": "Translucify",
+              "description": "The Corn Maiden touches a teammate, turning them kinda translucent and giving them healing over time"
             },
             "ability_2": {
-              "name": "",
-              "description": ""
+              "name": "Opacify",
+              "description": "The Corn Maiden touches an enemy, making them twice as opaque and increasing their hitbox for 5 seconds"
             },
             "super": {
-              "name": "",
-              "description": ""
+              "name": "Cornpast, Cornpresent, Cornfuture",
+              "description": "The Corn Maiden attaches a translucent cardinal to all visible teammates, applying constant healing over time until the cardinals are destroyed"
             }
           }
         },
@@ -1178,24 +1178,24 @@
           "class": "Controller",
           "abilities": {
             "main_attack": {
-              "name": "",
-              "description": ""
+              "name": "Taste the belt",
+              "description": "Belt Tungus flings his belt out of his mouth in front of him"
             },
             "passive": {
               "name": "",
               "description": ""
             },
             "ability_1": {
-              "name": "",
-              "description": ""
+              "name": "Oil Spill",
+              "description": "Does an oopsie and spill oil all over behind him. Enemies can't walk well due to the frictionless surface"
             },
             "ability_2": {
-              "name": "",
-              "description": ""
+              "name": "Rev it",
+              "description": "Bet Tungus revs his engines, dashing forward and stunning enemies"
             },
             "super": {
-              "name": "",
-              "description": ""
+              "name": "Carb",
+              "description": "Belt Tungus adds a B to his head, becoming a carbohydrate and making up to 3 visible enemies fat and slow. They have to walk off the effect to get rid of it"
             }
           }
         }

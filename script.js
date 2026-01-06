@@ -650,43 +650,78 @@ function buildHeroCarousel() {
     setupHeroCarouselNavigation();
 }
 
-function formatAbilities(abilitiesText) {
-    // Split abilities by common patterns, including Passive
-    const abilities = abilitiesText.split(/(?=Main Attack:|Passive:|Ability 1:|Ability 2:|Super:)/);
+function formatAbilities(abilities) {
+    // Handle both old string format and new structured format
+    if (typeof abilities === 'string') {
+        // Old format - parse string
+        const abilityList = abilities.split(/(?=Main Attack:|Passive:|Ability 1:|Ability 2:|Super:)/);
+        const abilityColors = {
+            'Main Attack': 'ability-blue',
+            'Passive': 'ability-purple',
+            'Ability 1': 'ability-green',
+            'Ability 2': 'ability-green',
+            'Super': 'ability-yellow'
+        };
 
-    // Map ability types to colors
+        let html = '';
+        abilityList.forEach(ability => {
+            if (ability.trim()) {
+                const match = ability.match(/^(Main Attack|Passive|Ability \d|Super):\s*([^\n]+)\n?(.+)?/s);
+                if (match) {
+                    const type = match[1];
+                    const name = match[2].trim();
+                    const description = match[3] ? match[3].trim() : '';
+
+                    if (type === 'Passive' && !name) {
+                        return;
+                    }
+
+                    const colorClass = abilityColors[type] || '';
+
+                    html += `
+                        <div class="ability-item">
+                            <div class="ability-name ${colorClass}">${name}</div>
+                            <div class="ability-desc">${description}</div>
+                        </div>
+                    `;
+                }
+            }
+        });
+        return html;
+    }
+
+    // New structured format
     const abilityColors = {
-        'Main Attack': 'ability-blue',
-        'Passive': 'ability-purple',
-        'Ability 1': 'ability-green',
-        'Ability 2': 'ability-green',
-        'Super': 'ability-yellow'
+        'main_attack': 'ability-blue',
+        'passive': 'ability-purple',
+        'ability_1': 'ability-green',
+        'ability_2': 'ability-green',
+        'super': 'ability-yellow'
+    };
+
+    const abilityLabels = {
+        'main_attack': 'Main Attack',
+        'passive': 'Passive',
+        'ability_1': 'Ability 1',
+        'ability_2': 'Ability 2',
+        'super': 'Super'
     };
 
     let html = '';
-    abilities.forEach(ability => {
-        if (ability.trim()) {
-            // Match pattern: "Type: Name\nDescription"
-            const match = ability.match(/^(Main Attack|Passive|Ability \d|Super):\s*([^\n]+)\n?(.+)?/s);
-            if (match) {
-                const type = match[1];
-                const name = match[2].trim();
-                const description = match[3] ? match[3].trim() : '';
 
-                // Skip passive if it has no name
-                if (type === 'Passive' && !name) {
-                    return;
-                }
+    // Process each ability in order
+    ['main_attack', 'passive', 'ability_1', 'ability_2', 'super'].forEach(key => {
+        if (abilities[key] && abilities[key].name) {
+            const ability = abilities[key];
+            const colorClass = abilityColors[key];
+            const label = abilityLabels[key];
 
-                const colorClass = abilityColors[type] || '';
-
-                html += `
-                    <div class="ability-item">
-                        <div class="ability-name ${colorClass}">${name}</div>
-                        <div class="ability-desc">${description}</div>
-                    </div>
-                `;
-            }
+            html += `
+                <div class="ability-item">
+                    <div class="ability-name ${colorClass}">${ability.name}</div>
+                    <div class="ability-desc">${ability.description}</div>
+                </div>
+            `;
         }
     });
 
@@ -1186,6 +1221,12 @@ async function showGameOver() {
     deathMessageEl.textContent = "Loading death message...";
     killerContainer.style.display = 'none';
 
+    // 5% chance to win instead of dying
+    if (Math.random() < 0.05) {
+        deathMessageEl.textContent = "You win! That doesn't happen very often...";
+        return;
+    }
+
     try {
         const response = await fetch('death_messages.json');
         if (!response.ok) throw new Error('Failed to load death messages');
@@ -1224,7 +1265,7 @@ async function showGameOver() {
         });
 
         if (killerHeroObj) {
-            killerImage.src = `images/heroes/${killerHeroObj.image}`;
+            killerImage.src = `images/heroes-thumbnails/${killerHeroObj.image}`;
             killerNameDisplay.textContent = randomHeroName;
             killerContainer.style.display = 'flex';
         } else {
