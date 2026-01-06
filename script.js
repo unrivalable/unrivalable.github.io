@@ -309,57 +309,261 @@ const classColors = {
     'Hawktalker': { primary: '#00FFFF', secondary: '#AA66FF' }
 };
 
-// Embedded heroes data
+// Embedded heroes data - loaded from heroes_abilities.json
 const heroesData = {
   "metadata": {
-    "total_slides": 52,
+    "total_heroes": 46,
     "total_classes": 6,
-    "total_heroes": 45,
-    "complete_heroes": 27,
-    "incomplete_heroes": 18,
-    "completion_rate": "60.0%"
+    "description": "Structured ability data for all Unrivalable heroes"
   },
   "classes": [
     {
       "name": "Destroyer",
       "icon": "destroyer.png",
-      "hero_count": 6,
+      "hero_count": 9,
       "heroes": [
         {
           "name": "Mr Unemployable",
           "image": "mr-unemployable.jpg",
-          "abilities": "Main Attack: What goes forth\nThrows random objects from his inventory at enemies. If he misses, they stay on the ground\nAbility 1: Must come back\nWhen triggered, all items thrown zip back to him\nAbility 2: Big Ol Boomerang\nThrows a big ol boomerang that doesn't come back\nSuper: Vape Juice Storm\nRapidly chucks balls of radioactive vape juice around himself while simultaneously retracting them, creating a whirlwind of vape juice",
-          "slide": 3
-        },
-        {
-          "name": "Porthole",
-          "image": "porthole.jpg",
-          "abilities": "Main Attack: Porthole throw\nThrows a porthole forward\nAbility 1: A Hole new world\nPorthole drops a porthole on the ground, slipping through it and popping back out 3 meters behind\nAbility 2: Portastic Port-mine\nPorthole drops a Porthole on the ground. The porthole is invisible to enemies, and slows them on contact (3 uses)\nSuper: Underwater Genie\nPorthole summons Kneckakeckafallapulu, the underwater genie. He grants porthole one of three wishes, lasting for 20 seconds\nTrue Glass Form: Porthole's shots reveal enemies and deal double damage\nTrue Metal Form: Porthole's shots explode and deal area damage\nTrue Porthole Form: Porthole's shots bounce between enemies",
-          "slide": 5
-        },
-        {
-          "name": "The Triplets",
-          "image": "the-triplets.png",
-          "abilities": "Main Attack: Flap, Tackle, and Glop\nFootrun flaps his arms, Jetplace tackles forward and Junkrat shoots some fiery glop outta his crotch\nAbility 1: Switcherooski\nSwitches to the next Triplet\nAbility 2: Character Development\nFootrun dashes forward, becoming invisible for a few seconds (2 uses). Jetplace uses his portals to teleport behind an enemy. Junkrat fires some larger missiles outta his crotch.\nSuper: Into the Jetplace!\nThe triplets unite, joining hands and summoning a giant jetpack. They fly around the map dropping rockets outta his crotch and destruction.",
-          "slide": 8
-        },
-        {
-          "name": "Tickle Monster",
-          "image": "tickle-monster.jpg",
-          "abilities": "Main Attack: Tickle\nTickle\nAbility 1: High 8\nTickle Monster absolutely slaps somebody twice, first with the first five and then with the second 3\nAbility 2: Enhanced Peeling\nCan remove negative effects from himself and his teammates for a small amount of time\nSuper: ",
-          "slide": 9
-        },
-        {
-          "name": "Bee's Knees",
-          "image": "bees-knees.jpg",
-          "abilities": "Main Attack: Knee Combo\nKicks in a wide range, knees forward\nAbility 1: Flying Bee Drop\nJumps in the air and slams down with his knees forward, stinging enemies\nAbility 2: Float like a Butterfly\nSend a gust of air forward, creating an area of zero-gravity to trap enemies in\nSuper: Sting like a Knee\nLaunches rapid-fire stingers from his knees that poison enemies",
-          "slide": 11
+          "class": "Destroyer",
+          "abilities": {
+            "main_attack": {
+              "name": "What goes forth",
+              "description": "Throws random objects from his inventory at enemies. If he misses, they stay on the ground"
+            },
+            "passive": {
+              "name": "",
+              "description": ""
+            },
+            "ability_1": {
+              "name": "Must come back",
+              "description": "When triggered, all items thrown zip back to him"
+            },
+            "ability_2": {
+              "name": "Big Ol Boomerang",
+              "description": "Throws a big ol boomerang that doesn't come back"
+            },
+            "super": {
+              "name": "Vape Juice Storm",
+              "description": "Rapidly chucks balls of radioactive vape juice around himself while simultaneously retracting them, creating a whirlwind of vape juice"
+            }
+          }
         },
         {
           "name": "James Madison",
           "image": "james-madison.jpg",
-          "abilities": "Main Attack: Well Regulated Militia\nFires a burst from his assault rifle\nAbility 1: Bear Strike\nJames Madison unleashed a feral strike with his bear arms, dealing massive damage up close\nAbility 2: Amend\nJames Madison signs off on his bill, marking an enemy for amendment. If their HP drops to a low enough percentage they are immediately killed\nSuper: Double Jeopardy\nJames Madison grabs the nearest enemy and puts them in the game show Jeopardy. If they win once, he puts them in again and shoots them. If they lose they die",
-          "slide": 4
+          "class": "Destroyer",
+          "abilities": {
+            "main_attack": {
+              "name": "Well Regulated Militia",
+              "description": "Fires a burst from his assault rifle"
+            },
+            "passive": {
+              "name": "",
+              "description": ""
+            },
+            "ability_1": {
+              "name": "Bear Strike",
+              "description": "James Madison unleashed a feral strike with his bear arms, dealing massive damage up close"
+            },
+            "ability_2": {
+              "name": "Amend",
+              "description": "James Madison signs off on his bill, marking an enemy for amendment. If their HP drops to a low enough percentage they are immediately killed"
+            },
+            "super": {
+              "name": "Double Jeopardy",
+              "description": "James Madison grabs the nearest enemy and puts them in the game show Jeopardy. If they win once, he puts them in again and shoots them. If they lose they die"
+            }
+          }
+        },
+        {
+          "name": "Porthole",
+          "image": "porthole.jpg",
+          "class": "Destroyer",
+          "abilities": {
+            "main_attack": {
+              "name": "Porthole throw",
+              "description": "Throws a porthole forward"
+            },
+            "passive": {
+              "name": "",
+              "description": ""
+            },
+            "ability_1": {
+              "name": "A Hole new world",
+              "description": "Porthole drops a porthole on the ground, slipping through it and popping back out 3 meters behind"
+            },
+            "ability_2": {
+              "name": "Portastic Port-mine",
+              "description": "Porthole drops a Porthole on the ground. The porthole is invisible to enemies, and slows them on contact (3 uses)"
+            },
+            "super": {
+              "name": "Underwater Genie",
+              "description": "Porthole summons Kneckakeckafallapulu, the underwater genie. He grants porthole one of three wishes, lasting for 20 seconds\nTrue Glass Form: Porthole's shots reveal enemies and deal double damage\nTrue Metal Form: Porthole's shots explode and deal area damage\nTrue Porthole Form: Porthole's shots bounce between enemies"
+            }
+          }
+        },
+        {
+          "name": "Bitey Whiteys",
+          "image": "bitey-whiteys.jpg",
+          "class": "Destroyer",
+          "abilities": {
+            "main_attack": {
+              "name": "",
+              "description": ""
+            },
+            "passive": {
+              "name": "",
+              "description": ""
+            },
+            "ability_1": {
+              "name": "",
+              "description": ""
+            },
+            "ability_2": {
+              "name": "",
+              "description": ""
+            },
+            "super": {
+              "name": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "name": "Iron Pan",
+          "image": "iron-pan.jpg",
+          "class": "Destroyer",
+          "abilities": {
+            "main_attack": {
+              "name": "",
+              "description": ""
+            },
+            "passive": {
+              "name": "",
+              "description": ""
+            },
+            "ability_1": {
+              "name": "",
+              "description": ""
+            },
+            "ability_2": {
+              "name": "",
+              "description": ""
+            },
+            "super": {
+              "name": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "name": "The Triplets",
+          "image": "the-triplets.png",
+          "class": "Destroyer",
+          "abilities": {
+            "main_attack": {
+              "name": "Flap, Tackle, and Glop",
+              "description": "Footrun flaps his arms, Jetplace tackles forward and Junkrat shoots some fiery glop outta his crotch"
+            },
+            "passive": {
+              "name": "",
+              "description": ""
+            },
+            "ability_1": {
+              "name": "Switcherooski",
+              "description": "Switches to the next Triplet"
+            },
+            "ability_2": {
+              "name": "Character Development",
+              "description": "Footrun dashes forward, becoming invisible for a few seconds (2 uses). Jetplace uses his portals to teleport behind an enemy. Junkrat fires some larger missiles outta his crotch."
+            },
+            "super": {
+              "name": "Into the Jetplace!",
+              "description": "The triplets unite, joining hands and summoning a giant jetpack. They fly around the map dropping rockets outta his crotch and destruction."
+            }
+          }
+        },
+        {
+          "name": "Tickle Monster",
+          "image": "tickle-monster.jpg",
+          "class": "Destroyer",
+          "abilities": {
+            "main_attack": {
+              "name": "Tickle",
+              "description": "Tickle"
+            },
+            "passive": {
+              "name": "",
+              "description": ""
+            },
+            "ability_1": {
+              "name": "High 8",
+              "description": "Tickle Monster absolutely slaps somebody twice, first with the first five and then with the second 3"
+            },
+            "ability_2": {
+              "name": "Enhanced Peeling",
+              "description": "Can remove negative effects from himself and his teammates for a small amount of time"
+            },
+            "super": {
+              "name": "Tickle Train",
+              "description": "Everybody in the area must board a train, specifically a tickle one, and gets violently tickled"
+            }
+          }
+        },
+        {
+          "name": "Shoulder Blade",
+          "image": "shoulder-blade.jpg",
+          "class": "Destroyer",
+          "abilities": {
+            "main_attack": {
+              "name": "",
+              "description": ""
+            },
+            "passive": {
+              "name": "",
+              "description": ""
+            },
+            "ability_1": {
+              "name": "",
+              "description": ""
+            },
+            "ability_2": {
+              "name": "",
+              "description": ""
+            },
+            "super": {
+              "name": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "name": "Bee's Knees",
+          "image": "bees-knees.jpg",
+          "class": "Destroyer",
+          "abilities": {
+            "main_attack": {
+              "name": "Knee Combo",
+              "description": "Kicks in a wide range, knees forward"
+            },
+            "passive": {
+              "name": "",
+              "description": ""
+            },
+            "ability_1": {
+              "name": "Flying Bee Drop",
+              "description": "Jumps in the air and slams down with his knees forward, stinging enemies"
+            },
+            "ability_2": {
+              "name": "Float like a Butterfly",
+              "description": "Send a gust of air forward, creating an area of zero-gravity to trap enemies in"
+            },
+            "super": {
+              "name": "Sting like a Knee",
+              "description": "Launches rapid-fire stingers from his knees that poison enemies"
+            }
+          }
         }
       ]
     },
@@ -371,187 +575,1004 @@ const heroesData = {
         {
           "name": "Handfoot",
           "image": "hand-foot.jpg",
-          "abilities": "Main Attack: Fantastic Fist-Feet Flurry\nA 4-hit combo where he punches and kicks\nAbility 1: Hands become feet\nSwitches around his hands and feet, becoming more than just a man (also increases attack damage).\nAbility 2: You'll never know\nHandfoot switches his hands and feet so fast that he absorbs projectiles\nSuper: Flick'a the Wrist\nHandfoot enters flowstate, whirling hands and feet so fast while moving forward. He becomes an unstoppable juggernaut of damage and health",
-          "slide": 13
+          "class": "Defender",
+          "abilities": {
+            "main_attack": {
+              "name": "Fantastic Fist-Feet Flurry",
+              "description": "A 4-hit combo where he punches and kicks"
+            },
+            "passive": {
+              "name": "",
+              "description": ""
+            },
+            "ability_1": {
+              "name": "Hands become feet",
+              "description": "Switches around his hands and feet, becoming more than just a man (also increases attack damage)."
+            },
+            "ability_2": {
+              "name": "You'll never know",
+              "description": "Handfoot switches his hands and feet so fast that he absorbs projectiles"
+            },
+            "super": {
+              "name": "Flick'a the Wrist",
+              "description": "Handfoot enters flowstate, whirling hands and feet so fast while moving forward. He becomes an unstoppable juggernaut of damage and health"
+            }
+          }
         },
         {
           "name": "Floss",
           "image": "floss.jpg",
-          "abilities": "Main Attack: Who Spiked the Punch?\nFloss punches, spikily\nPassive: Flossback\nEnemies take 1/32nd of all damage they inflict on floss via projectiles\nAbility 1: Absorption\nFor the next 10 seconds, Floss takes 1/3rd of damage from projectiles\nAbility 2: Tease and Joke\nFloss gets demoralized by the other team for sucking, drawing their attention and firepower to him\nSuper: Big Spike Thing\nThe Great Gatsby shoots Floss in the chest with a big spike thing. But then Floss shoots it back super fast out of him and it explodes",
-          "slide": 14
+          "class": "Defender",
+          "abilities": {
+            "main_attack": {
+              "name": "Who Spiked the Punch?",
+              "description": "Floss punches, spikily"
+            },
+            "passive": {
+              "name": "Flossback",
+              "description": "Enemies take 1/32nd of all damage they inflict on floss via projectiles"
+            },
+            "ability_1": {
+              "name": "Absorption",
+              "description": "For the next 10 seconds, Floss takes 1/3rd of damage from projectiles"
+            },
+            "ability_2": {
+              "name": "Tease and Joke",
+              "description": "Floss gets demoralized by the other team for sucking, drawing their attention and firepower to him"
+            },
+            "super": {
+              "name": "Big Spike Thing",
+              "description": "The Great Gatsby shoots Floss in the chest with a big spike thing. But then Floss shoots it back super fast out of him and it explodes"
+            }
+          }
         },
         {
           "name": "Man Guy",
           "image": "man-guy.jpg",
-          "abilities": "Main Attack: Man Punch\nMan Guy punches with his long arm like a ma\nPassive: Manliness\nMan Guy gains increased max health whenever he takes damage, it resets when he dies\nAbility 1: Self Harm\nMan Guy deals damage to himself, increasing his attack\nAbility 2: Super Bones\nMan Guy boosts his bones, taking less damage for the next three secs\nSuper: Guy Kick\nMan Guy does a big kick,l that breaks his leg if he hits it he can do it again with more damage",
-          "slide": 15
-        },
-        {
-          "name": "Ultraviolet",
-          "image": "ultraviolet.jpg",
-          "abilities": "Main Attack: Ultraviolet Umbrella \nUltraviolet stabs with his umbrella, then opens it creating a small shield for 1 sec\nAbility 1: Lavender Lash\nUltraviolet blinds the nearest enemy with his purpleness, blinding them\nAbility 2: Mount the Indigoat!\nUltraviolet mounts the indigoat, gaining increased health and speed for 5 secs\nSuper: Purpleness Explosion\nUltraviolet shines his purpleness, gaining a shield and taunting all nearby enemies into attacking him",
-          "slide": 17
-        },
-        {
-          "name": "Guy Yacht",
-          "image": "guy-yacht.jpg",
-          "abilities": "Main Attack: Squirt Gun\nGuy Yacht fires high pressure water from his squirt gun \nAbility 1: Bomboclat\nGuy Yacht flexes his cheeks, taking 80% less damage from behind for a 5 seconds\nAbility 2: Eyes up here\nGuy Yacht launches into the air and lands on his butt, buffing the defense of allies he lands around\nSuper: Fantastic Plastic\nUsing the plastic in his veins, Guy Yacht hardens his entire body, taking overwhelmingly less damage from all sources",
-          "slide": 18
-        },
-        {
-          "name": "Captain Trumpet",
-          "image": "captain-trumpet.jpg",
-          "abilities": "Main Attack: Clawsini Gatini\nCaptain trumpet scratches twice with cat claws\nAbility 1: Shellala Shellalo\nCaptain Trumpet gains a shield for 5 secs\nAbility 2: Rameo Chargeo\nCaptain trumpet dashes  forward with his ram horns\nSuper: Trumpets Sounding\nCaptain trumpet Gains a health boost and a random animal buff:\n-Bunnini - Super jump\n-Peacocko - Taunt at full health\n-Sovereign Snakearms- Main Attack poisons",
-          "slide": 20
-        },
-        {
-          "name": "Gym Shark",
-          "image": "gym-shark.png",
-          "abilities": "Main Attack: Barbell strikenado\nAbility 1:Bulgarian tail squatnado\nAbility 2: Sharknado\nSuper: ROIDNADO\nSwims under ground and eats one person",
-          "slide": 21
+          "class": "Defender",
+          "abilities": {
+            "main_attack": {
+              "name": "Man Punch",
+              "description": "Man Guy punches with his long arm like a ma"
+            },
+            "passive": {
+              "name": "Manliness",
+              "description": "Man Guy gains increased max health whenever he takes damage, it resets when he dies"
+            },
+            "ability_1": {
+              "name": "Self Harm",
+              "description": "Man Guy deals damage to himself, increasing his attack"
+            },
+            "ability_2": {
+              "name": "Super Bones",
+              "description": "Man Guy boosts his bones, taking less damage for the next three secs"
+            },
+            "super": {
+              "name": "Guy Kick",
+              "description": "Man Guy does a big kick,l that breaks his leg if he hits it he can do it again with more damage"
+            }
+          }
         },
         {
           "name": "Chair Beard",
           "image": "chair-beard.jpg",
-          "abilities": "Main Attack: SLAMΜΟ\nChair Beard slammos down with his chair beard, slightly knocking enemies back\nAbility 1: Sit down and rest\nChair Beard sits down, relaxes, and the positive vibes stop enemies from entering\nAbility 2: Whack Whack Whack\nChair Beard whacks 3 times, and the 3rd hit sends enemies flying\nSuper: Anything can be a chair\nChair Beard covers himself in his beard, effectively turning himself into a chair. All enemies in the radius sit on him and then get launched off at Mach 5",
-          "slide": 16
+          "class": "Defender",
+          "abilities": {
+            "main_attack": {
+              "name": "SLAMΜΟ",
+              "description": "Chair Beard slammos down with his chair beard, slightly knocking enemies back"
+            },
+            "passive": {
+              "name": "",
+              "description": ""
+            },
+            "ability_1": {
+              "name": "Sit down and rest",
+              "description": "Chair Beard sits down, relaxes, and the positive vibes stop enemies from entering"
+            },
+            "ability_2": {
+              "name": "Whack Whack Whack",
+              "description": "Chair Beard whacks 3 times, and the 3rd hit sends enemies flying"
+            },
+            "super": {
+              "name": "Anything can be a chair",
+              "description": "Chair Beard covers himself in his beard, effectively turning himself into a chair. All enemies in the radius sit on him and then get launched off at Mach 5"
+            }
+          }
+        },
+        {
+          "name": "Ultraviolet",
+          "image": "ultraviolet.jpg",
+          "class": "Defender",
+          "abilities": {
+            "main_attack": {
+              "name": "Ultraviolet Umbrella",
+              "description": "Ultraviolet stabs with his umbrella, then opens it creating a small shield for 1 sec"
+            },
+            "passive": {
+              "name": "",
+              "description": ""
+            },
+            "ability_1": {
+              "name": "Lavender Lash",
+              "description": "Ultraviolet blinds the nearest enemy with his purpleness, blinding them"
+            },
+            "ability_2": {
+              "name": "Mount the Indigoat!",
+              "description": "Ultraviolet mounts the indigoat, gaining increased health and speed for 5 secs"
+            },
+            "super": {
+              "name": "Purpleness Explosion",
+              "description": "Ultraviolet shines his purpleness, gaining a shield and taunting all nearby enemies into attacking him"
+            }
+          }
+        },
+        {
+          "name": "Guy Yacht",
+          "image": "guy-yacht.jpg",
+          "class": "Defender",
+          "abilities": {
+            "main_attack": {
+              "name": "Squirt Gun",
+              "description": "Guy Yacht fires high pressure water from his squirt gun"
+            },
+            "passive": {
+              "name": "",
+              "description": ""
+            },
+            "ability_1": {
+              "name": "Bomboclat",
+              "description": "Guy Yacht flexes his cheeks, taking 80% less damage from behind for a 5 seconds"
+            },
+            "ability_2": {
+              "name": "Eyes up here",
+              "description": "Guy Yacht launches into the air and lands on his butt, buffing the defense of allies he lands around"
+            },
+            "super": {
+              "name": "Fantastic Plastic",
+              "description": "Using the plastic in his veins, Guy Yacht hardens his entire body, taking overwhelmingly less damage from all sources"
+            }
+          }
         },
         {
           "name": "Yeast",
           "image": "yeast.jpg",
-          "abilities": "Main Attack: Swole Wheat\nYeast backhands both ways with the back of his hands\nPassive: Yeast\nGains bread passively, or faster by dealing damage. Consuming bread with ALT increases damage and density\nAbility 1: Open Sesame\nYeast throws a handful of sesame seeds in a short, wide range, stunning enemies\nAbility 2: RISE\nIncreases bread gained from damage for 8 seconds\nSuper: Gluten Tolerance\nBecome giant and bready for 30 seconds. Increases max health and knockback resistance. Can only use Swole Wheat, but it does more damage",
-          "slide": 19
+          "class": "Defender",
+          "abilities": {
+            "main_attack": {
+              "name": "Swole Wheat",
+              "description": "Yeast backhands both ways with the back of his hands"
+            },
+            "passive": {
+              "name": "Yeast",
+              "description": "Gains bread passively, or faster by dealing damage. Consuming bread with ALT increases damage and density"
+            },
+            "ability_1": {
+              "name": "Open Sesame",
+              "description": "Yeast throws a handful of sesame seeds in a short, wide range, stunning enemies"
+            },
+            "ability_2": {
+              "name": "RISE",
+              "description": "Increases bread gained from damage for 8 seconds"
+            },
+            "super": {
+              "name": "Gluten Tolerance",
+              "description": "Become giant and bready for 30 seconds. Increases max health and knockback resistance. Can only use Swole Wheat, but it does more damage"
+            }
+          }
+        },
+        {
+          "name": "Captain Trumpet",
+          "image": "captain-trumpet.jpg",
+          "class": "Defender",
+          "abilities": {
+            "main_attack": {
+              "name": "Clawsini Gatini",
+              "description": "Captain trumpet scratches twice with cat claws"
+            },
+            "passive": {
+              "name": "",
+              "description": ""
+            },
+            "ability_1": {
+              "name": "Shellala Shellalo",
+              "description": "Captain Trumpet gains a shield for 5 secs"
+            },
+            "ability_2": {
+              "name": "Rameo Chargeo",
+              "description": "Captain trumpet dashes forward with his ram horns"
+            },
+            "super": {
+              "name": "Trumpets Sounding",
+              "description": "Captain trumpet Gains a health boost and a random animal buff:\n-Bunnini - Super jump\n-Peacocko - Taunt at full health\n-Sovereign Snakearms- Main Attack poisons"
+            }
+          }
+        },
+        {
+          "name": "Gym Shark",
+          "image": "gym-shark.png",
+          "class": "Defender",
+          "abilities": {
+            "main_attack": {
+              "name": "Barbell strikenado",
+              "description": "Gym shark swings in a circle attacking enemies with his barbell"
+            },
+            "passive": {
+              "name": "",
+              "description": ""
+            },
+            "ability_1": {
+              "name": "Bulgarian tail squatnado",
+              "description": "Gym shark swings with his tail, all enemies that get hit move as if they are in water for 3 secs"
+            },
+            "ability_2": {
+              "name": "Sharknado",
+              "description": "Gym shark gets a space sharknado around him, he takes less damage and damages any enemies standing too close"
+            },
+            "super": {
+              "name": "ROIDNADO",
+              "description": "Swims under ground and eats one person, killing them"
+            }
+          }
         }
       ]
     },
     {
       "name": "Saboteur",
       "icon": "saboteur.png",
-      "hero_count": 6,
+      "hero_count": 9,
       "heroes": [
         {
           "name": "Captain Crunch",
           "image": "captain-crunch.jpg",
-          "abilities": "Main Attack: Get you by the Knife\nCaptain Crunch Stabs enemies with his knife\nAbility 1: Oops all berries\nCaptain Crunch spills berries on the ground, slowing enemies around him\nAbility 2: Crunch Surprise\nCaptain crunch hides in a bush, and his next knife has a dash and does extra damage \nSuper: Take you to his special island\nCaptain crunch Takes himself and the nearest enemy to his special island for 10 secs, where he has increased stats",
-          "slide": 23
+          "class": "Saboteur",
+          "abilities": {
+            "main_attack": {
+              "name": "Get you by the Knife",
+              "description": "Captain Crunch Stabs enemies with his knife"
+            },
+            "passive": {
+              "name": "",
+              "description": ""
+            },
+            "ability_1": {
+              "name": "Oops all berries",
+              "description": "Captain Crunch spills berries on the ground, slowing enemies around him"
+            },
+            "ability_2": {
+              "name": "Crunch Surprise",
+              "description": "Captain crunch hides in a bush, and his next knife has a dash and does extra damage"
+            },
+            "super": {
+              "name": "Take you to his special island",
+              "description": "Captain crunch Takes himself and the nearest enemy to his special island for 10 secs, where he has increased stats"
+            }
+          }
         },
         {
           "name": "Jonnakiss",
           "image": "jonnakiss.jpg",
-          "abilities": "Main Attack: Grass Throw\nJonnakiss throws grass, dealing more damage the closer the enemy is\nAbility 1: Sharp Grass\nJonnakiss sharpens his grass so that it does max damage at all distances for the next three throws\nAbility 2: Thundercloud mode\nJonnakiss quickly becomes a cloud then immediately shoots down in a lightning bolt, dealing massive damage\nSuper: Eat the grass!\nJonnakiss eats his grass, turning him into a invincible cloud for 15 seconds, he comes down on the ground as it snows slowing enemies in his area",
-          "slide": 24
+          "class": "Saboteur",
+          "abilities": {
+            "main_attack": {
+              "name": "Grass Throw",
+              "description": "Jonnakiss throws grass, dealing more damage the closer the enemy is"
+            },
+            "passive": {
+              "name": "",
+              "description": ""
+            },
+            "ability_1": {
+              "name": "Sharp Grass",
+              "description": "Jonnakiss sharpens his grass so that it does max damage at all distances for the next three throws"
+            },
+            "ability_2": {
+              "name": "Thundercloud mode",
+              "description": "Jonnakiss quickly becomes a cloud then immediately shoots down in a lightning bolt, dealing massive damage"
+            },
+            "super": {
+              "name": "Eat the grass!",
+              "description": "Jonnakiss eats his grass, turning him into a invincible cloud for 15 seconds, he comes down on the ground as it snows slowing enemies in his area"
+            }
+          }
         },
         {
           "name": "Displeased Avian",
-          "image": "displeased -avian.jpg",
-          "abilities": "Main Attack: CAW CAWWW\nA rapid, short range peck with infinite ammo\nAbility 1: WAAAA HEEY\nRed flings himself to a designated area with his slingshot, stunning enemies on land\nAbility 2: WOOOIA UUU UU UY\nRed slices in a wide berth with his wings, doing 50% of the max health of the squishiest enemy caught.\nSuper: AAAAAIIIIIIAAA\nRed perfectly mimics the sound of a bird, frightening Big Pig and sending him on a rampage through the map",
-          "slide": 25
+          "image": "displeased-avian.jpg",
+          "class": "Saboteur",
+          "abilities": {
+            "main_attack": {
+              "name": "CAW CAWWW",
+              "description": "A rapid, short range peck with infinite ammo"
+            },
+            "passive": {
+              "name": "",
+              "description": ""
+            },
+            "ability_1": {
+              "name": "WAAAA HEEY",
+              "description": "Red flings himself to a designated area with his slingshot, stunning enemies on land"
+            },
+            "ability_2": {
+              "name": "WOOOIA UUU UU UY",
+              "description": "Red slices in a wide berth with his wings, doing 50% of the max health of the squishiest enemy caught."
+            },
+            "super": {
+              "name": "AAAAAIIIIIIAAA",
+              "description": "Red perfectly mimics the sound of a bird, frightening Big Pig and sending him on a rampage through the map"
+            }
+          }
+        },
+        {
+          "name": "Voodude",
+          "image": "voodude.jpg",
+          "class": "Saboteur",
+          "abilities": {
+            "main_attack": {
+              "name": "Dood Shood",
+              "description": "Voodude shoods his handgun, dealing small damage and marking with a voodoo mark on headshot"
+            },
+            "passive": {
+              "name": "",
+              "description": ""
+            },
+            "ability_1": {
+              "name": "Shank then Crank (feat. Spaceknife)",
+              "description": "Voodude dashes forward, and shanks the first enemy he hits with Spaceknife, and marking them with a voodoo mark which makes them take damage after 3 seconds that can be increased by attacking him. (3 uses)"
+            },
+            "ability_2": {
+              "name": "Dood Arrangement",
+              "description": "Voodude can arrange his dood into 5 different positions, each one with a different buff. He then throws the dude, teleporting to it on contact and in the position you choose."
+            },
+            "super": {
+              "name": "If you ain't voo, then you ain't doo",
+              "description": "Voodude imbues his dood with voo, then throws him, doing splash damage on contact, killing anyone with a voodoo mark or marking those who aren't marked yet."
+            }
+          }
         },
         {
           "name": "MU†E-ÅNT",
           "image": "mute-ant.jpg",
-          "abilities": "Main Attack: Ant-Rings\nMute-Ant throws one of his ant-rings a short distance\nPassive: Mute\nMute-Ant can't communicate with teammates\nAbility 1: Ant-Bot\nAnt-Bot scans the area around him, revealing hidden objects and zapping enemies\nAbility 2: Ant-friend\n(In ant-form) Mute-Ant gets carried around by his insect friend; Señor butterfly, allowing him to fly for 8 secs\nSuper: Ant-Man\nMute-ant speaks for 10 seconds transforming him into an ant that is so tiny it is invisible",
-          "slide": 27
-        },
-        {
-          "name": "Machete Man",
-          "image": "machete-man.jpg",
-          "abilities": "Main Attack: Machete\nMachete Man slashes with his machete\nAbility 1: Machete Throw\nMachete man throws his machete then backflips to get a new one\nAbility 2: Dementia Machete Backflip\nMachete man does a backflip and has 50 chance of dealing a ton of damage to himself or an enemy\nSuper:  Old Guy Backflip\nMachete man does a backflip, gaining an extra Mach e, extra damage and extra speed",
-          "slide": 29
+          "class": "Saboteur",
+          "abilities": {
+            "main_attack": {
+              "name": "Ant-Rings",
+              "description": "Mute-Ant throws one of his ant-rings a short distance"
+            },
+            "passive": {
+              "name": "Mute",
+              "description": "Mute-Ant can't communicate with teammates"
+            },
+            "ability_1": {
+              "name": "Ant-Bot",
+              "description": "Ant-Bot scans the area around him, revealing hidden objects and zapping enemies"
+            },
+            "ability_2": {
+              "name": "Ant-friend",
+              "description": "(In ant-form) Mute-Ant gets carried around by his insect friend; Señor butterfly, allowing him to fly for 8 secs"
+            },
+            "super": {
+              "name": "Ant-Man",
+              "description": "Mute-ant speaks for 10 seconds transforming him into an ant that is so tiny it is invisible"
+            }
+          }
         },
         {
           "name": "Contortoise",
           "image": "contortoise.jpg",
-          "abilities": "Main Attack: Tort for Four &\nContortoise does a quick 4-hit combo, but strikes with unusual body part.\nAbility 1: Sneakcret Scuttle\nContortoise drops to all fours and scuttles forward sneakcretly, gaining movement speed. This ability has no cooldown.\nAbility 2: Clack, Smack, Rattle\nContortoise does all the aforementioned actions with his weird ahh joints, stunning the nearest enemy and delivering a smack for small damage.\nSuper: Be Weird and Bend A Lot\nContortoise bends a lot in a wide area, jumping from enemy to enemy in the zone, grappling and dealing damage to them.",
-          "slide": 28
+          "class": "Saboteur",
+          "abilities": {
+            "main_attack": {
+              "name": "Tort for Four &",
+              "description": "Contortoise does a quick 4-hit combo, but strikes with unusual body part."
+            },
+            "passive": {
+              "name": "",
+              "description": ""
+            },
+            "ability_1": {
+              "name": "Sneakcret Scuttle",
+              "description": "Contortoise drops to all fours and scuttles forward sneakcretly, gaining movement speed. This ability has no cooldown."
+            },
+            "ability_2": {
+              "name": "Clack, Smack, Rattle",
+              "description": "Contortoise does all the aforementioned actions with his weird ahh joints, stunning the nearest enemy and delivering a smack for small damage."
+            },
+            "super": {
+              "name": "Be Weird and Bend A Lot",
+              "description": "Contortoise bends a lot in a wide area, jumping from enemy to enemy in the zone, grappling and dealing damage to them."
+            }
+          }
+        },
+        {
+          "name": "Machete Man",
+          "image": "machete-man.jpg",
+          "class": "Saboteur",
+          "abilities": {
+            "main_attack": {
+              "name": "Machete",
+              "description": "Machete Man slashes with his machete"
+            },
+            "passive": {
+              "name": "",
+              "description": ""
+            },
+            "ability_1": {
+              "name": "Machete Throw",
+              "description": "Machete man throws his machete then backflips to get a new one"
+            },
+            "ability_2": {
+              "name": "Dementia Machete Backflip",
+              "description": "Machete man does a backflip and has 50 chance of dealing a ton of damage to himself or an enemy"
+            },
+            "super": {
+              "name": "Old Guy Backflip",
+              "description": "Machete man does a backflip, gaining an extra Mach e, extra damage and extra speed"
+            }
+          }
+        },
+        {
+          "name": "Grup Scrooge",
+          "image": "grup-scrooge.jpg",
+          "class": "Saboteur",
+          "abilities": {
+            "main_attack": {
+              "name": "",
+              "description": ""
+            },
+            "passive": {
+              "name": "",
+              "description": ""
+            },
+            "ability_1": {
+              "name": "",
+              "description": ""
+            },
+            "ability_2": {
+              "name": "",
+              "description": ""
+            },
+            "super": {
+              "name": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "name": "Captain Christingle (Seasonal)",
+          "image": "captain-christingle.jpg",
+          "class": "Saboteur",
+          "abilities": {
+            "main_attack": {
+              "name": "Candy Spear",
+              "description": "Thrusts a sharpened candy cane forward, with long melee range and pierce"
+            },
+            "passive": {
+              "name": "",
+              "description": ""
+            },
+            "ability_1": {
+              "name": "The Dwindling Popularity of Wax Museums",
+              "description": "Launches a flaming Christingle, igniting enemies on hit and applying area burn damage"
+            },
+            "ability_2": {
+              "name": "The Importance of Dentists",
+              "description": "Captain Christingle switches his candy canes for toothpicks, allowing him to throw up to 4 for less damage."
+            },
+            "super": {
+              "name": "The Fashion Industry",
+              "description": "Captain Christingle binds all enemies in a target location, forcing them together and rooting them"
+            }
+          }
         }
       ]
     },
     {
       "name": "Supporter",
       "icon": "supporter.png",
-      "hero_count": 6,
+      "hero_count": 9,
       "heroes": [
         {
           "name": "Burger King",
           "image": "burger-king.jpg",
-          "abilities": "Main Attack: Double Spatula Surprise\nBurger King makes burgers, LT to make funky burgers for teammates, RT to make evil burgers for enemies.\nAbility 1: The Great\nBurger King makes a big burger, providing cover for teammates and can be consumed for health.\nAbility 2: The Gatsby\nBurger King draws a spatula circle, creating a burger zone for teammates to gain increased attack in.\nSuper: The Great and The Gatsby\nBurger King Greats a Gatsby Burger, turning any teammate into the Great Gatsby for 1 minute. While the Great Gatsby, teammates have much more health and damage.",
-          "slide": 33
+          "class": "Supporter",
+          "abilities": {
+            "main_attack": {
+              "name": "Double Spatula Surprise",
+              "description": "Burger King makes burgers, LT to make funky burgers for teammates, RT to make evil burgers for enemies."
+            },
+            "passive": {
+              "name": "",
+              "description": ""
+            },
+            "ability_1": {
+              "name": "The Great",
+              "description": "Burger King makes a big burger, providing cover for teammates and can be consumed for health."
+            },
+            "ability_2": {
+              "name": "The Gatsby",
+              "description": "Burger King draws a spatula circle, creating a burger zone for teammates to gain increased attack in."
+            },
+            "super": {
+              "name": "The Great and The Gatsby",
+              "description": "Burger King Greats a Gatsby Burger, turning any teammate into the Great Gatsby for 1 minute. While the Great Gatsby, teammates have much more health and damage."
+            }
+          }
+        },
+        {
+          "name": "Defrilibatorator",
+          "image": "defrilibatorator.jpg",
+          "class": "Supporter",
+          "abilities": {
+            "main_attack": {
+              "name": "Good Shock or Bad Shock?",
+              "description": ""
+            },
+            "passive": {
+              "name": "",
+              "description": ""
+            },
+            "ability_1": {
+              "name": "",
+              "description": ""
+            },
+            "ability_2": {
+              "name": "",
+              "description": ""
+            },
+            "super": {
+              "name": "",
+              "description": ""
+            }
+          }
         },
         {
           "name": "Brain Freeze",
           "image": "brain-freeze.jpg",
-          "abilities": "Main Attack: I'm Not Having Fun\nBrainfreeze, shocked at the prospect of not fun, swings out with a one-handed punch, gaining Fun on hit. \nAbility 1: Use the Bomb (costs 2 Fun)\nBrainfreeze finally uses the bomb he always carries around, dealing small splash damage.\nAbility 2: You Fly When I'm Having Fun (costs 1 Fun) \nBrainfreeze can levitate a teammate, healing them and raising them to any height for 5 seconds.\nSuper: Time Flies When Your Having Fun\nBrainfreeze takes a hit of straight Fun, causing himself to enter a state of bliss, summoning Time Flies to tell him and his teammates the time in game and in real life for 30 seconds",
-          "slide": 35
+          "class": "Supporter",
+          "abilities": {
+            "main_attack": {
+              "name": "I'm Not Having Fun",
+              "description": "Brainfreeze, shocked at the prospect of not fun, swings out with a one-handed punch, gaining Fun on hit."
+            },
+            "passive": {
+              "name": "",
+              "description": ""
+            },
+            "ability_1": {
+              "name": "Use the Bomb",
+              "description": "Costs 2 Fun. Brainfreeze finally uses the bomb he always carries around, dealing small splash damage."
+            },
+            "ability_2": {
+              "name": "You Fly When I'm Having Fun",
+              "description": "Costs 1 Fun. Brainfreeze can levitate a teammate, healing them and raising them to any height for 5 seconds."
+            },
+            "super": {
+              "name": "Time Flies When Your Having Fun",
+              "description": "Brainfreeze takes a hit of straight Fun, causing himself to enter a state of bliss, summoning Time Flies to tell him and his teammates the time in game and in real life for 30 seconds"
+            }
+          }
+        },
+        {
+          "name": "Speedo",
+          "image": "speedo.jpg",
+          "class": "Supporter",
+          "abilities": {
+            "main_attack": {
+              "name": "",
+              "description": ""
+            },
+            "passive": {
+              "name": "",
+              "description": ""
+            },
+            "ability_1": {
+              "name": "",
+              "description": ""
+            },
+            "ability_2": {
+              "name": "",
+              "description": ""
+            },
+            "super": {
+              "name": "",
+              "description": ""
+            }
+          }
         },
         {
           "name": "Didgeridon't",
-          "image": "digeridon't.jpg",
-          "abilities": "Main Attack: Didgeridon't Come Near\nDidgeridon't swings his Didgeridon't in a wide arc, causing fall damage on hit.\nAbility 1: Didgeridon't Mess Around\nDidgeridon't stretches his arms, increasing super charge rate for 5 seconds.\nAbility 2: Digerididn't and Digeriwon't\nDidgeridon't summons the ghosts of Digeripast and the ghost of digerifuture to perform a line dance. They are solid and can block attacks.\nSuper: Didgeridon't Take Fall Damage\nDidgeridon't raises his Didgeridon't above his head, and for 15 seconds his teammates don't take fall damage.",
-          "slide": 37
+          "image": "didgeridont.jpg",
+          "class": "Supporter",
+          "abilities": {
+            "main_attack": {
+              "name": "Didgeridon't Come Near",
+              "description": "Didgeridon't swings his Didgeridon't in a wide arc, causing fall damage on hit."
+            },
+            "passive": {
+              "name": "",
+              "description": ""
+            },
+            "ability_1": {
+              "name": "Didgeridon't Mess Around",
+              "description": "Didgeridon't stretches his arms, increasing super charge rate for 5 seconds."
+            },
+            "ability_2": {
+              "name": "Digerididn't and Digeriwon't",
+              "description": "Didgeridon't summons the ghosts of Digeripast and the ghost of digerifuture to perform a line dance. They are solid and can block attacks."
+            },
+            "super": {
+              "name": "Didgeridon't Take Fall Damage",
+              "description": "Didgeridon't raises his Didgeridon't above his head, and for 15 seconds his teammates don't take fall damage."
+            }
+          }
+        },
+        {
+          "name": "Corn Maiden",
+          "image": "corn-maiden.jpg",
+          "class": "Supporter",
+          "abilities": {
+            "main_attack": {
+              "name": "North, East, South, West",
+              "description": "Launch a cardinal that splits on hit, shooting 4 cardinals in the 4 cardinal directions. Heals teammates and damages enemies"
+            },
+            "passive": {
+              "name": "",
+              "description": ""
+            },
+            "ability_1": {
+              "name": "Translucify",
+              "description": "The Corn Maiden touches a teammate, turning them kinda translucent and giving them healing over time"
+            },
+            "ability_2": {
+              "name": "Opacify",
+              "description": "The Corn Maiden touches an enemy, making them twice as opaque and increasing their hitbox for 5 seconds"
+            },
+            "super": {
+              "name": "Cornpast, Cornpresent, Cornfuture",
+              "description": "The Corn Maiden attaches a translucent cardinal to all visible teammates, applying constant healing over time until the cardinals are destroyed"
+            }
+          }
         },
         {
           "name": "DishwasHER",
           "image": "dishwasher.jpg",
-          "abilities": "Main Attack: Womanly Plate Throw\nDishwasHER throws a plate in a female-like manner\nAbility 1: CassHERole \nDishwasHER drops a casserole that heals her teammates \nAbility 2: Stealth Mode\nDishwasHER goes into stealth mode, getting melee whisk weapons and changing her outfit which does nothing \nSuper: Do the Laundry\nDishwasHER removes all negative effects from her teammates and heals them significantly",
-          "slide": 39
+          "class": "Supporter",
+          "abilities": {
+            "main_attack": {
+              "name": "Womanly Plate Throw",
+              "description": "DishwasHER throws a plate in a female-like manner"
+            },
+            "passive": {
+              "name": "",
+              "description": ""
+            },
+            "ability_1": {
+              "name": "Cass HERole",
+              "description": "DishwasHER drops a casserole that heals her teammates"
+            },
+            "ability_2": {
+              "name": "Stealth Mode",
+              "description": "DishwasHER goes into stealth mode, getting melee whisk weapons and changing her outfit which does nothing"
+            },
+            "super": {
+              "name": "Do the Laundry",
+              "description": "DishwasHER removes all negative effects from her teammates and heals them significantly"
+            }
+          }
         },
         {
           "name": "PowerPoint",
           "image": "powerpoint.jpg",
-          "abilities": "Main Attack: Laser Taser Blaser Face\nPower point shoots a laser at an enemies face. If the enemy is wearing a blaser, it does double damage\nAbility 1: Minor Blind\nPowerPoint temporarily blinds one enemy, leaving a \"blind spot\" where they can't see for 5 seconds\nAbility 2: 3rd D vision\nPowerPoint sees through the first and the second D's, and him and his teammates can see enemies wherever they are on the map\nSuper: Super Distract\nPower point summons a random point on the map, and all other characers are sucked towards that point and can",
-          "slide": 40
+          "class": "Supporter",
+          "abilities": {
+            "main_attack": {
+              "name": "Laser Taser Blaser Face",
+              "description": "Power point shoots a laser at an enemies face. If the enemy is wearing a blaser, it does double damage"
+            },
+            "passive": {
+              "name": "",
+              "description": ""
+            },
+            "ability_1": {
+              "name": "Minor Blind",
+              "description": "PowerPoint temporarily blinds one enemy, leaving a 'blind spot' where they can't see for 5 seconds"
+            },
+            "ability_2": {
+              "name": "3rd D vision",
+              "description": "PowerPoint sees through the first and the second D's, and him and his teammates can see enemies wherever they are on the map"
+            },
+            "super": {
+              "name": "Super Distract",
+              "description": "Power point summons a random point on the map, and all other characers are sucked towards that point and can only see near that point"
+            }
+          }
         },
         {
           "name": "Shan't Dance",
-          "image": "shan't-dance.jpg",
-          "abilities": "Main Attack: Autissles\nShan't fires mini-missiles from his wheelchair\nAbility 1: Wheelchair Tow\nShan't attaches his wheelchair to another teammate, significantly boosting their movement speed\nAbility 2: Wheel Steel\nShan't shoots a wheel off of his wheelchair, providing cover for teammates behind them (2 uses)\nSuper: Motivational JUMP\nShan't, after charging all game, performs the biggest jump you've seen any guy do before. This incredible morale boost gives all teammates in the area incredible jump height, regeneration, and healing over time",
-          "slide": 41
+          "image": "shant-dance.jpg",
+          "class": "Supporter",
+          "abilities": {
+            "main_attack": {
+              "name": "Autissles",
+              "description": "Shan't fires mini-missiles from his wheelchair"
+            },
+            "passive": {
+              "name": "",
+              "description": ""
+            },
+            "ability_1": {
+              "name": "Wheelchair Tow",
+              "description": "Shan't attaches his wheelchair to another teammate, significantly boosting their movement speed"
+            },
+            "ability_2": {
+              "name": "Wheel Steel",
+              "description": "Shan't shoots a wheel off of his wheelchair, providing cover for teammates behind them (2 uses)"
+            },
+            "super": {
+              "name": "Motivational JUMP",
+              "description": "Shan't, after charging all game, performs the biggest jump you've seen any guy do before. This incredible morale boost gives all teammates in the area incredible jump height, regeneration, and healing over time"
+            }
+          }
         }
       ]
     },
     {
       "name": "Controller",
       "icon": "controller.png",
-      "hero_count": 5,
+      "hero_count": 7,
       "heroes": [
+        {
+          "name": "Snow Angel",
+          "image": "snow-angel.jpg",
+          "class": "Controller",
+          "abilities": {
+            "main_attack": {
+              "name": "",
+              "description": ""
+            },
+            "passive": {
+              "name": "",
+              "description": ""
+            },
+            "ability_1": {
+              "name": "",
+              "description": ""
+            },
+            "ability_2": {
+              "name": "",
+              "description": ""
+            },
+            "super": {
+              "name": "",
+              "description": ""
+            }
+          }
+        },
         {
           "name": "Faceplant",
           "image": "faceplant.jpg",
-          "abilities": "Main Attack: Shovel Slash\nFaceplant attacks with shovel, dealing heavy melee damage and launching weaker vines out in front of him\nAbility 1:  Face full of Plant\nFaceplant Excretes a large amount of poisonous pollen from his face\nAbility 2: Plant full of Face \nFaceplant creates an area of plants who encourage his teammates, giving bonus attack and speed \nSuper: Plant full of Plant\nFaceplant creates an area that wraps enemies up vines, stunning them",
-          "slide": 44
+          "class": "Controller",
+          "abilities": {
+            "main_attack": {
+              "name": "Shovel Slash",
+              "description": "Faceplant attacks with shovel, dealing heavy melee damage and launching weaker vines out in front of him"
+            },
+            "passive": {
+              "name": "",
+              "description": ""
+            },
+            "ability_1": {
+              "name": "Face full of Plant",
+              "description": "Faceplant Excretes a large amount of poisonous pollen from his face"
+            },
+            "ability_2": {
+              "name": "Plant full of Face",
+              "description": "Faceplant creates an area of plants who encourage his teammates, giving bonus attack and speed"
+            },
+            "super": {
+              "name": "Plant full of Plant",
+              "description": "Faceplant creates an area that wraps enemies up vines, stunning them"
+            }
+          }
         },
         {
           "name": "Grom",
           "image": "grom.jpg",
-          "abilities": "Main Attack: Bud Go Boom!\nGrom throws his walkie-talkie over obstacles at a long range that explodes into four piercing projectiles in a cross pattern.\nAbility 1: Watchtower\nUpon activation, Grom drops a turret that allows him and allies to see enemies inside bushes in its 10-tile radius.\nAbility 2: Radio Check\nActivating this Gadget allows Grom's next attack to fire three walkie-talkies in quick succession.\nSuper: Grom Bomb\nGrom throws a giant, longer-ranged bomb from his back over obstacles that explodes into four piercing projectiles in a cross pattern, similarly to his main attack.",
-          "slide": 45
-        },
-        {
-          "name": "Winter WonderGirl",
-          "image": "winter-wondergirl.jpg",
-          "abilities": "Main Attack: Super Snowglober\nWinter Wondergirl throws a snow globe, which breaks and pulls enemies in\nAbility 1: Shake it up\nWinter Wondergirl makes it snow around her, freezing enemies \nAbility 2: Rain down the sun fog \nWinter Wondergirl breaks a snowglobe with a lot of fog, causing a smoke bomb\nSuper:  Wonderlate the multisphere\nWinter Wondergirl builds a giant snow globe, any enemies in it take a ton of damage and are slowed",
-          "slide": 47
-        },
-        {
-          "name": "Smurtle Gurltle Cheesecake Woman",
-          "image": "smurtle-gurltle-cheesecake-woman.jpg",
-          "abilities": "Main Attack: Krazy Karate Kicks\nSGCW kicks with a three kick combo \nAbility 1: Super Ultra Tornado Spin\nNinja Mode - SGCW does a stunning spin kick \nTurtle Mode - SGCW spins around in her turtle shell and is invincible throughout\nAbility 2: Mega Tsunami Cheesecake\nNinja Mode - SGCW dashes forward spilling slowing cheesecake behind her\nTurtle Mode - SGCW consumes her cheesecake to gain health and movement speed\nSuper: Supersaiyan Ultra Cheesecake Weapon Ninja Gurl Explosion!\nSGCW switches to the other mode. Ninja Mode has low health and high speed. Turtle mode has low speed high health. SGCW gets a attack boost after switching",
-          "slide": 48
+          "class": "Controller",
+          "abilities": {
+            "main_attack": {
+              "name": "Bud Go Boom!",
+              "description": "Grom throws his walkie-talkie over obstacles at a long range that explodes into four piercing projectiles in a cross pattern."
+            },
+            "passive": {
+              "name": "",
+              "description": ""
+            },
+            "ability_1": {
+              "name": "Watchtower",
+              "description": "Upon activation, Grom drops a turret that allows him and allies to see enemies inside bushes in its 10-tile radius."
+            },
+            "ability_2": {
+              "name": "Radio Check",
+              "description": "Activating this Gadget allows Grom's next attack to fire three walkie-talkies in quick succession."
+            },
+            "super": {
+              "name": "Grom Bomb",
+              "description": "Grom throws a giant, longer-ranged bomb from his back over obstacles that explodes into four piercing projectiles in a cross pattern, similarly to his main attack."
+            }
+          }
         },
         {
           "name": "Jeanne Gris",
           "image": "jeanne-gris.jpg",
-          "abilities": "Main Attack: Baguette\nShe uses her baguette to hit\nAbility 1: Hucked Mime\nJeanne Gris hucks a mime over walls and buildings\nAbility 2: Invisible Wall\nJeanne Gris' mime makes a wall that protects her for a short time\nSuper: Horde-a-mimes\nJeanne Gris controls a horde of mimes and tramples anyone in her path",
-          "slide": 46
+          "class": "Controller",
+          "abilities": {
+            "main_attack": {
+              "name": "Baguette",
+              "description": "She uses her baguette to hit"
+            },
+            "passive": {
+              "name": "",
+              "description": ""
+            },
+            "ability_1": {
+              "name": "Hucked Mime",
+              "description": "Jeanne Gris hucks a mime over walls and buildings"
+            },
+            "ability_2": {
+              "name": "Invisible Wall",
+              "description": "Jeanne Gris' mime makes a wall that protects her for a short time"
+            },
+            "super": {
+              "name": "Horde-a-mimes",
+              "description": "Jeanne Gris controls a horde of mimes and tramples anyone in her path"
+            }
+          }
+        },
+        {
+          "name": "Winter WonderGirl",
+          "image": "winter-wondergirl.jpg",
+          "class": "Controller",
+          "abilities": {
+            "main_attack": {
+              "name": "Super Snowglober",
+              "description": "Winter Wondergirl throws a snow globe, which breaks and pulls enemies in"
+            },
+            "passive": {
+              "name": "",
+              "description": ""
+            },
+            "ability_1": {
+              "name": "Shake it up",
+              "description": "Winter Wondergirl makes it snow around her, freezing enemies"
+            },
+            "ability_2": {
+              "name": "Rain down the sun fog",
+              "description": "Winter Wondergirl breaks a snowglobe with a lot of fog, causing a smoke bomb"
+            },
+            "super": {
+              "name": "Wonderlate the multisphere",
+              "description": "Winter Wondergirl builds a giant snow globe, any enemies in it take a ton of damage and are slowed"
+            }
+          }
+        },
+        {
+          "name": "Smurtle Gurltle Cheesecake Woman",
+          "image": "smurtle-gurltle-cheesecake-woman.jpg",
+          "class": "Controller",
+          "abilities": {
+            "main_attack": {
+              "name": "Krazy Karate Kicks",
+              "description": "SGCW kicks with a three kick combo"
+            },
+            "passive": {
+              "name": "",
+              "description": ""
+            },
+            "ability_1": {
+              "name": "Super Ultra Tornado Spin",
+              "description": "Ninja Mode - SGCW does a stunning spin kick \nTurtle Mode - SGCW spins around in her turtle shell and is invincible throughout"
+            },
+            "ability_2": {
+              "name": "Mega Tsunami Cheesecake",
+              "description": "Ninja Mode - SGCW dashes forward spilling slowing cheesecake behind her\nTurtle Mode - SGCW consumes her cheesecake to gain health and movement speed"
+            },
+            "super": {
+              "name": "Supersaiyan Ultra Cheesecake Weapon Ninja Gurl Explosion!",
+              "description": "SGCW switches to the other mode. Ninja Mode has low health and high speed. Turtle mode has low speed high health. SGCW gets a attack boost after switching"
+            }
+          }
+        },
+        {
+          "name": "Belt Tungus",
+          "image": "belt-tungus.jpg",
+          "class": "Controller",
+          "abilities": {
+            "main_attack": {
+              "name": "Taste the belt",
+              "description": "Belt Tungus flings his belt out of his mouth in front of him"
+            },
+            "passive": {
+              "name": "",
+              "description": ""
+            },
+            "ability_1": {
+              "name": "Oil Spill",
+              "description": "Does an oopsie and spill oil all over behind him. Enemies can't walk well due to the frictionless surface"
+            },
+            "ability_2": {
+              "name": "Rev it",
+              "description": "Bet Tungus revs his engines, dashing forward and stunning enemies"
+            },
+            "super": {
+              "name": "Carb",
+              "description": "Belt Tungus adds a B to his head, becoming a carbohydrate and making up to 3 visible enemies fat and slow. They have to walk off the effect to get rid of it"
+            }
+          }
         }
       ]
     },
     {
       "name": "Hawktalker",
       "icon": "hawktalker.png",
-      "hero_count": 0,
-      "heroes": []
+      "hero_count": 2,
+      "heroes": [
+        {
+          "name": "Moonhawk",
+          "image": "moonhawk.jpg",
+          "class": "Hawktalker",
+          "abilities": {
+            "main_attack": {
+              "name": "",
+              "description": ""
+            },
+            "passive": {
+              "name": "",
+              "description": ""
+            },
+            "ability_1": {
+              "name": "",
+              "description": ""
+            },
+            "ability_2": {
+              "name": "",
+              "description": ""
+            },
+            "super": {
+              "name": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "name": "They",
+          "image": "they.jpg",
+          "class": "Hawktalker",
+          "abilities": {
+            "main_attack": {
+              "name": "",
+              "description": ""
+            },
+            "passive": {
+              "name": "",
+              "description": ""
+            },
+            "ability_1": {
+              "name": "",
+              "description": ""
+            },
+            "ability_2": {
+              "name": "",
+              "description": ""
+            },
+            "super": {
+              "name": "",
+              "description": ""
+            }
+          }
+        }
+      ]
     }
   ]
 };
