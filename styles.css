@@ -821,6 +821,34 @@ body::before {
     box-shadow: 8px 8px 0px rgba(0, 0, 0, 0.8);
 }
 
+/* Disabled select button (for Captain Christingle) */
+.select-mode-btn.disabled,
+.select-mode-btn:disabled {
+    background: rgba(100, 100, 100, 0.5);
+    color: rgba(255, 255, 255, 0.5);
+    cursor: not-allowed;
+    opacity: 0.6;
+    font-size: 1.1rem;
+    padding: 15px 20px;
+}
+
+.select-mode-btn.disabled::before,
+.select-mode-btn:disabled::before {
+    display: none;
+}
+
+.select-mode-btn.disabled:hover,
+.select-mode-btn:disabled:hover {
+    background: rgba(100, 100, 100, 0.5);
+    transform: rotate(-2deg) scale(1);
+    box-shadow: var(--shadow-dark);
+}
+
+.select-mode-btn.disabled:hover::after,
+.select-mode-btn:disabled:hover::after {
+    display: none;
+}
+
 /* Carousel Navigation */
 .carousel-nav {
     position: absolute;
@@ -1157,6 +1185,30 @@ body::before {
     background: rgba(0, 255, 255, 0.3);
     color: var(--comic-cyan);
     text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+}
+
+/* Disabled hero cards (no abilities) */
+.hero-card.disabled {
+    opacity: 0.4;
+    filter: grayscale(100%);
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.hero-card.disabled:hover {
+    transform: rotate(-1deg) scale(1);
+    border-color: var(--comic-blue);
+    box-shadow: var(--shadow-dark), 0 0 10px rgba(0, 191, 255, 0.3);
+    z-index: 1;
+}
+
+.hero-card.disabled .hero-card-image img {
+    filter: grayscale(100%) brightness(0.6);
+}
+
+.hero-card.disabled .hero-card-name {
+    background: rgba(100, 100, 100, 0.3);
+    color: rgba(255, 255, 255, 0.5);
 }
 
 /* Custom scrollbar for hero grid */

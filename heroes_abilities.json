@@ -701,7 +701,7 @@
         },
         {
           "name": "Grup Scrooge",
-          "image": "grup-scrooge.jpg",
+          "image": "grup-scrooge.png",
           "class": "Saboteur",
           "abilities": {
             "main_attack": {
@@ -870,7 +870,7 @@
         },
         {
           "name": "Didgeridon't",
-          "image": "didgeridont.jpg",
+          "image": "digeridon't.jpg",
           "class": "Supporter",
           "abilities": {
             "main_attack": {
@@ -978,7 +978,7 @@
         },
         {
           "name": "Shan't Dance",
-          "image": "shant-dance.jpg",
+          "image": "shan't-dance.jpg",
           "class": "Supporter",
           "abilities": {
             "main_attack": {
@@ -1208,7 +1208,7 @@
       "heroes": [
         {
           "name": "Moonhawk",
-          "image": "moonhawk.jpg",
+          "image": "moon-hawk.jpg",
           "class": "Hawktalker",
           "abilities": {
             "main_attack": {

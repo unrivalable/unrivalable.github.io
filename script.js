@@ -306,7 +306,7 @@ const classColors = {
     'Saboteur': { primary: '#AA66FF', secondary: '#FF00FF' },
     'Supporter': { primary: '#00FF88', secondary: '#FFD700' },
     'Controller': { primary: '#FFD700', secondary: '#FF8833' },
-    'Hawktalker': { primary: '#00FFFF', secondary: '#AA66FF' }
+    'Hawktalker': { primary: '#FF1493', secondary: '#FF69B4' }
 };
 
 // Embedded heroes data - loaded from heroes_abilities.json
@@ -1013,7 +1013,7 @@ const heroesData = {
         },
         {
           "name": "Grup Scrooge",
-          "image": "grup-scrooge.jpg",
+          "image": "grup-scrooge.png",
           "class": "Saboteur",
           "abilities": {
             "main_attack": {
@@ -1182,7 +1182,7 @@ const heroesData = {
         },
         {
           "name": "Didgeridon't",
-          "image": "didgeridont.jpg",
+          "image": "digeridon't.jpg",
           "class": "Supporter",
           "abilities": {
             "main_attack": {
@@ -1290,7 +1290,7 @@ const heroesData = {
         },
         {
           "name": "Shan't Dance",
-          "image": "shant-dance.jpg",
+          "image": "shan't-dance.jpg",
           "class": "Supporter",
           "abilities": {
             "main_attack": {
@@ -1520,7 +1520,7 @@ const heroesData = {
       "heroes": [
         {
           "name": "Moonhawk",
-          "image": "moonhawk.jpg",
+          "image": "moon-hawk.jpg",
           "class": "Hawktalker",
           "abilities": {
             "main_attack": {
@@ -1577,6 +1577,30 @@ const heroesData = {
   ]
 };
 
+// Helper function to check if hero has any abilities
+function heroHasAbilities(hero) {
+    if (!hero.abilities) return false;
+
+    // Handle string format (old format)
+    if (typeof hero.abilities === 'string') {
+        return hero.abilities.trim().length > 0;
+    }
+
+    // Handle object format (new format)
+    if (typeof hero.abilities === 'object') {
+        // Check if any ability has a name or description
+        const hasMainAttack = hero.abilities.main_attack && (hero.abilities.main_attack.name || hero.abilities.main_attack.description);
+        const hasPassive = hero.abilities.passive && (hero.abilities.passive.name || hero.abilities.passive.description);
+        const hasAbility1 = hero.abilities.ability_1 && (hero.abilities.ability_1.name || hero.abilities.ability_1.description);
+        const hasAbility2 = hero.abilities.ability_2 && (hero.abilities.ability_2.name || hero.abilities.ability_2.description);
+        const hasSuper = hero.abilities.super && (hero.abilities.super.name || hero.abilities.super.description);
+
+        return hasMainAttack || hasPassive || hasAbility1 || hasAbility2 || hasSuper;
+    }
+
+    return false;
+}
+
 function buildHeroCarousel() {
     const carouselContent = document.getElementById('hero-carousel-content');
     const indicatorsContainer = document.getElementById('hero-carousel-indicators');
@@ -1606,8 +1630,12 @@ function buildHeroCarousel() {
         // Build hero grid HTML
         let heroGridHTML = '';
         heroClass.heroes.forEach(hero => {
+            const hasAbilities = heroHasAbilities(hero);
+            const isCaptainChristingle = hero.name === 'Captain Christingle (Seasonal)';
+            // Don't disable Captain Christingle even though he has abilities (he's seasonal)
+            const disabledClass = (hasAbilities || isCaptainChristingle) ? '' : ' disabled';
             heroGridHTML += `
-                <div class="hero-card" data-hero="${hero.name}" data-class="${className}">
+                <div class="hero-card${disabledClass}" data-hero="${hero.name}" data-class="${className}">
                     <div class="hero-card-image">
                         <img src="images/heroes-thumbnails/${hero.image}" alt="${hero.name}">
                     </div>
@@ -1646,7 +1674,13 @@ function buildHeroCarousel() {
     const heroCards = document.querySelectorAll('.hero-card');
     heroCards.forEach(card => {
         card.addEventListener('click', (e) => {
+            // Don't open modal for disabled heroes (unless it's Captain Christingle)
             const heroName = card.getAttribute('data-hero');
+
+            if (card.classList.contains('disabled') && heroName !== 'Captain Christingle (Seasonal)') {
+                return; // Do nothing for disabled heroes
+            }
+
             const className = card.getAttribute('data-class');
 
             // Find hero data
@@ -1841,6 +1875,9 @@ function openHeroModal(hero, className) {
     // Format abilities using the existing helper function
     modalAbilities.innerHTML = formatAbilities(hero.abilities);
 
+    // Check if this is Captain Christingle (Seasonal)
+    const isCaptainChristingle = hero.name === 'Captain Christingle (Seasonal)';
+
     // Show modal
     modal.classList.add('active');
 
@@ -1851,8 +1888,25 @@ function openHeroModal(hero, className) {
     const newCancelBtn = cancelBtn.cloneNode(true);
     cancelBtn.parentNode.replaceChild(newCancelBtn, cancelBtn);
 
+    // Handle Captain Christingle seasonal restriction
+    if (isCaptainChristingle) {
+        newSelectBtn.disabled = true;
+        newSelectBtn.classList.add('disabled');
+        newSelectBtn.textContent = 'ONLY AVAILABLE DURING CHRISTINGLE SEASON';
+        newSelectBtn.style.cursor = 'not-allowed';
+    } else {
+        newSelectBtn.disabled = false;
+        newSelectBtn.classList.remove('disabled');
+        newSelectBtn.textContent = 'SELECT';
+        newSelectBtn.style.cursor = 'pointer';
+    }
+
     // Add new listeners
     newSelectBtn.addEventListener('click', () => {
+        if (isCaptainChristingle) {
+            return; // Do nothing if it's Captain Christingle
+        }
+
         selectedHero = { name: hero.name, class: className };
         console.log(`Selected hero via modal: ${hero.name} (${className})`);
 
