@@ -2122,6 +2122,15 @@ async function startGame() {
     // Check if this is a free-for-all mode (campaign or story)
     const isFreeForAll = selectedGameMode === 'campaign' || selectedGameMode === 'story';
 
+    // Get player's class colors and icon
+    const playerClassColors = classColors[selectedHero.class];
+    let playerClassIcon = '';
+    heroesData.classes.forEach(c => {
+        if (c.name === selectedHero.class) {
+            playerClassIcon = c.icon;
+        }
+    });
+
     if (isFreeForAll) {
         // Show FFA container, hide teams container
         teamsContainer.style.display = 'none';
@@ -2130,7 +2139,10 @@ async function startGame() {
         // Add Player 1 at the top
         const player1Slot = document.createElement('div');
         player1Slot.className = 'player-slot highlight';
+        player1Slot.style.background = `linear-gradient(135deg, ${playerClassColors.primary}50, ${playerClassColors.secondary}50)`;
+        player1Slot.style.borderColor = playerClassColors.primary;
         player1Slot.innerHTML = `
+            <img src="images/classes/${playerClassIcon}" alt="${selectedHero.class}" class="player-class-icon">
             <img src="images/heroes-thumbnails/${playerHeroObj.image}" alt="${selectedHero.name}" class="player-thumbnail">
             <div class="player-name">Player 1</div>
         `;
@@ -2143,7 +2155,10 @@ async function startGame() {
         // Add Player 1 at the top of allied team
         const player1Slot = document.createElement('div');
         player1Slot.className = 'player-slot highlight';
+        player1Slot.style.background = `linear-gradient(135deg, ${playerClassColors.primary}50, ${playerClassColors.secondary}50)`;
+        player1Slot.style.borderColor = playerClassColors.primary;
         player1Slot.innerHTML = `
+            <img src="images/classes/${playerClassIcon}" alt="${selectedHero.class}" class="player-class-icon">
             <img src="images/heroes-thumbnails/${playerHeroObj.image}" alt="${selectedHero.name}" class="player-thumbnail">
             <div class="player-name">Player 1</div>
         `;
@@ -2152,13 +2167,13 @@ async function startGame() {
 
     const totalPlayers = isFreeForAll ? (teamConfig.allied - 1) : ((teamConfig.allied - 1) + teamConfig.enemy);
 
-    // Get all available heroes with their names (only those that are selectable)
+    // Get all available heroes with their names, classes, and class icons (only those that are selectable)
     const allHeroes = [];
     heroesData.classes.forEach(c => {
         c.heroes.forEach(h => {
             // Only include heroes that are available for selection
             if (heroIsAvailable(h)) {
-                allHeroes.push({ name: h.name, image: h.image });
+                allHeroes.push({ name: h.name, image: h.image, heroClass: c.name, classIcon: c.icon });
             }
         });
     });
@@ -2182,10 +2197,14 @@ async function startGame() {
             ffaHeroes.push(randomHero.name);
 
             const playerName = shuffledNames[playersAdded % shuffledNames.length];
+            const heroClassColors = classColors[randomHero.heroClass];
 
             const slot = document.createElement('div');
             slot.className = 'player-slot';
+            slot.style.background = `linear-gradient(135deg, ${heroClassColors.primary}50, ${heroClassColors.secondary}50)`;
+            slot.style.borderColor = heroClassColors.primary;
             slot.innerHTML = `
+                <img src="images/classes/${randomHero.classIcon}" alt="${randomHero.heroClass}" class="player-class-icon">
                 <img src="images/heroes-thumbnails/${randomHero.image}" alt="Player" class="player-thumbnail">
                 <div class="player-name">${playerName}</div>
             `;
@@ -2249,8 +2268,12 @@ async function startGame() {
                 usedAlliedHeroes.push(randomHero.image);
 
                 const playerName = shuffledNames[playerIndex % shuffledNames.length];
+                const heroClassColors = classColors[randomHero.heroClass];
 
+                slot.style.background = `linear-gradient(135deg, ${heroClassColors.primary}50, ${heroClassColors.secondary}50)`;
+                slot.style.borderColor = heroClassColors.primary;
                 slot.innerHTML = `
+                    <img src="images/classes/${randomHero.classIcon}" alt="${randomHero.heroClass}" class="player-class-icon">
                     <img src="images/heroes-thumbnails/${randomHero.image}" alt="Player" class="player-thumbnail">
                     <div class="player-name">${playerName}</div>
                 `;
@@ -2263,8 +2286,12 @@ async function startGame() {
                 enemyTeamHeroes.push(randomHero.name); // Store name for death messages
 
                 const playerName = shuffledNames[playerIndex % shuffledNames.length];
+                const heroClassColors = classColors[randomHero.heroClass];
 
+                slot.style.background = `linear-gradient(135deg, ${heroClassColors.primary}50, ${heroClassColors.secondary}50)`;
+                slot.style.borderColor = heroClassColors.primary;
                 slot.innerHTML = `
+                    <img src="images/classes/${randomHero.classIcon}" alt="${randomHero.heroClass}" class="player-class-icon">
                     <div class="player-name">${playerName}</div>
                     <div class="player-question">?</div>
                 `;
