@@ -2414,6 +2414,12 @@ async function showGameOver() {
     const killerContainer = document.getElementById('killer-container');
     const battleLog = document.getElementById('battle-log');
     const teamScoreEl = document.getElementById('team-score');
+    const simulationStatusEl = document.getElementById('simulation-status');
+
+    // Set initial status to game mode name
+    const modeName = gameModeNames[selectedGameMode] || "GAME SIMULATION";
+    simulationStatusEl.textContent = modeName.toUpperCase() + " RUNNING...";
+    simulationStatusEl.className = "game-over-title simulation-running";
 
     deathMessageEl.textContent = "SIMULATING MATCH...";
     killerContainer.style.display = 'none';
@@ -2512,9 +2518,13 @@ async function showGameOver() {
         if (playerWon) {
             deathMessageEl.textContent = `🎉 VICTORY! ${survivors.join(', ')} survived!`;
             killerContainer.style.display = 'none';
+            simulationStatusEl.textContent = "VICTORY!";
+            simulationStatusEl.className = "game-over-title simulation-victory";
         } else {
             deathMessageEl.textContent = `💀 DEFEAT! The enemy team claims victory.`;
             killerContainer.style.display = 'none';
+            simulationStatusEl.textContent = "DEFEAT!";
+            simulationStatusEl.className = "game-over-title simulation-defeat";
         }
 
     } catch (error) {
