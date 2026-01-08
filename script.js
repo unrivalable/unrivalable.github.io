@@ -2343,6 +2343,49 @@ async function startGame() {
     }
 }
 
+// Get the class of a hero by name
+function getHeroClass(heroName) {
+    for (const heroClass of heroesData.classes) {
+        for (const hero of heroClass.heroes) {
+            if (hero.name === heroName) {
+                return heroClass.name;
+            }
+        }
+    }
+    return null;
+}
+
+// Calculate win probability based on class matchup
+function getClassAdvantage(attackerClass, defenderClass) {
+    // Class advantage chain:
+    // Destroyer > Defender > Saboteur > Supporter > Controller > Destroyer
+    // Hawktalker has 10% chance against everyone
+
+    if (attackerClass === 'Hawktalker') return 0.10;
+    if (defenderClass === 'Hawktalker') return 0.90;
+
+    const advantages = {
+        'Destroyer': 'Defender',
+        'Defender': 'Saboteur',
+        'Saboteur': 'Supporter',
+        'Supporter': 'Controller',
+        'Controller': 'Destroyer'
+    };
+
+    // Check if attacker has advantage
+    if (advantages[attackerClass] === defenderClass) {
+        return 0.80; // 80% chance for advantaged class
+    }
+
+    // Check if defender has advantage
+    if (advantages[defenderClass] === attackerClass) {
+        return 0.20; // 20% chance if at disadvantage
+    }
+
+    // No advantage - 50/50
+    return 0.50;
+}
+
 // Simulate an entire 5v5 match and return chronological death events
 function simulateMatch(playerTeam, enemyTeam, deathMessages) {
     const deaths = [];
@@ -2353,51 +2396,67 @@ function simulateMatch(playerTeam, enemyTeam, deathMessages) {
 
     // Continue until one team is eliminated
     while (alive.player.length > 0 && alive.enemy.length > 0) {
-        // Randomly pick an attacker from any alive character
-        const allAlive = [
-            ...alive.player.map(name => ({ name, team: 'player' })),
-            ...alive.enemy.map(name => ({ name, team: 'enemy' }))
-        ];
+        // Pick one random fighter from each team for a duel
+        const playerFighter = alive.player[Math.floor(Math.random() * alive.player.length)];
+        const enemyFighter = alive.enemy[Math.floor(Math.random() * alive.enemy.length)];
 
-        const attacker = allAlive[Math.floor(Math.random() * allAlive.length)];
+        // Get their classes
+        const playerClass = getHeroClass(playerFighter);
+        const enemyClass = getHeroClass(enemyFighter);
 
-        // Pick a random victim from the opposing team
-        const opposingTeam = attacker.team === 'player' ? alive.enemy : alive.player;
-        const victim = opposingTeam[Math.floor(Math.random() * opposingTeam.length)];
+        // Calculate probability that player fighter wins
+        const playerWinChance = getClassAdvantage(playerClass, enemyClass);
+
+        // Determine winner based on probability
+        const playerWins = Math.random() < playerWinChance;
+
+        // Set attacker and victim based on who won
+        let attacker, victim, attackerTeam, victimTeam;
+        if (playerWins) {
+            attacker = playerFighter;
+            victim = enemyFighter;
+            attackerTeam = 'player';
+            victimTeam = 'enemy';
+        } else {
+            attacker = enemyFighter;
+            victim = playerFighter;
+            attackerTeam = 'enemy';
+            victimTeam = 'player';
+        }
 
         // Get a random ability/death message for this killer
         let ability = null;
         let message = null;
 
-        if (deathMessages[attacker.name]) {
-            const abilities = Object.keys(deathMessages[attacker.name]);
+        if (deathMessages[attacker]) {
+            const abilities = Object.keys(deathMessages[attacker]);
             if (abilities.length > 0) {
                 ability = abilities[Math.floor(Math.random() * abilities.length)];
-                message = deathMessages[attacker.name][ability];
+                message = deathMessages[attacker][ability];
             }
         }
 
         // If no death message, create a generic one
         if (!message) {
             ability = "Unknown Attack";
-            message = `${attacker.name} killed ${victim}. No witty message available.`;
+            message = `${attacker} killed ${victim}. No witty message available.`;
         }
 
         // Record the death
         deaths.push({
-            killer: attacker.name,
+            killer: attacker,
             victim: victim,
             ability: ability,
             message: message,
-            killerTeam: attacker.team,
-            victimTeam: attacker.team === 'player' ? 'enemy' : 'player'
+            killerTeam: attackerTeam,
+            victimTeam: victimTeam
         });
 
         // Remove victim from alive list
-        if (attacker.team === 'player') {
-            alive.enemy = alive.enemy.filter(name => name !== victim);
-        } else {
+        if (victimTeam === 'player') {
             alive.player = alive.player.filter(name => name !== victim);
+        } else {
+            alive.enemy = alive.enemy.filter(name => name !== victim);
         }
     }
 
