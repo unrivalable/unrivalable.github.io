@@ -315,3 +315,100 @@
     text-shadow: 1px 1px 0 var(--comic-black);
     letter-spacing: 1px;
 }
+
+/* Team Score Display */
+.team-score {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem;
+    color: var(--comic-white);
+    text-shadow: 2px 2px 0 var(--comic-black);
+    text-align: center;
+    margin: 20px 0;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.5);
+    border: 3px solid var(--comic-cyan);
+    letter-spacing: 2px;
+}
+
+/* Battle Log */
+.battle-log {
+    max-width: 600px;
+    max-height: 200px;
+    margin: 20px auto;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.7);
+    border: 4px solid var(--comic-cyan);
+    overflow-y: auto;
+    font-family: 'Courier New', monospace;
+}
+
+.battle-log-entry {
+    padding: 8px;
+    margin: 5px 0;
+    background: rgba(0, 191, 255, 0.1);
+    border-left: 3px solid var(--comic-cyan);
+    font-size: 0.9rem;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.battle-log-entry .death-number {
+    color: var(--comic-yellow);
+    font-weight: bold;
+    min-width: 30px;
+}
+
+.battle-log-entry .victim {
+    color: var(--comic-red);
+    font-weight: bold;
+}
+
+.battle-log-entry .victim.player {
+    color: var(--comic-cyan);
+}
+
+.battle-log-entry .killed-by {
+    color: rgba(255, 255, 255, 0.6);
+    font-style: italic;
+}
+
+.battle-log-entry .killer {
+    color: var(--comic-purple);
+    font-weight: bold;
+}
+
+.battle-log-entry .killer.player {
+    color: var(--comic-green);
+}
+
+/* Custom scrollbar for battle log */
+.battle-log::-webkit-scrollbar {
+    width: 8px;
+}
+
+.battle-log::-webkit-scrollbar-track {
+    background: rgba(0, 191, 255, 0.1);
+    border-radius: 4px;
+}
+
+.battle-log::-webkit-scrollbar-thumb {
+    background: var(--comic-cyan);
+    border-radius: 4px;
+}
+
+.battle-log::-webkit-scrollbar-thumb:hover {
+    background: var(--comic-blue);
+}

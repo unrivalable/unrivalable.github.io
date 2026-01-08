@@ -2168,8 +2168,9 @@ async function startGame() {
 
             // Check if all players have joined
             if (playersAdded >= totalPlayers) {
-                // Store all other players for death messages (exclude player's own hero)
-                window.currentEnemyTeam = ffaHeroes;
+                // For FFA: player team is just the player, everyone else is enemy
+                window.currentPlayerTeam = [playerHeroObj.name];
+                window.currentEnemyTeam = ffaHeroes.filter(name => name !== playerHeroObj.name);
 
                 setTimeout(() => {
                     startCountdown();
@@ -2187,6 +2188,7 @@ async function startGame() {
         // Team-based mode
         const usedAlliedHeroes = [playerHeroObj.image]; // Start with player's hero
         const usedEnemyHeroes = [];
+        const alliedTeamHeroes = [playerHeroObj.name]; // Store allied hero names (start with player)
         const enemyTeamHeroes = []; // Store enemy hero names for death messages
 
         let alliedPlayersAdded = 0;
@@ -2220,6 +2222,7 @@ async function startGame() {
                 const availableHeroes = allHeroes.filter(h => !usedAlliedHeroes.includes(h.image));
                 const randomHero = availableHeroes[Math.floor(Math.random() * availableHeroes.length)];
                 usedAlliedHeroes.push(randomHero.image);
+                alliedTeamHeroes.push(randomHero.name); // Store name for battle simulation
 
                 const playerName = shuffledNames[playerIndex % shuffledNames.length];
 
@@ -2248,7 +2251,8 @@ async function startGame() {
 
             // Check if all players have joined
             if ((alliedPlayersAdded + enemyPlayersAdded) >= totalPlayers) {
-                // Store enemy team heroes globally for death messages
+                // Store both teams globally for battle simulation
+                window.currentPlayerTeam = alliedTeamHeroes;
                 window.currentEnemyTeam = enemyTeamHeroes;
 
                 setTimeout(() => {
@@ -2285,72 +2289,183 @@ async function startGame() {
     }
 }
 
+// Simulate an entire 5v5 match and return chronological death events
+function simulateMatch(playerTeam, enemyTeam, deathMessages) {
+    const deaths = [];
+    const alive = {
+        player: [...playerTeam],
+        enemy: [...enemyTeam]
+    };
+
+    // Continue until one team is eliminated
+    while (alive.player.length > 0 && alive.enemy.length > 0) {
+        // Randomly pick an attacker from any alive character
+        const allAlive = [
+            ...alive.player.map(name => ({ name, team: 'player' })),
+            ...alive.enemy.map(name => ({ name, team: 'enemy' }))
+        ];
+
+        const attacker = allAlive[Math.floor(Math.random() * allAlive.length)];
+
+        // Pick a random victim from the opposing team
+        const opposingTeam = attacker.team === 'player' ? alive.enemy : alive.player;
+        const victim = opposingTeam[Math.floor(Math.random() * opposingTeam.length)];
+
+        // Get a random ability/death message for this killer
+        let ability = null;
+        let message = null;
+
+        if (deathMessages[attacker.name]) {
+            const abilities = Object.keys(deathMessages[attacker.name]);
+            if (abilities.length > 0) {
+                ability = abilities[Math.floor(Math.random() * abilities.length)];
+                message = deathMessages[attacker.name][ability];
+            }
+        }
+
+        // If no death message, create a generic one
+        if (!message) {
+            ability = "Unknown Attack";
+            message = `${attacker.name} killed ${victim}. No witty message available.`;
+        }
+
+        // Record the death
+        deaths.push({
+            killer: attacker.name,
+            victim: victim,
+            ability: ability,
+            message: message,
+            killerTeam: attacker.team,
+            victimTeam: attacker.team === 'player' ? 'enemy' : 'player'
+        });
+
+        // Remove victim from alive list
+        if (attacker.team === 'player') {
+            alive.enemy = alive.enemy.filter(name => name !== victim);
+        } else {
+            alive.player = alive.player.filter(name => name !== victim);
+        }
+    }
+
+    // Determine winner
+    const playerWon = alive.player.length > 0;
+
+    return { deaths, playerWon, survivors: playerWon ? alive.player : alive.enemy };
+}
+
 async function showGameOver() {
     transitionToScreen('loading-screen', 'game-over-screen');
 
     const deathMessageEl = document.getElementById('death-message');
     const killerContainer = document.getElementById('killer-container');
-    const killerImage = document.getElementById('killer-image');
-    const killerNameDisplay = document.getElementById('killer-name');
+    const battleLog = document.getElementById('battle-log');
+    const teamScoreEl = document.getElementById('team-score');
 
-    deathMessageEl.textContent = "Loading death message...";
+    deathMessageEl.textContent = "SIMULATING MATCH...";
     killerContainer.style.display = 'none';
-
-    // 5% chance to win instead of dying
-    if (Math.random() < 0.05) {
-        deathMessageEl.textContent = "You win! That doesn't happen very often...";
-        return;
-    }
+    if (battleLog) battleLog.innerHTML = '';
+    if (teamScoreEl) teamScoreEl.textContent = '';
 
     try {
         const response = await fetch('death_messages.json');
         if (!response.ok) throw new Error('Failed to load death messages');
         const deathMessages = await response.json();
 
-        // Get enemy team heroes (stored during loading screen)
+        // Get teams (stored during loading screen)
+        const playerTeam = window.currentPlayerTeam || [];
         const enemyTeam = window.currentEnemyTeam || [];
 
-        // Filter to only enemy team heroes that have death messages
-        const enemyHeroesWithMessages = enemyTeam.filter(name => deathMessages[name]);
-
-        if (enemyHeroesWithMessages.length === 0) {
-             deathMessageEl.textContent = "You died alone.";
-             return;
+        if (playerTeam.length === 0 || enemyTeam.length === 0) {
+            deathMessageEl.textContent = "Error: Teams not loaded properly.";
+            return;
         }
 
-        // Randomly select a hero from the enemy team
-        const randomHeroName = enemyHeroesWithMessages[Math.floor(Math.random() * enemyHeroesWithMessages.length)];
-        const heroMessages = deathMessages[randomHeroName];
+        // Simulate the entire match
+        const { deaths, playerWon, survivors } = simulateMatch(playerTeam, enemyTeam, deathMessages);
 
-        // Randomly select a message from that hero
-        const messageKeys = Object.keys(heroMessages);
-        const randomMessageKey = messageKeys[Math.floor(Math.random() * messageKeys.length)];
-        const message = heroMessages[randomMessageKey];
+        // Show initial state
+        deathMessageEl.textContent = "THE BATTLE BEGINS...";
+        if (teamScoreEl) {
+            teamScoreEl.textContent = `PLAYER TEAM: ${playerTeam.length} | ENEMY TEAM: ${enemyTeam.length}`;
+        }
 
-        deathMessageEl.textContent = message;
+        await new Promise(resolve => setTimeout(resolve, 2000));
 
-        // Find killer image
-        let killerHeroObj = null;
-        heroesData.classes.forEach(c => {
-            c.heroes.forEach(h => {
-                if (h.name === randomHeroName) {
-                    killerHeroObj = h;
-                }
+        // Dramatically reveal each death in sequence
+        let playerAlive = playerTeam.length;
+        let enemyAlive = enemyTeam.length;
+
+        for (let i = 0; i < deaths.length; i++) {
+            const death = deaths[i];
+
+            // Update alive counters
+            if (death.victimTeam === 'player') {
+                playerAlive--;
+            } else {
+                enemyAlive--;
+            }
+
+            // Update score
+            if (teamScoreEl) {
+                teamScoreEl.textContent = `PLAYER TEAM: ${playerAlive} | ENEMY TEAM: ${enemyAlive}`;
+            }
+
+            // Show death message
+            deathMessageEl.textContent = death.message;
+
+            // Show killer image
+            let killerHeroObj = null;
+            heroesData.classes.forEach(c => {
+                c.heroes.forEach(h => {
+                    if (h.name === death.killer) {
+                        killerHeroObj = h;
+                    }
+                });
             });
-        });
 
-        if (killerHeroObj) {
-            killerImage.src = `images/heroes-thumbnails/${killerHeroObj.image}`;
-            killerNameDisplay.textContent = randomHeroName;
-            killerContainer.style.display = 'flex';
+            if (killerHeroObj) {
+                const killerImage = document.getElementById('killer-image');
+                const killerNameDisplay = document.getElementById('killer-name');
+                killerImage.src = `images/heroes-thumbnails/${killerHeroObj.image}`;
+                killerNameDisplay.textContent = death.killer;
+                killerContainer.style.display = 'flex';
+            }
+
+            // Add to battle log if it exists
+            if (battleLog) {
+                const logEntry = document.createElement('div');
+                logEntry.className = 'battle-log-entry';
+                logEntry.innerHTML = `
+                    <span class="death-number">#${i + 1}</span>
+                    <span class="victim ${death.victimTeam}">${death.victim}</span>
+                    <span class="killed-by">killed by</span>
+                    <span class="killer ${death.killerTeam}">${death.killer}</span>
+                `;
+                battleLog.appendChild(logEntry);
+
+                // Scroll to bottom
+                battleLog.scrollTop = battleLog.scrollHeight;
+            }
+
+            // Pause between deaths (shorter for later deaths to build momentum)
+            const delay = Math.max(1000, 2500 - (i * 100));
+            await new Promise(resolve => setTimeout(resolve, delay));
+        }
+
+        // Show final result
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        if (playerWon) {
+            deathMessageEl.textContent = `🎉 VICTORY! ${survivors.join(', ')} survived!`;
+            killerContainer.style.display = 'none';
         } else {
-            console.log("Killer image not found for:", randomHeroName);
-            // Optional: Show a default "Unknown" image or just keep hidden
+            deathMessageEl.textContent = `💀 DEFEAT! The enemy team claims victory.`;
+            killerContainer.style.display = 'none';
         }
 
     } catch (error) {
-        console.error("Error loading death messages:", error);
-        deathMessageEl.textContent = "You died. (Error loading specific death message)";
+        console.error("Error in match simulation:", error);
+        deathMessageEl.textContent = "Error simulating match. Please try again.";
     }
 }
 
