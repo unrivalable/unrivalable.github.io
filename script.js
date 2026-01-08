@@ -1039,7 +1039,7 @@ const heroesData = {
           }
         },
         {
-          "name": "Captain Christingle (Seasonal)",
+          "name": "Captain Christingle",
           "image": "captain-christingle.jpg",
           "class": "Saboteur",
           "abilities": {
@@ -1601,6 +1601,21 @@ function heroHasAbilities(hero) {
     return false;
 }
 
+// Helper function to check if hero is available for selection
+function heroIsAvailable(hero) {
+    // Captain Christingle is seasonal and unavailable
+    if (hero.name === 'Captain Christingle') {
+        return false;
+    }
+
+    // Heroes without abilities are unavailable
+    if (!heroHasAbilities(hero)) {
+        return false;
+    }
+
+    return true;
+}
+
 function buildHeroCarousel() {
     const carouselContent = document.getElementById('hero-carousel-content');
     const indicatorsContainer = document.getElementById('hero-carousel-indicators');
@@ -1631,7 +1646,7 @@ function buildHeroCarousel() {
         let heroGridHTML = '';
         heroClass.heroes.forEach(hero => {
             const hasAbilities = heroHasAbilities(hero);
-            const isCaptainChristingle = hero.name === 'Captain Christingle (Seasonal)';
+            const isCaptainChristingle = hero.name === 'Captain Christingle';
             // Don't disable Captain Christingle even though he has abilities (he's seasonal)
             const disabledClass = (hasAbilities || isCaptainChristingle) ? '' : ' disabled';
             heroGridHTML += `
@@ -1677,7 +1692,7 @@ function buildHeroCarousel() {
             // Don't open modal for disabled heroes (unless it's Captain Christingle)
             const heroName = card.getAttribute('data-hero');
 
-            if (card.classList.contains('disabled') && heroName !== 'Captain Christingle (Seasonal)') {
+            if (card.classList.contains('disabled') && heroName !== 'Captain Christingle') {
                 return; // Do nothing for disabled heroes
             }
 
@@ -1875,8 +1890,8 @@ function openHeroModal(hero, className) {
     // Format abilities using the existing helper function
     modalAbilities.innerHTML = formatAbilities(hero.abilities);
 
-    // Check if this is Captain Christingle (Seasonal)
-    const isCaptainChristingle = hero.name === 'Captain Christingle (Seasonal)';
+    // Check if this is Captain Christingle
+    const isCaptainChristingle = hero.name === 'Captain Christingle';
 
     // Show modal
     modal.classList.add('active');
@@ -1892,7 +1907,7 @@ function openHeroModal(hero, className) {
     if (isCaptainChristingle) {
         newSelectBtn.disabled = true;
         newSelectBtn.classList.add('disabled');
-        newSelectBtn.textContent = 'ONLY AVAILABLE DURING CHRISTINGLE SEASON';
+        newSelectBtn.textContent = 'UNAVAILABLE';
         newSelectBtn.style.cursor = 'not-allowed';
     } else {
         newSelectBtn.disabled = false;
@@ -1958,14 +1973,20 @@ const loadingHints = [
     "Shorby eats raw fear for brunch",
     "See Dr. Acula if you need healing",
     "The Great Gatsby loves burgers",
-    "You can hide from Botany Beth in the dumpster",
+    "You can hide from Botany Beth in the dumpsters",
     "Winter Wondergirl starts with less voters in campaign mode",
-    "Destroying ice blocks grants you the satisfaction of being stronger than and ice block",
-    "You are bad and will probably lose",
+    "Careful next time you're at a spelling bee. There could be a nuke under it",
     "Cornelius Crime must be Stopped.",
     "Brain Freeze can eat clowns to regain health",
     "The Y-guys have special team up abilities",
-    "WAAAA HEEYA!!"
+    "WAAAA HEEYA!!",
+    "To Rapt or Not to rapt",
+    "make sure to keep your mouth closed to ward off unwanted ginks",
+    "Your lucky he's benevolent",
+    "Belt Tungus is the champion of Lickionary",
+    "Blubber? I barely know her",
+    "If your being rivaled your doing something wrong",
+    "Watch out, you never know if Gink 50 truly is at 50 ginks"
 ];
 
 // Random Selection Function
@@ -1975,10 +1996,13 @@ function randomSelection() {
     heroesData.classes.forEach(heroClass => {
         if (heroClass.hero_count > 0) {
             heroClass.heroes.forEach(hero => {
-                allHeroes.push({
-                    hero: hero,
-                    className: heroClass.name
-                });
+                // Only include heroes that are available for selection
+                if (heroIsAvailable(hero)) {
+                    allHeroes.push({
+                        hero: hero,
+                        className: heroClass.name
+                    });
+                }
             });
         }
     });
@@ -2098,6 +2122,15 @@ async function startGame() {
     // Check if this is a free-for-all mode (campaign or story)
     const isFreeForAll = selectedGameMode === 'campaign' || selectedGameMode === 'story';
 
+    // Get player's class colors and icon
+    const playerClassColors = classColors[selectedHero.class];
+    let playerClassIcon = '';
+    heroesData.classes.forEach(c => {
+        if (c.name === selectedHero.class) {
+            playerClassIcon = c.icon;
+        }
+    });
+
     if (isFreeForAll) {
         // Show FFA container, hide teams container
         teamsContainer.style.display = 'none';
@@ -2106,7 +2139,10 @@ async function startGame() {
         // Add Player 1 at the top
         const player1Slot = document.createElement('div');
         player1Slot.className = 'player-slot highlight';
+        player1Slot.style.background = `linear-gradient(135deg, ${playerClassColors.primary}50, ${playerClassColors.secondary}50)`;
+        player1Slot.style.borderColor = playerClassColors.primary;
         player1Slot.innerHTML = `
+            <img src="images/classes/${playerClassIcon}" alt="${selectedHero.class}" class="player-class-icon">
             <img src="images/heroes-thumbnails/${playerHeroObj.image}" alt="${selectedHero.name}" class="player-thumbnail">
             <div class="player-name">Player 1</div>
         `;
@@ -2119,7 +2155,10 @@ async function startGame() {
         // Add Player 1 at the top of allied team
         const player1Slot = document.createElement('div');
         player1Slot.className = 'player-slot highlight';
+        player1Slot.style.background = `linear-gradient(135deg, ${playerClassColors.primary}50, ${playerClassColors.secondary}50)`;
+        player1Slot.style.borderColor = playerClassColors.primary;
         player1Slot.innerHTML = `
+            <img src="images/classes/${playerClassIcon}" alt="${selectedHero.class}" class="player-class-icon">
             <img src="images/heroes-thumbnails/${playerHeroObj.image}" alt="${selectedHero.name}" class="player-thumbnail">
             <div class="player-name">Player 1</div>
         `;
@@ -2128,11 +2167,14 @@ async function startGame() {
 
     const totalPlayers = isFreeForAll ? (teamConfig.allied - 1) : ((teamConfig.allied - 1) + teamConfig.enemy);
 
-    // Get all available heroes with their names
+    // Get all available heroes with their names, classes, and class icons (only those that are selectable)
     const allHeroes = [];
     heroesData.classes.forEach(c => {
         c.heroes.forEach(h => {
-            allHeroes.push({ name: h.name, image: h.image });
+            // Only include heroes that are available for selection
+            if (heroIsAvailable(h)) {
+                allHeroes.push({ name: h.name, image: h.image, heroClass: c.name, classIcon: c.icon });
+            }
         });
     });
 
@@ -2155,10 +2197,14 @@ async function startGame() {
             ffaHeroes.push(randomHero.name);
 
             const playerName = shuffledNames[playersAdded % shuffledNames.length];
+            const heroClassColors = classColors[randomHero.heroClass];
 
             const slot = document.createElement('div');
             slot.className = 'player-slot';
+            slot.style.background = `linear-gradient(135deg, ${heroClassColors.primary}50, ${heroClassColors.secondary}50)`;
+            slot.style.borderColor = heroClassColors.primary;
             slot.innerHTML = `
+                <img src="images/classes/${randomHero.classIcon}" alt="${randomHero.heroClass}" class="player-class-icon">
                 <img src="images/heroes-thumbnails/${randomHero.image}" alt="Player" class="player-thumbnail">
                 <div class="player-name">${playerName}</div>
             `;
@@ -2225,8 +2271,12 @@ async function startGame() {
                 alliedTeamHeroes.push(randomHero.name); // Store name for battle simulation
 
                 const playerName = shuffledNames[playerIndex % shuffledNames.length];
+                const heroClassColors = classColors[randomHero.heroClass];
 
+                slot.style.background = `linear-gradient(135deg, ${heroClassColors.primary}50, ${heroClassColors.secondary}50)`;
+                slot.style.borderColor = heroClassColors.primary;
                 slot.innerHTML = `
+                    <img src="images/classes/${randomHero.classIcon}" alt="${randomHero.heroClass}" class="player-class-icon">
                     <img src="images/heroes-thumbnails/${randomHero.image}" alt="Player" class="player-thumbnail">
                     <div class="player-name">${playerName}</div>
                 `;
@@ -2239,8 +2289,12 @@ async function startGame() {
                 enemyTeamHeroes.push(randomHero.name); // Store name for death messages
 
                 const playerName = shuffledNames[playerIndex % shuffledNames.length];
+                const heroClassColors = classColors[randomHero.heroClass];
 
+                slot.style.background = `linear-gradient(135deg, ${heroClassColors.primary}50, ${heroClassColors.secondary}50)`;
+                slot.style.borderColor = heroClassColors.primary;
                 slot.innerHTML = `
+                    <img src="images/classes/${randomHero.classIcon}" alt="${randomHero.heroClass}" class="player-class-icon">
                     <div class="player-name">${playerName}</div>
                     <div class="player-question">?</div>
                 `;

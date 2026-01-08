@@ -90,23 +90,46 @@
 }
 
 .player-slots {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
 }
 
 .player-slot {
     width: 100%;
-    height: 40px;
+    height: 80px;
     display: flex;
+    flex-direction: row;
     align-items: center;
-    gap: 8px;
-    padding: 5px;
+    justify-content: flex-start;
+    gap: 0;
+    padding: 0;
     background: rgba(10, 22, 40, 0.8);
     border: 3px solid var(--comic-blue);
     box-shadow: 3px 3px 0 var(--comic-black);
     transform: rotate(-1deg);
     animation: slideIn 0.3s ease-out;
+    overflow: hidden;
+    position: relative;
+}
+
+.player-class-icon {
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 60px;
+    height: 60px;
+    opacity: 0.2;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.player-slot > .player-thumbnail,
+.player-slot > .player-name,
+.player-slot > .player-question {
+    position: relative;
+    z-index: 1;
 }
 
 .player-slot.highlight {
@@ -129,7 +152,6 @@
 
 .player-slot.enemy {
     transform: rotate(1deg);
-    justify-content: flex-end;
 }
 
 .player-slot.enemy.animate {
@@ -148,33 +170,39 @@
 }
 
 .player-thumbnail {
-    width: 30px;
-    height: 30px;
+    width: 74px;
+    height: 74px;
     object-fit: cover;
-    border: 2px solid var(--comic-cyan);
-    box-shadow: 0 0 5px rgba(0, 191, 255, 0.5);
+    border-right: 2px solid var(--comic-cyan);
+    flex-shrink: 0;
 }
 
 .player-question {
-    width: 30px;
-    height: 30px;
+    width: 74px;
+    height: 74px;
     display: flex;
     align-items: center;
     justify-content: center;
     background: rgba(0, 0, 0, 0.5);
-    border: 2px solid var(--comic-white);
+    border-right: 2px solid var(--comic-white);
     font-family: 'Bangers', cursive;
-    font-size: 1.25rem;
+    font-size: 2.5rem;
     color: var(--comic-white);
     text-shadow: 1px 1px 0 var(--comic-black);
+    flex-shrink: 0;
 }
 
 .player-name {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     color: var(--comic-white);
     text-shadow: 1px 1px 0 var(--comic-black);
     letter-spacing: 0.5px;
+    padding: 0 10px;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .loading-hint {
