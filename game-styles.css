@@ -1,0 +1,326 @@
+/* Gameplay Screen Layout */
+#game-ui-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: calc(100% - 60px); /* Leave room for bottom ticker */
+    padding: 10px;
+    gap: 15px;
+}
+
+.sidebar {
+    width: 200px;
+    background: rgba(10, 22, 40, 0.8);
+    border: 3px solid var(--comic-blue);
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    gap: 10px;
+    overflow-y: auto;
+    box-shadow: var(--shadow-dark);
+}
+
+#team-1-sidebar {
+    border-color: var(--comic-cyan);
+}
+
+#team-2-sidebar {
+    border-color: var(--comic-red);
+}
+
+#center-stage {
+    flex: 1;
+    background: rgba(0, 0, 0, 0.3);
+    border: 4px solid var(--comic-yellow);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.8);
+}
+
+/* Sidebar Heroes */
+.game-hero-card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 5px;
+    border: 2px solid var(--comic-blue);
+    transition: all 0.3s ease;
+}
+
+.game-hero-card img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border: 1px solid var(--comic-white);
+}
+
+.game-hero-name {
+    font-size: 0.9rem;
+    font-family: 'Bebas Neue', sans-serif;
+    color: var(--comic-white);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.game-hero-card.dead {
+    filter: grayscale(100%);
+    opacity: 0.5;
+    border-color: #555;
+    transform: scale(0.95);
+}
+
+/* Bottom Ticker */
+#bottom-ticker {
+    height: 50px;
+    background: var(--comic-black);
+    border-top: 4px solid var(--comic-yellow);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.5);
+}
+
+#ticker-message {
+    font-family: 'Bangers', cursive;
+    font-size: 1.5rem;
+    color: var(--comic-red);
+    text-shadow: 2px 2px 0 var(--comic-white);
+    white-space: nowrap;
+    animation: tickerSlide 0.5s ease-out;
+}
+
+@keyframes tickerSlide {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* Mode Visualizers */
+.mode-visualizer {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+/* Deathmatch Scoreboard */
+#deathmatch-scoreboard {
+    gap: 30px;
+}
+
+.score-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    border: 5px solid;
+    background: rgba(0, 0, 0, 0.8);
+    min-width: 200px;
+}
+
+.score-box.team-1 { border-color: var(--comic-cyan); }
+.score-box.team-2 { border-color: var(--comic-red); }
+
+.score-label {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem;
+    color: var(--comic-white);
+}
+
+.score-value {
+    font-family: 'Bangers', cursive;
+    font-size: 5rem;
+    line-height: 1;
+}
+
+.score-box.team-1 .score-value { color: var(--comic-cyan); text-shadow: 0 0 20px var(--comic-cyan); }
+.score-box.team-2 .score-value { color: var(--comic-red); text-shadow: 0 0 20px var(--comic-red); }
+
+.vs-divider {
+    font-family: 'Bangers', cursive;
+    font-size: 3rem;
+    color: var(--comic-yellow);
+    text-shadow: var(--text-stroke);
+}
+
+.dm-limit {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.2rem;
+    color: var(--comic-yellow);
+    margin-top: 20px;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 5px 15px;
+    border-radius: 5px;
+}
+
+/* Chexico Visualizer */
+.chexico-container {
+    display: flex;
+    gap: 50px;
+    height: 80%;
+    align-items: flex-end;
+}
+
+.statue-progress-container {
+    width: 100px;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    border: 4px solid var(--comic-white);
+    position: relative;
+    display: flex;
+    flex-direction: column-reverse;
+}
+
+.statue-bar {
+    width: 100%;
+    height: 0%;
+    background: linear-gradient(to top, #FFD700, #FFA500);
+    transition: height 0.5s ease;
+}
+
+.statue-icon {
+    font-size: 3rem;
+    position: absolute;
+    top: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+}
+
+.chexico-timer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: var(--comic-black);
+    padding: 15px;
+    border: 3px solid var(--comic-red);
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    justify-content: center;
+    align-self: flex-start; /* Timer at top */
+}
+
+.timer-label {
+    font-family: 'Bebas Neue', sans-serif;
+    color: var(--comic-white);
+    font-size: 1rem;
+}
+
+.timer-value {
+    font-family: 'Bangers', cursive;
+    color: var(--comic-red);
+    font-size: 3rem;
+    text-shadow: 0 0 10px var(--comic-red);
+}
+
+/* Turf War Visualizer */
+.turf-bar-container {
+    width: 80%;
+    height: 60px;
+    background: #333;
+    border: 5px solid var(--comic-white);
+    display: flex;
+    position: relative;
+    box-shadow: var(--shadow-dark);
+}
+
+.turf-bar {
+    height: 100%;
+    transition: width 0.5s cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+.turf-bar.team-1 { background: var(--comic-cyan); }
+.turf-bar.team-2 { background: var(--comic-red); }
+
+.tessarune-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 3rem;
+    z-index: 10;
+    filter: drop-shadow(0 0 10px var(--comic-purple));
+    transition: left 0.5s cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+#turf-status {
+    margin-top: 20px;
+    font-family: 'Bangers', cursive;
+    font-size: 2rem;
+    color: var(--comic-purple);
+    text-shadow: var(--text-stroke);
+}
+
+/* Squirt Visualizer */
+.squirt-track {
+    width: 90%;
+    height: 10px;
+    background: var(--comic-white);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.tree {
+    font-size: 3rem;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.tree.left { left: -20px; }
+.tree.right { right: -20px; }
+
+.barrel {
+    font-size: 3rem;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: left 0.5s ease;
+}
+
+/* Campaign Graph */
+.campaign-graph {
+    width: 80%;
+    height: 60%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-around;
+    gap: 10px;
+    padding-bottom: 5px;
+    border-bottom: 3px solid var(--comic-white);
+}
+
+.vote-bar-container {
+    flex: 1;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.vote-bar {
+    width: 100%;
+    background: var(--comic-green);
+    border: 2px solid var(--comic-black);
+    transition: height 0.5s ease;
+}
+
+.vote-count {
+    font-family: 'Bebas Neue', sans-serif;
+    color: var(--comic-white);
+    margin-top: 5px;
+    text-shadow: 1px 1px 0 #000;
+}

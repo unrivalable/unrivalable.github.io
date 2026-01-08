@@ -2336,7 +2336,7 @@ async function startGame() {
                 clearInterval(countdownInterval);
                 lobbyStatus.textContent = 'FIGHT!';
                 setTimeout(async () => {
-                    await showGameOver();
+                    await startGameSimulation();
                 }, 1000);
             }
         }, 1000);
@@ -2386,211 +2386,535 @@ function getClassAdvantage(attackerClass, defenderClass) {
     return 0.50;
 }
 
-// Simulate an entire 5v5 match and return chronological death events
-function simulateMatch(playerTeam, enemyTeam, deathMessages) {
-    const deaths = [];
-    const alive = {
-        player: [...playerTeam],
-        enemy: [...enemyTeam]
-    };
+// --- NEW GAMEPLAY LOGIC ---
 
-    // Continue until one team is eliminated
-    while (alive.player.length > 0 && alive.enemy.length > 0) {
-        // Pick one random fighter from each team for a duel
-        const playerFighter = alive.player[Math.floor(Math.random() * alive.player.length)];
-        const enemyFighter = alive.enemy[Math.floor(Math.random() * alive.enemy.length)];
-
-        // Get their classes
-        const playerClass = getHeroClass(playerFighter);
-        const enemyClass = getHeroClass(enemyFighter);
-
-        // Calculate probability that player fighter wins
-        const playerWinChance = getClassAdvantage(playerClass, enemyClass);
-
-        // Determine winner based on probability
-        const playerWins = Math.random() < playerWinChance;
-
-        // Set attacker and victim based on who won
-        let attacker, victim, attackerTeam, victimTeam;
-        if (playerWins) {
-            attacker = playerFighter;
-            victim = enemyFighter;
-            attackerTeam = 'player';
-            victimTeam = 'enemy';
-        } else {
-            attacker = enemyFighter;
-            victim = playerFighter;
-            attackerTeam = 'enemy';
-            victimTeam = 'player';
-        }
-
-        // Get a random ability/death message for this killer
-        let ability = null;
-        let message = null;
-
-        if (deathMessages[attacker]) {
-            const abilities = Object.keys(deathMessages[attacker]);
-            if (abilities.length > 0) {
-                ability = abilities[Math.floor(Math.random() * abilities.length)];
-                message = deathMessages[attacker][ability];
+// Helper to find hero data
+function findHeroData(heroName) {
+    for (const c of heroesData.classes) {
+        for (const h of c.heroes) {
+            if (h.name === heroName) {
+                return h;
             }
         }
-
-        // If no death message, create a generic one
-        if (!message) {
-            ability = "Unknown Attack";
-            message = `${attacker} killed ${victim}. No witty message available.`;
-        }
-
-        // Record the death
-        deaths.push({
-            killer: attacker,
-            victim: victim,
-            ability: ability,
-            message: message,
-            killerTeam: attackerTeam,
-            victimTeam: victimTeam
-        });
-
-        // Remove victim from alive list
-        if (victimTeam === 'player') {
-            alive.player = alive.player.filter(name => name !== victim);
-        } else {
-            alive.enemy = alive.enemy.filter(name => name !== victim);
-        }
     }
-
-    // Determine winner
-    const playerWon = alive.player.length > 0;
-
-    return { deaths, playerWon, survivors: playerWon ? alive.player : alive.enemy };
+    return null;
 }
 
-async function showGameOver() {
-    transitionToScreen('loading-screen', 'game-over-screen');
+// Global variable for current interval to allow clearing
+let gameInterval = null;
 
-    const deathMessageEl = document.getElementById('death-message');
-    const killerContainer = document.getElementById('killer-container');
-    const battleLog = document.getElementById('battle-log');
-    const teamScoreEl = document.getElementById('team-score');
-    const simulationStatusEl = document.getElementById('simulation-status');
+// Start Game Simulation
+async function startGameSimulation() {
+    console.log("Starting game simulation...");
+    transitionToScreen('loading-screen', 'game-screen');
 
-    // Set initial status to game mode name
-    const modeName = gameModeNames[selectedGameMode] || "GAME SIMULATION";
-    simulationStatusEl.textContent = modeName.toUpperCase() + " RUNNING...";
-    simulationStatusEl.className = "game-over-title simulation-running";
+    const playerTeam = window.currentPlayerTeam || [];
+    const enemyTeam = window.currentEnemyTeam || [];
 
-    deathMessageEl.textContent = "SIMULATING MATCH...";
-    killerContainer.style.display = 'none';
-    if (battleLog) battleLog.innerHTML = '';
-    if (teamScoreEl) teamScoreEl.textContent = '';
+    // Initialize Sidebars
+    initializeGameScreen(playerTeam, enemyTeam);
 
+    // Hide all visualizers first
+    document.querySelectorAll('.mode-visualizer').forEach(el => el.style.display = 'none');
+
+    // Load Death Messages
+    let deathMessages = {};
     try {
         const response = await fetch('death_messages.json');
-        if (!response.ok) throw new Error('Failed to load death messages');
-        const deathMessages = await response.json();
-
-        // Get teams (stored during loading screen)
-        const playerTeam = window.currentPlayerTeam || [];
-        const enemyTeam = window.currentEnemyTeam || [];
-
-        if (playerTeam.length === 0 || enemyTeam.length === 0) {
-            deathMessageEl.textContent = "Error: Teams not loaded properly.";
-            return;
+        if (response.ok) {
+            deathMessages = await response.json();
         }
+    } catch (e) {
+        console.error("Failed to load death messages", e);
+    }
+    window.gameDeathMessages = deathMessages; // Store globally for access
 
-        // Simulate the entire match
-        const { deaths, playerWon, survivors } = simulateMatch(playerTeam, enemyTeam, deathMessages);
-
-        // Show initial state
-        deathMessageEl.textContent = "THE BATTLE BEGINS...";
-        if (teamScoreEl) {
-            teamScoreEl.textContent = `PLAYER TEAM: ${playerTeam.length} | ENEMY TEAM: ${enemyTeam.length}`;
-        }
-
-        await new Promise(resolve => setTimeout(resolve, 2000));
-
-        // Dramatically reveal each death in sequence
-        let playerAlive = playerTeam.length;
-        let enemyAlive = enemyTeam.length;
-
-        for (let i = 0; i < deaths.length; i++) {
-            const death = deaths[i];
-
-            // Update alive counters
-            if (death.victimTeam === 'player') {
-                playerAlive--;
-            } else {
-                enemyAlive--;
-            }
-
-            // Update score
-            if (teamScoreEl) {
-                teamScoreEl.textContent = `PLAYER TEAM: ${playerAlive} | ENEMY TEAM: ${enemyAlive}`;
-            }
-
-            // Show death message
-            deathMessageEl.textContent = death.message;
-
-            // Show killer image
-            let killerHeroObj = null;
-            heroesData.classes.forEach(c => {
-                c.heroes.forEach(h => {
-                    if (h.name === death.killer) {
-                        killerHeroObj = h;
-                    }
-                });
-            });
-
-            if (killerHeroObj) {
-                const killerImage = document.getElementById('killer-image');
-                const killerNameDisplay = document.getElementById('killer-name');
-                killerImage.src = `images/heroes-thumbnails/${killerHeroObj.image}`;
-                killerNameDisplay.textContent = death.killer;
-                killerContainer.style.display = 'flex';
-            }
-
-            // Add to battle log if it exists
-            if (battleLog) {
-                const logEntry = document.createElement('div');
-                logEntry.className = 'battle-log-entry';
-                logEntry.innerHTML = `
-                    <span class="death-number">#${i + 1}</span>
-                    <span class="victim ${death.victimTeam}">${death.victim}</span>
-                    <span class="killed-by">killed by</span>
-                    <span class="killer ${death.killerTeam}">${death.killer}</span>
-                `;
-                battleLog.appendChild(logEntry);
-
-                // Scroll to bottom
-                battleLog.scrollTop = battleLog.scrollHeight;
-            }
-
-            // Pause between deaths (shorter for later deaths to build momentum)
-            const delay = Math.max(1000, 2500 - (i * 100));
-            await new Promise(resolve => setTimeout(resolve, delay));
-        }
-
-        // Show final result
-        await new Promise(resolve => setTimeout(resolve, 1000));
-
-        if (playerWon) {
-            deathMessageEl.textContent = `🎉 VICTORY! ${survivors.join(', ')} survived!`;
-            killerContainer.style.display = 'none';
-            simulationStatusEl.textContent = "VICTORY!";
-            simulationStatusEl.className = "game-over-title simulation-victory";
-        } else {
-            deathMessageEl.textContent = `💀 DEFEAT! The enemy team claims victory.`;
-            killerContainer.style.display = 'none';
-            simulationStatusEl.textContent = "DEFEAT!";
-            simulationStatusEl.className = "game-over-title simulation-defeat";
-        }
-
-    } catch (error) {
-        console.error("Error in match simulation:", error);
-        deathMessageEl.textContent = "Error simulating match. Please try again.";
+    // Start Mode Logic
+    switch(selectedGameMode) {
+        case 'deathmatch':
+            runDeathmatchMode(playerTeam, enemyTeam);
+            break;
+        case 'chexico':
+            runChexicoMode(playerTeam, enemyTeam);
+            break;
+        case 'turfwar':
+            runTurfWarMode(playerTeam, enemyTeam);
+            break;
+        case 'squirt':
+            runSquirtMode(playerTeam, enemyTeam);
+            break;
+        case 'campaign':
+            runCampaignMode(playerTeam); // Campaign is FFA
+            break;
+        default:
+            console.log("Defaulting to Deathmatch logic for unknown mode");
+            runDeathmatchMode(playerTeam, enemyTeam);
+            break;
     }
 }
+
+function initializeGameScreen(playerTeam, enemyTeam) {
+    const sidebar1 = document.getElementById('team-1-sidebar');
+    const sidebar2 = document.getElementById('team-2-sidebar');
+
+    sidebar1.innerHTML = '';
+    sidebar2.innerHTML = '';
+
+    // If FFA (Campaign), handle differently
+    if (selectedGameMode === 'campaign' || selectedGameMode === 'story') {
+        // Just put everyone in sidebar 1 for now, or split them?
+        // Prompt says "Put all of the heroes' icons displayed on the side".
+        // For FFA, let's split them visually to balance the screen
+        const half = Math.ceil(playerTeam.length / 2);
+        const leftSide = playerTeam.slice(0, half);
+        const rightSide = playerTeam.slice(half);
+
+        leftSide.forEach(heroName => createHeroCard(heroName, sidebar1, true));
+        rightSide.forEach(heroName => createHeroCard(heroName, sidebar2, true));
+    } else {
+        // Team mode
+        playerTeam.forEach(heroName => createHeroCard(heroName, sidebar1, true));
+        enemyTeam.forEach(heroName => createHeroCard(heroName, sidebar2, false));
+    }
+}
+
+function createHeroCard(heroName, container, isAlly) {
+    const heroData = findHeroData(heroName);
+    const card = document.createElement('div');
+    card.className = 'game-hero-card';
+    card.id = `hero-icon-${heroName.replace(/\s+/g, '-')}`; // Sanitized ID
+
+    if (heroData) {
+        card.innerHTML = `
+            <img src="images/heroes-thumbnails/${heroData.image}" alt="${heroName}">
+            <div class="game-hero-name" style="color: ${isAlly ? 'var(--comic-cyan)' : 'var(--comic-red)'}">${heroName}</div>
+        `;
+    } else {
+        card.innerHTML = `<div class="game-hero-name">${heroName}</div>`;
+    }
+
+    container.appendChild(card);
+}
+
+function updateHeroStatus(heroName, isDead) {
+    const safeId = heroName.replace(/\s+/g, '-');
+    const card = document.getElementById(`hero-icon-${safeId}`);
+
+    if (card) {
+        if (isDead) {
+            card.classList.add('dead');
+            // Gray out for 5 seconds then revive
+            setTimeout(() => {
+                if (window.gameActive) { // Only revive if game is still active
+                    card.classList.remove('dead');
+                }
+            }, 5000);
+        } else {
+            card.classList.remove('dead');
+        }
+    }
+}
+
+function showDeathMessage(message) {
+    const ticker = document.getElementById('ticker-message');
+    // Restart animation
+    ticker.style.animation = 'none';
+    ticker.offsetHeight; /* trigger reflow */
+    ticker.style.animation = 'tickerSlide 0.5s ease-out';
+    ticker.textContent = message;
+}
+
+function getRandomDeathMessage(killer, victim) {
+    if (!window.gameDeathMessages || !window.gameDeathMessages[killer]) {
+        return `${killer} defeated ${victim}!`;
+    }
+
+    const abilities = Object.keys(window.gameDeathMessages[killer]);
+    if (abilities.length === 0) return `${killer} defeated ${victim}!`;
+
+    const ability = abilities[Math.floor(Math.random() * abilities.length)];
+    return window.gameDeathMessages[killer][ability];
+}
+
+// Generic Random Death Event Helper
+function triggerRandomDeath(allHeroes) {
+    // Pick a killer and a victim
+    if (allHeroes.length < 2) return;
+
+    const killer = allHeroes[Math.floor(Math.random() * allHeroes.length)];
+    let victim = allHeroes[Math.floor(Math.random() * allHeroes.length)];
+
+    while (victim === killer) {
+         victim = allHeroes[Math.floor(Math.random() * allHeroes.length)];
+    }
+
+    // Visual update
+    updateHeroStatus(victim, true);
+
+    // Message update
+    const msg = getRandomDeathMessage(killer, victim);
+    showDeathMessage(msg);
+
+    return { killer, victim };
+}
+
+// --- MODE IMPLEMENTATIONS ---
+
+// 1. Dan Rhon Deathmatch
+function runDeathmatchMode(team1, team2) {
+    console.log("Starting Deathmatch Mode");
+    window.gameActive = true;
+
+    // Setup UI
+    const container = document.getElementById('deathmatch-scoreboard');
+    container.style.display = 'flex';
+    const score1El = document.getElementById('dm-score-1');
+    const score2El = document.getElementById('dm-score-2');
+
+    let team1Deaths = 0;
+    let team2Deaths = 0;
+    const DEATH_LIMIT = 10;
+
+    score1El.textContent = "0";
+    score2El.textContent = "0";
+
+    // Loop
+    gameInterval = setInterval(() => {
+        if (!window.gameActive) return;
+
+        // Randomly decide to kill someone
+        // 40% chance per tick (tick = 1s, say)
+        if (Math.random() < 0.4) {
+            const result = triggerRandomDeath([...team1, ...team2]);
+            if (!result) return;
+
+            // Check who died
+            if (team1.includes(result.victim)) {
+                team1Deaths++;
+                score1El.textContent = team1Deaths;
+                score1El.style.animation = 'pulse 0.5s';
+                setTimeout(() => score1El.style.animation = '', 500);
+            } else {
+                team2Deaths++;
+                score2El.textContent = team2Deaths;
+                score2El.style.animation = 'pulse 0.5s';
+                setTimeout(() => score2El.style.animation = '', 500);
+            }
+
+            // Win Condition: First to 10 deaths LOSES
+            if (team1Deaths >= DEATH_LIMIT) {
+                endGame("ENEMY TEAM", "Team 1 reached 10 deaths first.");
+            } else if (team2Deaths >= DEATH_LIMIT) {
+                endGame("PLAYER TEAM", "Team 2 reached 10 deaths first.");
+            }
+        }
+    }, 1500); // Check every 1.5 seconds
+}
+
+// 2. Charge on Chexico
+function runChexicoMode(team1, team2) {
+    console.log("Starting Chexico Mode");
+    window.gameActive = true;
+
+    // Setup UI
+    const container = document.getElementById('chexico-visualizer');
+    container.style.display = 'flex';
+    const progressBar = document.getElementById('statue-progress-bar');
+    const timerEl = document.getElementById('chexico-time');
+
+    let progress = 0;
+    let timeLeft = 100; // Starts at 100, counts down "super quickly"
+
+    progressBar.style.height = '0%';
+    timerEl.textContent = timeLeft;
+
+    // Loop
+    // "Super quickly" - let's say it takes 30-40 seconds total?
+    // 100 ticks. If 100 ticks = 30s, then 300ms per tick.
+
+    gameInterval = setInterval(() => {
+        if (!window.gameActive) return;
+
+        // Update Timer
+        timeLeft--;
+        timerEl.textContent = timeLeft;
+
+        // Update Progress (Attacking team is Team 1 / Player Team)
+        // Progress depends on... randomness? Or "attacking"?
+        // Let's make it random but biased slightly towards building so it's a race
+        // Chance to build: 50%
+        // Amount: 1-3%
+        if (Math.random() < 0.5) {
+            progress += Math.floor(Math.random() * 3) + 1;
+            if (progress > 100) progress = 100;
+            progressBar.style.height = `${progress}%`;
+        }
+
+        // Random Deaths
+        if (Math.random() < 0.2) {
+             triggerRandomDeath([...team1, ...team2]);
+        }
+
+        // Win Conditions
+        if (progress >= 100) {
+            // Statue built before time runs out -> Team 1 Wins
+            endGame("PLAYER TEAM", "Statue completed in time!");
+        } else if (timeLeft <= 0) {
+            // Time ran out before statue built -> Team 2 Wins
+            endGame("ENEMY TEAM", "Time ran out before the statue was built.");
+        }
+
+    }, 300); // Fast ticks
+}
+// 3. Tessarune Turf War
+function runTurfWarMode(team1, team2) {
+    console.log("Starting Turf War Mode");
+    window.gameActive = true;
+
+    // Setup UI
+    const container = document.getElementById('turf-visualizer');
+    container.style.display = 'flex';
+    const leftBar = document.getElementById('turf-bar-left');
+    const rightBar = document.getElementById('turf-bar-right');
+    const statusEl = document.getElementById('turf-status');
+    const iconEl = document.querySelector('.tessarune-icon');
+
+    let turfPercent = 50; // Starts at 50/50
+    const TIME_LIMIT = 60; // 60 seconds match
+    let timeLeft = TIME_LIMIT;
+    let timeSinceLastStealCheck = 0;
+
+    // Update visual helper
+    const updateBars = () => {
+        leftBar.style.width = `${turfPercent}%`;
+        rightBar.style.width = `${100 - turfPercent}%`;
+        iconEl.style.left = `${turfPercent}%`;
+    };
+
+    gameInterval = setInterval(() => {
+        if (!window.gameActive) return;
+
+        // Timer
+        timeLeft--;
+        timeSinceLastStealCheck++;
+        statusEl.textContent = `TIME LEFT: ${timeLeft}s`;
+
+        // Percentage Swing (Tug of War)
+        // Swing -2 to +2 percent
+        const swing = Math.floor(Math.random() * 5) - 2;
+        turfPercent += swing;
+        if (turfPercent < 0) turfPercent = 0;
+        if (turfPercent > 100) turfPercent = 100;
+        updateBars();
+
+        // Random Death
+        if (Math.random() < 0.3) {
+            triggerRandomDeath([...team1, ...team2]);
+        }
+
+        // "Every 5 seconds there is a 20% chance that a team will steal the tessarune and win instantly"
+        if (timeSinceLastStealCheck >= 5) {
+            timeSinceLastStealCheck = 0;
+            if (Math.random() < 0.20) {
+                // Steal event triggered!
+                const stealingTeam = Math.random() < 0.5 ? "PLAYER TEAM" : "ENEMY TEAM";
+                endGame(stealingTeam, "INSTANT WIN! They stole the Tessarune!");
+                return;
+            }
+        }
+
+        // Win Condition: Time runs out
+        if (timeLeft <= 0) {
+            if (turfPercent > 50) {
+                endGame("PLAYER TEAM", `Controlled ${turfPercent}% of the turf.`);
+            } else if (turfPercent < 50) {
+                endGame("ENEMY TEAM", `Controlled ${100 - turfPercent}% of the turf.`);
+            } else {
+                endGame("DRAW", "Exact tie!"); // Unlikely but possible
+            }
+        }
+
+    }, 1000); // 1s tick
+}
+
+// 4. Squirt
+function runSquirtMode(team1, team2) {
+    console.log("Starting Squirt Mode");
+    window.gameActive = true;
+
+    // Setup UI
+    const container = document.getElementById('squirt-visualizer');
+    container.style.display = 'flex';
+    const barrel = document.getElementById('squirt-barrel');
+
+    let barrelPos = 50; // 0 (Left Tree/Team 2 Wins) to 100 (Right Tree/Team 1 Wins)
+
+    // Prompt says: "if it hits the right tree: team 1 wins, if it hits the left tree: team 2 wins."
+    // Assuming Team 1 is pushing Right (>) and Team 2 is pushing Left (<).
+
+    gameInterval = setInterval(() => {
+        if (!window.gameActive) return;
+
+        // Push logic
+        // Random pushes based on team strength (simulated)
+        const team1Push = Math.random() * 5;
+        const team2Push = Math.random() * 5;
+        const netMovement = team1Push - team2Push;
+
+        barrelPos += netMovement;
+
+        // Clamp for visuals but allow overflow for win check
+        const visualPos = Math.max(0, Math.min(100, barrelPos));
+        barrel.style.left = `${visualPos}%`;
+
+        // Random Death
+        if (Math.random() < 0.3) {
+            triggerRandomDeath([...team1, ...team2]);
+        }
+
+        // Win Condition
+        if (barrelPos >= 100) {
+            endGame("PLAYER TEAM", "Hit the Right Tree!");
+        } else if (barrelPos <= 0) {
+            endGame("ENEMY TEAM", "Hit the Left Tree!");
+        }
+
+    }, 500); // Fast-ish updates
+}
+
+// 5. Campaign
+function runCampaignMode(participants) {
+    console.log("Starting Campaign Mode");
+    window.gameActive = true;
+
+    // Setup UI
+    const container = document.getElementById('campaign-visualizer');
+    container.style.display = 'flex';
+    const graphContainer = document.getElementById('campaign-graph');
+    graphContainer.innerHTML = '';
+
+    // Initialize Candidates
+    // Participants is list of names. "5 player free for all"
+    // Let's give them initial votes
+    let candidates = participants.map((name, index) => ({
+        name: name,
+        votes: 10 + Math.floor(Math.random() * 10), // Start with 10-20 votes
+        id: index,
+        color: ['#00BFFF', '#FF3366', '#AA66FF', '#00FF88', '#FFD700'][index % 5]
+    }));
+
+    // Create bars
+    candidates.forEach(c => {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'vote-bar-container';
+
+        const bar = document.createElement('div');
+        bar.className = 'vote-bar';
+        bar.id = `vote-bar-${c.id}`;
+        bar.style.backgroundColor = c.color;
+        bar.style.height = '10%'; // Initial height placeholder
+
+        const count = document.createElement('div');
+        count.className = 'vote-count';
+        count.id = `vote-count-${c.id}`;
+        count.textContent = c.votes;
+
+        const nameLabel = document.createElement('div');
+        nameLabel.className = 'vote-count'; // Reuse style
+        nameLabel.style.fontSize = '0.8rem';
+        nameLabel.textContent = c.name.split(' ')[0]; // First name only for space
+
+        wrapper.appendChild(bar);
+        wrapper.appendChild(count);
+        wrapper.appendChild(nameLabel);
+        graphContainer.appendChild(wrapper);
+    });
+
+    let timeLeft = 30; // 30 seconds "8 month long campaign"
+
+    gameInterval = setInterval(() => {
+        if (!window.gameActive) return;
+
+        timeLeft--;
+        showDeathMessage(`${timeLeft} MONTHS LEFT IN CAMPAIGN...`); // reusing death ticker for status
+
+        // Vote updates
+        candidates.forEach(c => {
+            // Random flux
+            const change = Math.floor(Math.random() * 5) - 2; // -2 to +2
+            c.votes += change;
+            if (c.votes < 0) c.votes = 0;
+
+            // Update UI
+            // Find max votes to normalize height
+            const maxVotes = Math.max(...candidates.map(x => x.votes), 50); // Min 50 for scale
+            const height = (c.votes / maxVotes) * 100;
+
+            document.getElementById(`vote-bar-${c.id}`).style.height = `${height}%`;
+            document.getElementById(`vote-count-${c.id}`).textContent = c.votes;
+        });
+
+        // Random Death (Scandal?)
+        // In Campaign, maybe death means losing a chunk of votes?
+        // Prompt says "update death messages... when a hero dies".
+        // Let's do normal death = temporary removal + vote penalty?
+        if (Math.random() < 0.2) {
+            const result = triggerRandomDeath(participants);
+            if (result) {
+                // Find candidate and penalize
+                const victimCand = candidates.find(c => c.name === result.victim);
+                if (victimCand) {
+                    victimCand.votes = Math.max(0, victimCand.votes - 5);
+                    showDeathMessage(`${result.victim} DIED! LOST 5 VOTES!`);
+                }
+            }
+        }
+
+        // Win Condition
+        if (timeLeft <= 0) {
+            // Find winner
+            candidates.sort((a, b) => b.votes - a.votes);
+            const winner = candidates[0];
+            const isPlayer = winner.name === participants[0]; // Assuming Player is first in list
+
+            if (isPlayer) {
+                endGame("PLAYER TEAM", `${winner.name} won with ${winner.votes} votes!`);
+            } else {
+                endGame("ENEMY TEAM", `${winner.name} won with ${winner.votes} votes!`);
+            }
+        }
+
+    }, 1000); // 1s = ~1 week/month?
+}
+
+function endGame(winnerTeamName, resultDetails) {
+    window.gameActive = false;
+    if (gameInterval) clearInterval(gameInterval);
+
+    transitionToScreen('game-screen', 'game-over-screen');
+
+    const statusEl = document.getElementById('simulation-status');
+    const messageEl = document.getElementById('death-message');
+    const scoreEl = document.getElementById('team-score');
+
+    // Hide unnecessary elements from old game over screen
+    document.getElementById('killer-container').style.display = 'none';
+    document.getElementById('battle-log').innerHTML = ''; // Clear log
+
+    if (winnerTeamName === 'PLAYER TEAM' || winnerTeamName === 'Player 1') {
+        statusEl.textContent = "VICTORY!";
+        statusEl.className = "game-over-title simulation-victory";
+        messageEl.textContent = `You won! ${resultDetails || ''}`;
+    } else {
+        statusEl.textContent = "DEFEAT!";
+        statusEl.className = "game-over-title simulation-defeat";
+        messageEl.textContent = `You lost! ${resultDetails || ''}`;
+    }
+
+    scoreEl.textContent = ""; // Clear score or use for final stats
+}
+
+window.gameActive = false;
 
 // Restart Button Logic
 document.getElementById('restart-btn').addEventListener('click', () => {
