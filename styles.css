@@ -1529,3 +1529,36 @@ body::before {
         justify-content: center;
     }
 }
+.simulation-running {
+    animation: simulationPulse 1.5s infinite alternate;
+    color: var(--comic-yellow) !important;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.6) !important;
+}
+
+@keyframes simulationPulse {
+    0% { transform: scale(1); opacity: 0.8; }
+    100% { transform: scale(1.05); opacity: 1; }
+}
+
+.simulation-victory {
+    color: var(--comic-green) !important;
+    text-shadow: 0 0 15px rgba(0, 255, 136, 0.8) !important;
+    animation: victoryPop 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes victoryPop {
+    0% { transform: scale(0.5); opacity: 0; }
+    80% { transform: scale(1.2); }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.simulation-defeat {
+    color: var(--comic-red) !important;
+    text-shadow: 0 0 15px rgba(255, 51, 102, 0.8) !important;
+    animation: defeatDrop 0.5s ease-out;
+}
+
+@keyframes defeatDrop {
+    0% { transform: translateY(-50px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+}
