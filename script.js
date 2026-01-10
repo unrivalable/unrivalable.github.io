@@ -409,24 +409,24 @@ const heroesData = {
           "class": "Destroyer",
           "abilities": {
             "main_attack": {
-              "name": "",
-              "description": ""
+              "name": "Fightey Whiteys",
+              "description": "Throws random circus items from his coat, including a juggling pin, tricycle, cannonball, or ⅗ of a clown."
             },
             "passive": {
-              "name": "",
-              "description": ""
+              "name": "Venomous Rage",
+              "description": "Does more damage the closer to death, or immediately after taking damage from a snake themed attack"
             },
             "ability_1": {
-              "name": "",
-              "description": ""
+              "name": "Bitey Fightey",
+              "description": "Bite in a wide area, stunning enemies caught and covering them in saliva"
             },
             "ability_2": {
-              "name": "",
-              "description": ""
+              "name": "Whitey Righty",
+              "description": "Any minority character gets constricted for 5 seconds, taking damage"
             },
             "super": {
-              "name": "",
-              "description": ""
+              "name": "Hide and go snake",
+              "description": "8 snakes spawn around Bitey Whiteys, when he finds them, they bite him, and increase his attack damage and lower cooldowns for 15 seconds. The snake bites do small damage"
             }
           }
         },
@@ -436,24 +436,24 @@ const heroesData = {
           "class": "Destroyer",
           "abilities": {
             "main_attack": {
-              "name": "",
-              "description": ""
+              "name": "Fry Up",
+              "description": "Deliver a mighty uppercut with both pans"
             },
             "passive": {
               "name": "",
               "description": ""
             },
             "ability_1": {
-              "name": "",
-              "description": ""
+              "name": "Mighty Magnet",
+              "description": "Iron Pan pulls an enemy towards him, dealing small damage"
             },
             "ability_2": {
-              "name": "",
-              "description": ""
+              "name": "Iron Spy",
+              "description": "Iron Pan drops a pan turret on the ground that flings rapid fire bacon at visible enemies"
             },
             "super": {
-              "name": "",
-              "description": ""
+              "name": "Royal Steel",
+              "description": "Grab a humongous pan and slam it down in front of you 3 times, dealing area damage that scales with each hit"
             }
           }
         },
@@ -517,24 +517,24 @@ const heroesData = {
           "class": "Destroyer",
           "abilities": {
             "main_attack": {
-              "name": "",
-              "description": ""
+              "name": "Clavi-kill",
+              "description": "Puts forth both shoulders one after another for a 2 hit melee combo. Matcha is gained with a hit"
             },
             "passive": {
-              "name": "",
-              "description": ""
+              "name": "Matcha Power",
+              "description": "The more matcha Shoulder Blade has, the more damage he does and takes reduced damage"
             },
             "ability_1": {
-              "name": "",
-              "description": ""
+              "name": "Rotator Cuff",
+              "description": "Spin in a circle that you can control, damaging enemies if you run into them for 10 seconds, gaining matcha."
             },
             "ability_2": {
-              "name": "",
-              "description": ""
+              "name": "MAAAA CHAAAA",
+              "description": "Shoulder blade does a yell and drinks matcha, consuming what his matcha meter is at for health, can overheal, but only lasts 8 seconds"
             },
             "super": {
-              "name": "",
-              "description": ""
+              "name": "Shishoulder Kabob",
+              "description": "Shoulder Blade dons a Nike Tek and shiesty, then dives at a targeted player, shouldering them all throughout the air, dealing damage and splash damage when they hit the ground"
             }
           }
         },
@@ -1017,24 +1017,24 @@ const heroesData = {
           "class": "Saboteur",
           "abilities": {
             "main_attack": {
-              "name": "",
-              "description": ""
+              "name": "mmm…Stick",
+              "description": "Swings forward then up with his stick for a two-hit combo. Fills Scrooge meter faster"
             },
             "passive": {
               "name": "",
               "description": ""
             },
             "ability_1": {
-              "name": "",
-              "description": ""
+              "name": "Grupnotize",
+              "description": "Grup Scrooge raises his staff in the air to fake out enemies. They waste a random ability"
             },
             "ability_2": {
-              "name": "",
-              "description": ""
+              "name": "Centriscrooge",
+              "description": "Grup Scrooge spins around rapidly and deals damage, draining his Scrooge meter."
             },
             "super": {
-              "name": "",
-              "description": ""
+              "name": "A Minute A Day Keeps the Doctor Away",
+              "description": "Grup Scrooge places a marker anywhere on the map. In exactly one minute, a portal opens from wherever he is to there."
             }
           }
         },
@@ -1105,24 +1105,24 @@ const heroesData = {
           "class": "Supporter",
           "abilities": {
             "main_attack": {
-              "name": "Good Shock or Bad Shock?",
-              "description": ""
+              "name": "Shock Therapy",
+              "description": "DFB shoots a constant beam of lightning from his hand, sucking health from enemies"
             },
             "passive": {
               "name": "",
               "description": ""
             },
             "ability_1": {
-              "name": "",
-              "description": ""
+              "name": "Defribrilate",
+              "description": "DFB shoots a little lightning out, which does minimal damage and cancels enemies abilities for 5 seconds"
             },
             "ability_2": {
-              "name": "",
-              "description": ""
+              "name": "Refribrilate",
+              "description": "DFB shocks a Wednesday teammate, giving them a shield, raising their attack damage, and healing them for 5 seconds (3 uses)"
             },
             "super": {
-              "name": "",
-              "description": ""
+              "name": "If it's Wednesday, they will come",
+              "description": "Place down an area of pure Wednesday, reviving any teammate who most recently died, and reviving any teammate who dies within the zone. The zone exists for 30 seconds"
             }
           }
         },
@@ -1159,24 +1159,24 @@ const heroesData = {
           "class": "Supporter",
           "abilities": {
             "main_attack": {
-              "name": "",
-              "description": ""
+              "name": "Frog Bomb",
+              "description": "Speedo lobs a negatively charged bullfrog that explodes on hit. The shot becomes more horizontal the longer its held down"
             },
             "passive": {
               "name": "",
               "description": ""
             },
             "ability_1": {
-              "name": "",
-              "description": ""
+              "name": "Fresh Pair",
+              "description": "Speedo dons a speedo, increasing all nearby teammate's speed for 5 seconds. (Significantly more if they're a bullfrog)"
             },
             "ability_2": {
-              "name": "",
-              "description": ""
+              "name": "Dredge You Glad I Put a Bog There",
+              "description": "Speedo places a portable bog down, allowing teammates to dredge through, but not enemies"
             },
             "super": {
-              "name": "",
-              "description": ""
+              "name": "Bullfrogs Unite!",
+              "description": "Speedo sends forth a tsunami of super fast bullfrogs, dealing damage to any enemy and giving bonus health to any teammate they pass through."
             }
           }
         },
@@ -1328,24 +1328,24 @@ const heroesData = {
           "class": "Controller",
           "abilities": {
             "main_attack": {
-              "name": "",
-              "description": ""
+              "name": "Double Snowball",
+              "description": "Snow Angel throws two snowballs, dealing extra damage if they both hit"
             },
             "passive": {
-              "name": "",
-              "description": ""
+              "name": "Cold Aura",
+              "description": "Snow Angel slows down all enemies that are too close to him, due to his creepy and cold hearted nature"
             },
             "ability_1": {
-              "name": "",
-              "description": ""
+              "name": "SnowBlade Beyblade",
+              "description": "Snow Angel spins around, freezing enemies with his icy wings"
             },
             "ability_2": {
-              "name": "",
-              "description": ""
+              "name": "Snow Angel Effect",
+              "description": "Snow Angel rolls a giant snowball in front of him, it gets bigger and does more damage as it rolls"
             },
             "super": {
-              "name": "",
-              "description": ""
+              "name": "Under the Snow",
+              "description": "Snow Angel dives into the snow and can fly under it for 6 secs, during this time he is immune and everyone standing above him gets increased attack damage"
             }
           }
         },
@@ -1524,24 +1524,24 @@ const heroesData = {
           "class": "Hawktalker",
           "abilities": {
             "main_attack": {
-              "name": "",
-              "description": ""
+              "name": "Hawk Spawn",
+              "description": "Moonhawk spawns a hawk outta his forearm"
             },
             "passive": {
-              "name": "",
-              "description": ""
+              "name": "Ability 4",
+              "description": "Question 1) If a train is departing a station at 6 miles per hour, its distance is 35 miles away, and the coefficient of friction is 0.68, will the passengers enjoy the ride?"
             },
             "ability_1": {
-              "name": "",
-              "description": ""
+              "name": "2nd ability",
+              "description": "This is Moonhawk's 2nd ability, don't get them confused"
             },
             "ability_2": {
-              "name": "",
-              "description": ""
+              "name": "3rd Place Ability: 🥉",
+              "description": "This ability came in 3rd place, and got a bronze medal"
             },
             "super": {
-              "name": "",
-              "description": ""
+              "name": "Moonhawk resets the game",
+              "description": "All characters watch as the moon becomes a waxing gibbous, entering them all into a cutscene of changing moon phases while hundreds of hawks fly the coop, resetting Moonhawk's cooldowns and unmuting him from voice chat"
             }
           }
         },
@@ -1555,20 +1555,20 @@ const heroesData = {
               "description": ""
             },
             "passive": {
-              "name": "",
-              "description": ""
+              "name": "Morals",
+              "description": "No cheating, respectful"
             },
             "ability_1": {
-              "name": "",
-              "description": ""
+              "name": "Be very very wary of this ability",
+              "description": "They is too wary of this ability and can't use it."
             },
             "ability_2": {
-              "name": "",
-              "description": ""
+              "name": "Bi-Polar",
+              "description": "Uh Oh! Looks like someone said They! They gains A random personality that includes: Doctor, Female Doctor, Lumberjack, Tree, Female Tree, Botanist, or The Onceler."
             },
             "super": {
-              "name": "",
-              "description": ""
+              "name": "Drop a cow",
+              "description": "They had the opportunity to drop a cow once in his life, but he didn't take it, and now he has crippling regrets"
             }
           }
         }
