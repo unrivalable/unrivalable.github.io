@@ -1551,8 +1551,8 @@ const heroesData = {
           "class": "Hawktalker",
           "abilities": {
             "main_attack": {
-              "name": "",
-              "description": ""
+              "name": "Drop a cow",
+              "description": "They had the opportunity to drop a cow once in his life, but he didn't take it, and now he has crippling regrets"
             },
             "passive": {
               "name": "Morals",
@@ -1567,8 +1567,8 @@ const heroesData = {
               "description": "Uh Oh! Looks like someone said They! They gains A random personality that includes: Doctor, Female Doctor, Lumberjack, Tree, Female Tree, Botanist, or The Onceler."
             },
             "super": {
-              "name": "Drop a cow",
-              "description": "They had the opportunity to drop a cow once in his life, but he didn't take it, and now he has crippling regrets"
+              "name": "Them",
+              "description": "IMAGE:images/TheySuper.png"
             }
           }
         }
@@ -1748,10 +1748,19 @@ function formatAbilities(abilities) {
 
                     const colorClass = abilityColors[type] || '';
 
+                    // Check if description is an image reference
+                    let descriptionHtml = '';
+                    if (description.startsWith('IMAGE:')) {
+                        const imagePath = description.replace('IMAGE:', '');
+                        descriptionHtml = `<img src="${imagePath}" alt="${name}" style="max-width: 100%; height: auto; margin-top: 10px; border-radius: 8px;">`;
+                    } else {
+                        descriptionHtml = description;
+                    }
+
                     html += `
                         <div class="ability-item">
                             <div class="ability-name ${colorClass}">${name}</div>
-                            <div class="ability-desc">${description}</div>
+                            <div class="ability-desc">${descriptionHtml}</div>
                         </div>
                     `;
                 }
@@ -1786,10 +1795,19 @@ function formatAbilities(abilities) {
             const colorClass = abilityColors[key];
             const label = abilityLabels[key];
 
+            // Check if description is an image reference
+            let descriptionHtml = '';
+            if (ability.description.startsWith('IMAGE:')) {
+                const imagePath = ability.description.replace('IMAGE:', '');
+                descriptionHtml = `<img src="${imagePath}" alt="${ability.name}" style="max-width: 100%; height: auto; margin-top: 10px; border-radius: 8px;">`;
+            } else {
+                descriptionHtml = ability.description;
+            }
+
             html += `
                 <div class="ability-item">
                     <div class="ability-name ${colorClass}">${ability.name}</div>
-                    <div class="ability-desc">${ability.description}</div>
+                    <div class="ability-desc">${descriptionHtml}</div>
                 </div>
             `;
         }

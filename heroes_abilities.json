@@ -1239,8 +1239,8 @@
           "class": "Hawktalker",
           "abilities": {
             "main_attack": {
-              "name": "",
-              "description": ""
+              "name": "Drop a cow",
+              "description": "They had the opportunity to drop a cow once in his life, but he didn't take it, and now he has crippling regrets"
             },
             "passive": {
               "name": "Morals",
@@ -1255,8 +1255,8 @@
               "description": "Uh Oh! Looks like someone said They! They gains A random personality that includes: Doctor, Female Doctor, Lumberjack, Tree, Female Tree, Botanist, or The Onceler."
             },
             "super": {
-              "name": "Drop a cow",
-              "description": "They had the opportunity to drop a cow once in his life, but he didn't take it, and now he has crippling regrets"
+              "name": "Them",
+              "description": "IMAGE:images/TheySuper.png"
             }
           }
         }
