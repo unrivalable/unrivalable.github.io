@@ -265,6 +265,13 @@ const selectButtons = document.querySelectorAll('.select-mode-btn');
 selectButtons.forEach(button => {
     button.addEventListener('click', (e) => {
         const slide = e.target.closest('.carousel-slide');
+
+        // Check if the mode is disabled
+        if (slide.getAttribute('data-disabled') === 'true') {
+            console.log('This mode is not available yet');
+            return;
+        }
+
         const mode = slide.getAttribute('data-mode');
         selectedGameMode = mode;
 
@@ -2250,8 +2257,7 @@ async function startGame() {
         addFFAPlayer();
     } else {
         // Team-based mode
-        const usedAlliedHeroes = [playerHeroObj.image]; // Start with player's hero
-        const usedEnemyHeroes = [];
+        const usedHeroes = [playerHeroObj.image]; // Track all heroes used across both teams
         const alliedTeamHeroes = [playerHeroObj.name]; // Store allied hero names (start with player)
         const enemyTeamHeroes = []; // Store enemy hero names for death messages
 
@@ -2282,10 +2288,10 @@ async function startGame() {
             slot.className = isAllied ? 'player-slot' : 'player-slot enemy animate';
 
             if (isAllied) {
-                // Allied player - get a unique hero not already used on this team
-                const availableHeroes = allHeroes.filter(h => !usedAlliedHeroes.includes(h.image));
+                // Allied player - get a unique hero not already used in the game
+                const availableHeroes = allHeroes.filter(h => !usedHeroes.includes(h.image));
                 const randomHero = availableHeroes[Math.floor(Math.random() * availableHeroes.length)];
-                usedAlliedHeroes.push(randomHero.image);
+                usedHeroes.push(randomHero.image);
                 alliedTeamHeroes.push(randomHero.name); // Store name for battle simulation
 
                 const playerName = shuffledNames[playerIndex % shuffledNames.length];
@@ -2300,10 +2306,10 @@ async function startGame() {
                 `;
                 alliedPlayersAdded++;
             } else {
-                // Enemy player - get a unique hero not already used on this team
-                const availableHeroes = allHeroes.filter(h => !usedEnemyHeroes.includes(h.image));
+                // Enemy player - get a unique hero not already used in the game
+                const availableHeroes = allHeroes.filter(h => !usedHeroes.includes(h.image));
                 const randomHero = availableHeroes[Math.floor(Math.random() * availableHeroes.length)];
-                usedEnemyHeroes.push(randomHero.image);
+                usedHeroes.push(randomHero.image);
                 enemyTeamHeroes.push(randomHero.name); // Store name for death messages
 
                 const playerName = shuffledNames[playerIndex % shuffledNames.length];
@@ -2354,7 +2360,15 @@ async function startGame() {
                 clearInterval(countdownInterval);
                 lobbyStatus.textContent = 'FIGHT!';
                 setTimeout(async () => {
-                    await showGameOver();
+                    if (selectedGameMode === 'deathmatch') {
+                        transitionToScreen('loading-screen', 'gameplay-screen');
+                        setTimeout(() => startDeathmatch(), 500);
+                    } else if (selectedGameMode === 'squirt') {
+                        transitionToScreen('loading-screen', 'gameplay-screen');
+                        setTimeout(() => startSquirt(), 500);
+                    } else {
+                        await showGameOver();
+                    }
                 }, 1000);
             }
         }, 1000);
@@ -2616,3 +2630,730 @@ shakeStyle.textContent = `
     }
 `;
 document.head.appendChild(shakeStyle);
+
+// ===== DAN RHON DEATHMATCH GAMEPLAY =====
+
+// Global state for deathmatch
+let deathmatchState = {
+    playerKills: 0,
+    enemyKills: 0,
+    playerStats: {}, // { heroName: { kills, deaths, isAlive, team, heroData } }
+    isRunning: false,
+    killHistory: []
+};
+
+// Start Dan Rhon Deathmatch
+function startDeathmatch() {
+    console.log('Starting Dan Rhon Deathmatch!');
+
+    // Reset state
+    deathmatchState = {
+        playerKills: 0,
+        enemyKills: 0,
+        playerStats: {},
+        isRunning: true,
+        killHistory: []
+    };
+
+    // Initialize player stats for all players
+    initializePlayerStats();
+
+    // Ensure grids are in deathmatch mode (2x3)
+    const playerGrid = document.getElementById('player-team-grid');
+    const enemyGrid = document.getElementById('enemy-team-grid');
+    playerGrid.classList.remove('squirt-mode');
+    enemyGrid.classList.remove('squirt-mode');
+
+    // Populate team grids
+    populateTeamGrid('player-team-grid', window.currentPlayerTeam, 'player');
+    populateTeamGrid('enemy-team-grid', window.currentEnemyTeam, 'enemy');
+
+    // Show kill counter, hide barrel bar
+    document.getElementById('kill-counter-bar').style.display = 'flex';
+    document.getElementById('barrel-position-bar').style.display = 'none';
+
+    // Reset kill counter
+    document.getElementById('player-score').textContent = '0';
+    document.getElementById('enemy-score').textContent = '0';
+    document.getElementById('player-kills-display').innerHTML = '';
+    document.getElementById('enemy-kills-display').innerHTML = '';
+
+    // Hide kill feed and victory overlay
+    document.getElementById('kill-feed').classList.remove('active');
+    document.getElementById('victory-overlay').classList.add('hidden');
+
+    // Start kill simulation after a brief delay
+    setTimeout(() => {
+        if (deathmatchState.isRunning) {
+            simulateNextKill();
+        }
+    }, 1500);
+}
+
+// Initialize stats for all players
+function initializePlayerStats() {
+    // Initialize player team
+    window.currentPlayerTeam.forEach(heroName => {
+        const heroData = findHeroByName(heroName);
+        deathmatchState.playerStats[heroName] = {
+            kills: 0,
+            deaths: 0,
+            isAlive: true,
+            team: 'player',
+            heroData: heroData
+        };
+    });
+
+    // Initialize enemy team
+    window.currentEnemyTeam.forEach(heroName => {
+        const heroData = findHeroByName(heroName);
+        deathmatchState.playerStats[heroName] = {
+            kills: 0,
+            deaths: 0,
+            isAlive: true,
+            team: 'enemy',
+            heroData: heroData
+        };
+    });
+}
+
+// Find hero object by name
+function findHeroByName(heroName) {
+    for (const heroClass of heroesData.classes) {
+        for (const hero of heroClass.heroes) {
+            if (hero.name === heroName) {
+                return hero;
+            }
+        }
+    }
+    return null;
+}
+
+// Populate team grid with player cards
+function populateTeamGrid(gridId, teamHeroes, teamType) {
+    const grid = document.getElementById(gridId);
+    grid.innerHTML = '';
+
+    teamHeroes.forEach((heroName, index) => {
+        const heroData = findHeroByName(heroName);
+        if (!heroData) return;
+
+        const card = document.createElement('div');
+        card.className = 'player-card';
+        card.setAttribute('data-hero', heroName);
+        card.setAttribute('data-team', teamType);
+
+        const thumb = document.createElement('img');
+        thumb.className = 'player-card-thumb';
+        thumb.src = `images/heroes-thumbnails/${heroData.image}`;
+        thumb.alt = heroName;
+
+        const name = document.createElement('div');
+        name.className = 'player-card-name';
+        name.textContent = heroName;
+
+        card.appendChild(thumb);
+        card.appendChild(name);
+        grid.appendChild(card);
+    });
+}
+
+// Simulate next kill
+function simulateNextKill() {
+    if (!deathmatchState.isRunning) return;
+
+    // Random delay 1-3 seconds
+    const delay = 1000 + Math.random() * 2000;
+
+    setTimeout(() => {
+        // Get alive players from each team
+        const alivePlayers = Object.keys(deathmatchState.playerStats).filter(
+            name => deathmatchState.playerStats[name].team === 'player' && deathmatchState.playerStats[name].isAlive
+        );
+        const aliveEnemies = Object.keys(deathmatchState.playerStats).filter(
+            name => deathmatchState.playerStats[name].team === 'enemy' && deathmatchState.playerStats[name].isAlive
+        );
+
+        if (alivePlayers.length === 0 || aliveEnemies.length === 0) {
+            console.log('No alive players on one team, skipping kill');
+            setTimeout(() => simulateNextKill(), 500);
+            return;
+        }
+
+        // Pick random fighters
+        const playerFighter = alivePlayers[Math.floor(Math.random() * alivePlayers.length)];
+        const enemyFighter = aliveEnemies[Math.floor(Math.random() * aliveEnemies.length)];
+
+        const playerHero = deathmatchState.playerStats[playerFighter].heroData;
+        const enemyHero = deathmatchState.playerStats[enemyFighter].heroData;
+
+        // Determine winner using class advantage
+        const playerWinChance = getClassAdvantage(playerHero.class, enemyHero.class);
+        const playerWins = Math.random() < playerWinChance;
+
+        const killer = playerWins ? playerFighter : enemyFighter;
+        const victim = playerWins ? enemyFighter : playerFighter;
+        const killerTeam = playerWins ? 'player' : 'enemy';
+        const victimTeam = playerWins ? 'enemy' : 'player';
+
+        // Get random death message
+        const killerHero = deathmatchState.playerStats[killer].heroData;
+        const victimHero = deathmatchState.playerStats[victim].heroData;
+        const deathEvent = getRandomDeathMessage(killerHero, victimHero);
+
+        // Update stats
+        deathmatchState.playerStats[killer].kills++;
+        deathmatchState.playerStats[victim].deaths++;
+        deathmatchState.playerStats[victim].isAlive = false;
+
+        // Update kill counter
+        if (killerTeam === 'player') {
+            deathmatchState.playerKills++;
+        } else {
+            deathmatchState.enemyKills++;
+        }
+
+        // Record kill event
+        deathmatchState.killHistory.push({
+            killer,
+            victim,
+            killerTeam,
+            victimTeam,
+            ability: deathEvent.ability,
+            message: deathEvent.message,
+            timestamp: Date.now()
+        });
+
+        // Show kill in feed
+        displayKillFeed(killerHero, victimHero, deathEvent);
+
+        // Mark victim as dead
+        markPlayerDead(victim);
+
+        // Update kill counter display
+        updateKillCounter(killerTeam, victimHero);
+
+        // Update score
+        document.getElementById('player-score').textContent = deathmatchState.playerKills;
+        document.getElementById('enemy-score').textContent = deathmatchState.enemyKills;
+
+        // Respawn after 2 seconds
+        setTimeout(() => {
+            respawnPlayer(victim);
+
+            // Check victory condition
+            if (deathmatchState.playerKills >= 10 || deathmatchState.enemyKills >= 10) {
+                deathmatchState.isRunning = false;
+                setTimeout(() => showVictoryScreen(), 2000);
+            } else {
+                // Continue simulation
+                simulateNextKill();
+            }
+        }, 2000);
+    }, delay);
+}
+
+// Display kill feed
+function displayKillFeed(killerHero, victimHero, deathEvent) {
+    const killFeed = document.getElementById('kill-feed');
+    const killerImg = document.getElementById('feed-killer-img');
+    const victimImg = document.getElementById('feed-victim-img');
+    const abilityEl = document.getElementById('feed-ability');
+    const messageEl = document.getElementById('feed-message');
+
+    killerImg.src = `images/heroes-thumbnails/${killerHero.image}`;
+    victimImg.src = `images/heroes-thumbnails/${victimHero.image}`;
+    abilityEl.textContent = deathEvent.ability;
+    messageEl.textContent = deathEvent.message;
+
+    // Show feed
+    killFeed.classList.add('active');
+
+    // Hide after 3 seconds
+    setTimeout(() => {
+        killFeed.classList.remove('active');
+    }, 3000);
+}
+
+// Mark player as dead
+function markPlayerDead(heroName) {
+    const card = document.querySelector(`.player-card[data-hero="${heroName}"]`);
+    if (card) {
+        card.classList.add('dead');
+    }
+}
+
+// Respawn player
+function respawnPlayer(heroName) {
+    deathmatchState.playerStats[heroName].isAlive = true;
+    const card = document.querySelector(`.player-card[data-hero="${heroName}"]`);
+    if (card) {
+        card.classList.remove('dead');
+    }
+}
+
+// Update kill counter with thumbnail
+function updateKillCounter(killerTeam, victimHero) {
+    const displayId = killerTeam === 'player' ? 'player-kills-display' : 'enemy-kills-display';
+    const display = document.getElementById(displayId);
+
+    const killThumb = document.createElement('img');
+    killThumb.className = 'kill-thumb';
+    killThumb.src = `images/heroes-thumbnails/${victimHero.image}`;
+    killThumb.alt = 'Kill';
+
+    display.appendChild(killThumb);
+}
+
+// Get random death message
+function getRandomDeathMessage(killerHero, victimHero) {
+    const killerAbilities = killerHero.abilities;
+
+    // Build array of all abilities
+    const abilities = [];
+    if (killerAbilities.main_attack && killerAbilities.main_attack.name) {
+        abilities.push({
+            name: killerAbilities.main_attack.name,
+            description: killerAbilities.main_attack.description
+        });
+    }
+    if (killerAbilities.ability_1 && killerAbilities.ability_1.name) {
+        abilities.push({
+            name: killerAbilities.ability_1.name,
+            description: killerAbilities.ability_1.description
+        });
+    }
+    if (killerAbilities.ability_2 && killerAbilities.ability_2.name) {
+        abilities.push({
+            name: killerAbilities.ability_2.name,
+            description: killerAbilities.ability_2.description
+        });
+    }
+    if (killerAbilities.super && killerAbilities.super.name) {
+        abilities.push({
+            name: killerAbilities.super.name,
+            description: killerAbilities.super.description
+        });
+    }
+
+    // Pick random ability
+    const ability = abilities.length > 0
+        ? abilities[Math.floor(Math.random() * abilities.length)]
+        : { name: 'Attack', description: 'A devastating blow!' };
+
+    return {
+        ability: ability.name,
+        message: ability.description
+    };
+}
+
+// Show victory screen
+function showVictoryScreen() {
+    const winningTeam = deathmatchState.playerKills >= 10 ? 'player' : 'enemy';
+    const victoryOverlay = document.getElementById('victory-overlay');
+    const victoryTitle = document.getElementById('victory-title');
+
+    // Set title
+    victoryTitle.textContent = winningTeam === 'player' ? 'YOUR TEAM WINS!' : 'ENEMY TEAM WINS!';
+
+    // Populate stats tables
+    populateStatsTable('player-stats-table', window.currentPlayerTeam);
+    populateStatsTable('enemy-stats-table', window.currentEnemyTeam);
+
+    // Determine and display star player
+    const starPlayer = determineStarPlayer();
+    displayStarPlayer(starPlayer);
+
+    // Show overlay
+    victoryOverlay.classList.remove('hidden');
+}
+
+// Populate stats table
+function populateStatsTable(tableId, teamHeroes) {
+    const container = document.getElementById(tableId);
+    const table = document.createElement('div');
+    table.className = 'stats-table';
+
+    teamHeroes.forEach(heroName => {
+        const stats = deathmatchState.playerStats[heroName];
+        const row = document.createElement('div');
+        row.className = 'stat-row';
+
+        const name = document.createElement('div');
+        name.className = 'stat-name';
+        name.textContent = heroName;
+
+        const values = document.createElement('div');
+        values.className = 'stat-values';
+        values.textContent = `${stats.kills}K / ${stats.deaths}D`;
+
+        row.appendChild(name);
+        row.appendChild(values);
+        table.appendChild(row);
+    });
+
+    container.innerHTML = '';
+    container.appendChild(table);
+}
+
+// Determine star player
+function determineStarPlayer() {
+    const allPlayers = Object.keys(deathmatchState.playerStats);
+    let starPlayer = null;
+    let bestRatio = -1;
+    let mostKills = -1;
+
+    allPlayers.forEach(heroName => {
+        const stats = deathmatchState.playerStats[heroName];
+        const kd = stats.kills / Math.max(stats.deaths, 1);
+
+        if (kd > bestRatio || (kd === bestRatio && stats.kills > mostKills)) {
+            bestRatio = kd;
+            mostKills = stats.kills;
+            starPlayer = heroName;
+        }
+    });
+
+    return starPlayer;
+}
+
+// Display star player
+function displayStarPlayer(starPlayerName) {
+    const stats = deathmatchState.playerStats[starPlayerName];
+    const heroData = stats.heroData;
+
+    document.getElementById('star-player-img').src = `images/heroes-thumbnails/${heroData.image}`;
+    document.getElementById('star-player-name').textContent = starPlayerName;
+
+    const kdRatio = (stats.kills / Math.max(stats.deaths, 1)).toFixed(2);
+    document.getElementById('star-player-stats').textContent = `${stats.kills} Kills / ${stats.deaths} Deaths (${kdRatio} K/D)`;
+}
+
+// Return to menu button
+document.getElementById('return-to-menu-btn').addEventListener('click', () => {
+    deathmatchState.isRunning = false;
+    if (squirtState.timerInterval) clearInterval(squirtState.timerInterval);
+    if (squirtState.barrelInterval) clearInterval(squirtState.barrelInterval);
+    squirtState.isRunning = false;
+    transitionToScreen('gameplay-screen', 'home-screen');
+});
+
+// ===== SQUIRT MODE GAMEPLAY =====
+
+// Global state for squirt mode
+let squirtState = {
+    barrelPosition: 50,
+    timeRemaining: 120,
+    playerStats: {},
+    isRunning: false,
+    timerInterval: null,
+    barrelInterval: null
+};
+
+// Start Squirt Mode
+function startSquirt() {
+    console.log('Starting Squirt Mode!');
+
+    // Reset state
+    squirtState = {
+        barrelPosition: 50,
+        timeRemaining: 120,
+        playerStats: {},
+        isRunning: true,
+        timerInterval: null,
+        barrelInterval: null
+    };
+
+    // Show barrel bar, hide kill counter
+    document.getElementById('barrel-position-bar').style.display = 'flex';
+    document.getElementById('kill-counter-bar').style.display = 'none';
+
+    // Initialize player stats (reuse from deathmatch but with squirtState)
+    window.currentPlayerTeam.forEach(heroName => {
+        const heroData = findHeroByName(heroName);
+        squirtState.playerStats[heroName] = {
+            kills: 0,
+            deaths: 0,
+            isAlive: true,
+            team: 'player',
+            heroData: heroData
+        };
+    });
+
+    window.currentEnemyTeam.forEach(heroName => {
+        const heroData = findHeroByName(heroName);
+        squirtState.playerStats[heroName] = {
+            kills: 0,
+            deaths: 0,
+            isAlive: true,
+            team: 'enemy',
+            heroData: heroData
+        };
+    });
+
+    // Populate 2x2 grids
+    const playerGrid = document.getElementById('player-team-grid');
+    const enemyGrid = document.getElementById('enemy-team-grid');
+    playerGrid.classList.add('squirt-mode');
+    enemyGrid.classList.add('squirt-mode');
+    playerGrid.classList.remove('deathmatch-mode');
+    enemyGrid.classList.remove('deathmatch-mode');
+
+    populateTeamGrid('player-team-grid', window.currentPlayerTeam, 'player');
+    populateTeamGrid('enemy-team-grid', window.currentEnemyTeam, 'enemy');
+
+    // Reset barrel and timer
+    document.getElementById('timer-display').textContent = '2:00';
+    document.getElementById('timer-display').classList.remove('warning');
+    document.getElementById('barrel-icon').style.left = '50%';
+
+    // Hide kill feed and victory overlay
+    document.getElementById('kill-feed').classList.remove('active');
+    document.getElementById('victory-overlay').classList.add('hidden');
+
+    // Start timer
+    startSquirtTimer();
+
+    // Start barrel movement
+    startBarrelMovement();
+
+    // Start kill simulation
+    setTimeout(() => {
+        if (squirtState.isRunning) {
+            simulateNextSquirtKill();
+        }
+    }, 1500);
+}
+
+// Start squirt timer (5x real time speed)
+function startSquirtTimer() {
+    squirtState.timerInterval = setInterval(() => {
+        squirtState.timeRemaining -= 1;
+
+        const minutes = Math.floor(squirtState.timeRemaining / 60);
+        const seconds = squirtState.timeRemaining % 60;
+        const display = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+
+        const timerEl = document.getElementById('timer-display');
+        timerEl.textContent = display;
+
+        // Warning color at 30 seconds
+        if (squirtState.timeRemaining <= 30 && !timerEl.classList.contains('warning')) {
+            timerEl.classList.add('warning');
+        }
+
+        // Time's up
+        if (squirtState.timeRemaining <= 0) {
+            clearInterval(squirtState.timerInterval);
+            squirtState.isRunning = false;
+            endSquirtGame('timeout');
+        }
+    }, 200); // 200ms real time = 1 second game time (5x speed)
+}
+
+// Start barrel movement
+function startBarrelMovement() {
+    squirtState.barrelInterval = setInterval(() => {
+        if (!squirtState.isRunning) {
+            clearInterval(squirtState.barrelInterval);
+            return;
+        }
+
+        // Count alive players
+        const alivePlayers = Object.values(squirtState.playerStats)
+            .filter(s => s.team === 'player' && s.isAlive).length;
+        const aliveEnemies = Object.values(squirtState.playerStats)
+            .filter(s => s.team === 'enemy' && s.isAlive).length;
+
+        const pushingForce = alivePlayers - aliveEnemies;
+
+        // Base rate: 0.5% per second per player advantage
+        // Accelerate as time runs out
+        const timeMultiplier = 1 + (1 - squirtState.timeRemaining / 120);
+        const baseRate = 0.5;
+        const movementRate = baseRate * timeMultiplier;
+
+        // Negative force pushes toward 100% (enemy wins)
+        // Positive force pushes toward 0% (player wins)
+        const movement = -pushingForce * movementRate * 0.1; // 0.1s update interval
+
+        squirtState.barrelPosition += movement;
+        squirtState.barrelPosition = Math.max(0, Math.min(100, squirtState.barrelPosition));
+
+        // Update visual
+        const barrelIcon = document.getElementById('barrel-icon');
+        barrelIcon.style.left = `${squirtState.barrelPosition}%`;
+
+        // Check victory
+        if (squirtState.barrelPosition <= 0) {
+            squirtState.isRunning = false;
+            clearInterval(squirtState.barrelInterval);
+            clearInterval(squirtState.timerInterval);
+            endSquirtGame('barrel-player');
+        } else if (squirtState.barrelPosition >= 100) {
+            squirtState.isRunning = false;
+            clearInterval(squirtState.barrelInterval);
+            clearInterval(squirtState.timerInterval);
+            endSquirtGame('barrel-enemy');
+        }
+    }, 100);
+}
+
+// Simulate squirt kill (5 second respawn)
+function simulateNextSquirtKill() {
+    if (!squirtState.isRunning) return;
+
+    const delay = 1000 + Math.random() * 2000;
+
+    setTimeout(() => {
+        // Get alive players from each team
+        const alivePlayers = Object.keys(squirtState.playerStats).filter(
+            name => squirtState.playerStats[name].team === 'player' && squirtState.playerStats[name].isAlive
+        );
+        const aliveEnemies = Object.keys(squirtState.playerStats).filter(
+            name => squirtState.playerStats[name].team === 'enemy' && squirtState.playerStats[name].isAlive
+        );
+
+        if (alivePlayers.length === 0 || aliveEnemies.length === 0) {
+            setTimeout(() => simulateNextSquirtKill(), 500);
+            return;
+        }
+
+        // Pick random fighters
+        const playerFighter = alivePlayers[Math.floor(Math.random() * alivePlayers.length)];
+        const enemyFighter = aliveEnemies[Math.floor(Math.random() * aliveEnemies.length)];
+
+        const playerHero = squirtState.playerStats[playerFighter].heroData;
+        const enemyHero = squirtState.playerStats[enemyFighter].heroData;
+
+        // Determine winner using class advantage
+        const playerWinChance = getClassAdvantage(playerHero.class, enemyHero.class);
+        const playerWins = Math.random() < playerWinChance;
+
+        const killer = playerWins ? playerFighter : enemyFighter;
+        const victim = playerWins ? enemyFighter : playerFighter;
+
+        const killerHero = squirtState.playerStats[killer].heroData;
+        const victimHero = squirtState.playerStats[victim].heroData;
+        const deathEvent = getRandomDeathMessage(killerHero, victimHero);
+
+        // Update stats
+        squirtState.playerStats[killer].kills++;
+        squirtState.playerStats[victim].deaths++;
+        squirtState.playerStats[victim].isAlive = false;
+
+        // Show kill in feed
+        displayKillFeed(killerHero, victimHero, deathEvent);
+
+        // Mark victim as dead
+        markPlayerDead(victim);
+
+        // Respawn after 5 seconds
+        setTimeout(() => {
+            respawnPlayer(victim);
+            squirtState.playerStats[victim].isAlive = true;
+
+            if (squirtState.isRunning) {
+                simulateNextSquirtKill();
+            }
+        }, 5000);
+    }, delay);
+}
+
+// End squirt game
+function endSquirtGame(reason) {
+    if (squirtState.timerInterval) clearInterval(squirtState.timerInterval);
+    if (squirtState.barrelInterval) clearInterval(squirtState.barrelInterval);
+
+    let winningTeam;
+    if (reason === 'barrel-player') {
+        winningTeam = 'player';
+    } else if (reason === 'barrel-enemy') {
+        winningTeam = 'enemy';
+    } else if (reason === 'timeout') {
+        winningTeam = squirtState.barrelPosition < 50 ? 'player' : 'enemy';
+    }
+
+    setTimeout(() => showSquirtVictory(winningTeam), 2000);
+}
+
+// Show squirt victory screen (reuse victory overlay)
+function showSquirtVictory(winningTeam) {
+    const victoryOverlay = document.getElementById('victory-overlay');
+    const victoryTitle = document.getElementById('victory-title');
+
+    // Set title
+    victoryTitle.textContent = winningTeam === 'player' ? 'YOUR TEAM WINS!' : 'ENEMY TEAM WINS!';
+
+    // Populate stats tables
+    populateSquirtStatsTable('player-stats-table', window.currentPlayerTeam);
+    populateSquirtStatsTable('enemy-stats-table', window.currentEnemyTeam);
+
+    // Determine and display star player
+    const starPlayer = determineSquirtStarPlayer();
+    displaySquirtStarPlayer(starPlayer);
+
+    // Show overlay
+    victoryOverlay.classList.remove('hidden');
+}
+
+// Populate squirt stats table
+function populateSquirtStatsTable(tableId, teamHeroes) {
+    const container = document.getElementById(tableId);
+    const table = document.createElement('div');
+    table.className = 'stats-table';
+
+    teamHeroes.forEach(heroName => {
+        const stats = squirtState.playerStats[heroName];
+        const row = document.createElement('div');
+        row.className = 'stat-row';
+
+        const name = document.createElement('div');
+        name.className = 'stat-name';
+        name.textContent = heroName;
+
+        const values = document.createElement('div');
+        values.className = 'stat-values';
+        values.textContent = `${stats.kills}K / ${stats.deaths}D`;
+
+        row.appendChild(name);
+        row.appendChild(values);
+        table.appendChild(row);
+    });
+
+    container.innerHTML = '';
+    container.appendChild(table);
+}
+
+// Determine squirt star player
+function determineSquirtStarPlayer() {
+    const allPlayers = Object.keys(squirtState.playerStats);
+    let starPlayer = null;
+    let bestRatio = -1;
+    let mostKills = -1;
+
+    allPlayers.forEach(heroName => {
+        const stats = squirtState.playerStats[heroName];
+        const kd = stats.kills / Math.max(stats.deaths, 1);
+
+        if (kd > bestRatio || (kd === bestRatio && stats.kills > mostKills)) {
+            bestRatio = kd;
+            mostKills = stats.kills;
+            starPlayer = heroName;
+        }
+    });
+
+    return starPlayer;
+}
+
+// Display squirt star player
+function displaySquirtStarPlayer(starPlayerName) {
+    const stats = squirtState.playerStats[starPlayerName];
+    const heroData = stats.heroData;
+
+    document.getElementById('star-player-img').src = `images/heroes-thumbnails/${heroData.image}`;
+    document.getElementById('star-player-name').textContent = starPlayerName;
+
+    const kdRatio = (stats.kills / Math.max(stats.deaths, 1)).toFixed(2);
+    document.getElementById('star-player-stats').textContent = `${stats.kills} Kills / ${stats.deaths} Deaths (${kdRatio} K/D)`;
+}

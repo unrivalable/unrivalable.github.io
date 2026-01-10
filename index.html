@@ -209,17 +209,15 @@
                         </div>
                     </div>
 
-                    <div class="carousel-slide" data-mode="story">
+                    <div class="carousel-slide" data-mode="story" data-disabled="true">
                         <div class="carousel-image">
                             <img src="images/story-mode.png" alt="Story mode">
                         </div>
                         <div class="carousel-info">
                             <h3 class="carousel-title">Story Mode</h3>
                             <div class="carousel-team">1-4 player co-op</div>
-                            <div class="carousel-objective">
-                                Destroy the undestroyables and defeat the darkest timeline to gain rewards and glory.
-                            </div>
-                            <button class="select-mode-btn">JUICE IT UP?</button>
+                            <div class="mode-unavailable">COMING SOON</div>
+                            <button class="select-mode-btn" disabled>UNAVAILABLE</button>
                         </div>
                     </div>
                 </div>
@@ -274,6 +272,76 @@
                     <span class="hint-label">HINT:</span>
                     <span class="hint-text" id="hint-text"></span>
                 </div>
+            </div>
+        </div>
+
+        <!-- Gameplay Screen (Dan Rhon Deathmatch) -->
+        <div id="gameplay-screen" class="screen">
+            <!-- Barrel Position Bar (for Squirt) -->
+            <div class="barrel-position-bar" id="barrel-position-bar" style="display: none;">
+                <div class="team-indicator player-side">PLAYER TEAM →</div>
+                <div class="barrel-track">
+                    <div class="barrel-icon" id="barrel-icon"></div>
+                    <div class="position-line" id="position-line"></div>
+                </div>
+                <div class="team-indicator enemy-side">← ENEMY TEAM</div>
+                <div class="timer-display" id="timer-display">2:00</div>
+            </div>
+
+            <!-- Kill Counter Bar (for Deathmatch) -->
+            <div class="kill-counter-bar" id="kill-counter-bar">
+                <div class="player-kills" id="player-kills-display">
+                    <!-- Small thumbnails with red X accumulate left to center (max 10) -->
+                </div>
+                <div class="kill-counter-center">
+                    <span id="player-score">0</span> - <span id="enemy-score">0</span>
+                </div>
+                <div class="enemy-kills" id="enemy-kills-display">
+                    <!-- Small thumbnails with red X accumulate right to center (max 10) -->
+                </div>
+            </div>
+
+            <!-- Team Grids -->
+            <div class="gameplay-teams">
+                <div class="team-grid player-team" id="player-team-grid">
+                    <!-- 2x3 grid of player thumbnails -->
+                </div>
+
+                <div class="team-grid enemy-team" id="enemy-team-grid">
+                    <!-- 2x3 grid of enemy thumbnails -->
+                </div>
+            </div>
+
+            <!-- Kill Feed (Center) -->
+            <div class="kill-feed" id="kill-feed">
+                <img class="killer-thumb" id="feed-killer-img" src="" alt="Killer">
+                <div class="feed-text">
+                    <div class="feed-ability" id="feed-ability"></div>
+                    <div class="feed-message" id="feed-message"></div>
+                </div>
+                <img class="victim-thumb dead-x" id="feed-victim-img" src="" alt="Victim">
+            </div>
+
+            <!-- Victory Overlay -->
+            <div class="victory-overlay hidden" id="victory-overlay">
+                <h1 class="victory-title" id="victory-title">PLAYER TEAM WINS!</h1>
+                <div class="stats-container">
+                    <div class="team-stats">
+                        <h3>YOUR TEAM</h3>
+                        <div id="player-stats-table"></div>
+                    </div>
+                    <div class="team-stats">
+                        <h3>ENEMY TEAM</h3>
+                        <div id="enemy-stats-table"></div>
+                    </div>
+                </div>
+                <div class="star-player" id="star-player">
+                    <div class="star-label">★ STAR PLAYER ★</div>
+                    <img id="star-player-img" src="" alt="Star Player">
+                    <div id="star-player-name"></div>
+                    <div id="star-player-stats"></div>
+                </div>
+                <button class="select-mode-btn" id="return-to-menu-btn">RETURN TO MENU</button>
             </div>
         </div>
 

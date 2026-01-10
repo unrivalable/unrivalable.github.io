@@ -758,6 +758,34 @@ body::before {
     text-shadow: var(--text-glow);
 }
 
+/* Mode Unavailable Indicator */
+.mode-unavailable {
+    font-family: 'Bangers', cursive;
+    font-size: 2rem;
+    color: var(--comic-red);
+    background: rgba(255, 51, 102, 0.2);
+    border: 3px solid var(--comic-red);
+    padding: 15px 30px;
+    margin-bottom: 25px;
+    text-align: center;
+    text-shadow: var(--text-stroke);
+    box-shadow: var(--shadow-dark), 0 0 20px rgba(255, 51, 102, 0.5);
+    transform: rotate(-1deg);
+    letter-spacing: 3px;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+        transform: rotate(-1deg) scale(1);
+    }
+    50% {
+        opacity: 0.8;
+        transform: rotate(-1deg) scale(1.05);
+    }
+}
+
 /* Select Mode Button */
 .select-mode-btn {
     font-family: 'Bangers', cursive;
