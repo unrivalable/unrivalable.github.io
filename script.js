@@ -2366,6 +2366,9 @@ async function startGame() {
                     } else if (selectedGameMode === 'squirt') {
                         transitionToScreen('loading-screen', 'gameplay-screen');
                         setTimeout(() => startSquirt(), 500);
+                    } else if (selectedGameMode === 'turfwar') {
+                        transitionToScreen('loading-screen', 'gameplay-screen');
+                        setTimeout(() => startTurfWar(), 500);
                     } else {
                         await showGameOver();
                     }
@@ -3032,9 +3035,21 @@ function displayStarPlayer(starPlayerName) {
 // Return to menu button
 document.getElementById('return-to-menu-btn').addEventListener('click', () => {
     deathmatchState.isRunning = false;
+
+    // Clear Squirt intervals
     if (squirtState.timerInterval) clearInterval(squirtState.timerInterval);
     if (squirtState.barrelInterval) clearInterval(squirtState.barrelInterval);
     squirtState.isRunning = false;
+
+    // Clear Turf War intervals
+    if (turfWarState) {
+        turfWarState.isRunning = false;
+        if (turfWarState.timerInterval) clearInterval(turfWarState.timerInterval);
+        if (turfWarState.turfInterval) clearInterval(turfWarState.turfInterval);
+        if (turfWarState.stealInterval) clearInterval(turfWarState.stealInterval);
+        if (turfWarState.killInterval) clearInterval(turfWarState.killInterval);
+    }
+
     transitionToScreen('gameplay-screen', 'home-screen');
 });
 
@@ -3356,4 +3371,390 @@ function displaySquirtStarPlayer(starPlayerName) {
 
     const kdRatio = (stats.kills / Math.max(stats.deaths, 1)).toFixed(2);
     document.getElementById('star-player-stats').textContent = `${stats.kills} Kills / ${stats.deaths} Deaths (${kdRatio} K/D)`;
+}
+
+// ===== TESSARUNE TURF WAR GAMEPLAY =====
+
+// Global state for turf war
+let turfWarState = {
+    playerTurf: 50, // Percentage
+    timeRemaining: 120, // Seconds
+    playerStats: {},
+    isRunning: false,
+    timerInterval: null,
+    turfInterval: null,
+    stealInterval: null,
+    killInterval: null
+};
+
+// Start Turf War Mode
+function startTurfWar() {
+    console.log('Starting Tessarune Turf War!');
+
+    // Reset state
+    turfWarState = {
+        playerTurf: 50,
+        timeRemaining: 120,
+        playerStats: {},
+        isRunning: true,
+        timerInterval: null,
+        turfInterval: null,
+        stealInterval: null,
+        killInterval: null
+    };
+
+    // Show turf war bar, hide others
+    document.getElementById('turf-war-bar').style.display = 'flex';
+    document.getElementById('kill-counter-bar').style.display = 'none';
+    document.getElementById('barrel-position-bar').style.display = 'none';
+
+    // Initialize player stats
+    initializeTurfWarStats();
+
+    // Ensure grids are in standard mode (2x3)
+    const playerGrid = document.getElementById('player-team-grid');
+    const enemyGrid = document.getElementById('enemy-team-grid');
+    playerGrid.classList.remove('squirt-mode');
+    enemyGrid.classList.remove('squirt-mode');
+
+    // Populate team grids
+    populateTeamGrid('player-team-grid', window.currentPlayerTeam, 'player');
+    populateTeamGrid('enemy-team-grid', window.currentEnemyTeam, 'enemy');
+
+    // Reset display
+    updateTurfDisplay();
+    document.getElementById('turf-timer').textContent = '2:00';
+    document.getElementById('turf-timer').classList.remove('warning');
+
+    // Hide kill feed and victory overlay
+    document.getElementById('kill-feed').classList.remove('active');
+    document.getElementById('victory-overlay').classList.add('hidden');
+
+    // Start systems
+    startTurfWarTimer();
+    startTurfSimulation();
+    startTessaruneStealCheck();
+
+    // Start kill simulation
+    setTimeout(() => {
+        if (turfWarState.isRunning) {
+            simulateNextTurfWarKill();
+        }
+    }, 1500);
+}
+
+function initializeTurfWarStats() {
+    // Initialize player team
+    window.currentPlayerTeam.forEach(heroName => {
+        const heroData = findHeroByName(heroName);
+        turfWarState.playerStats[heroName] = {
+            kills: 0,
+            deaths: 0,
+            isAlive: true,
+            team: 'player',
+            heroData: heroData
+        };
+    });
+
+    // Initialize enemy team
+    window.currentEnemyTeam.forEach(heroName => {
+        const heroData = findHeroByName(heroName);
+        turfWarState.playerStats[heroName] = {
+            kills: 0,
+            deaths: 0,
+            isAlive: true,
+            team: 'enemy',
+            heroData: heroData
+        };
+    });
+}
+
+// Timer: 2x faster than real time
+function startTurfWarTimer() {
+    turfWarState.timerInterval = setInterval(() => {
+        if (!turfWarState.isRunning) return;
+
+        turfWarState.timeRemaining -= 1;
+
+        const minutes = Math.floor(turfWarState.timeRemaining / 60);
+        const seconds = turfWarState.timeRemaining % 60;
+
+        const display = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        const timerEl = document.getElementById('turf-timer');
+        timerEl.textContent = display;
+
+        if (turfWarState.timeRemaining <= 30 && !timerEl.classList.contains('warning')) {
+            timerEl.classList.add('warning');
+        }
+
+        if (turfWarState.timeRemaining <= 0) {
+            endTurfWar('timeout');
+        }
+    }, 500); // 500ms real time = 1 second game time (2x speed)
+}
+
+// Simulate turf shifting back and forth
+function startTurfSimulation() {
+    turfWarState.turfInterval = setInterval(() => {
+        if (!turfWarState.isRunning) return;
+
+        // Random small shift (-2% to +2%)
+        const shift = (Math.random() * 4) - 2;
+
+        // Bias towards team with more alive players
+        const alivePlayers = Object.values(turfWarState.playerStats)
+            .filter(s => s.team === 'player' && s.isAlive).length;
+        const aliveEnemies = Object.values(turfWarState.playerStats)
+            .filter(s => s.team === 'enemy' && s.isAlive).length;
+
+        const advantage = alivePlayers - aliveEnemies;
+        const bias = advantage * 0.5; // 0.5% per player advantage
+
+        turfWarState.playerTurf += (shift + bias);
+
+        // Clamp (but don't end game here unless 100/0, handled in update)
+        turfWarState.playerTurf = Math.max(0.1, Math.min(99.9, turfWarState.playerTurf));
+
+        updateTurfDisplay();
+    }, 2000);
+}
+
+function updateTurfDisplay() {
+    // Round for display
+    const pTurf = Math.round(turfWarState.playerTurf);
+    const eTurf = 100 - pTurf;
+
+    document.getElementById('player-turf-percent').textContent = `${pTurf}%`;
+    document.getElementById('enemy-turf-percent').textContent = `${eTurf}%`;
+
+    document.getElementById('player-turf-fill').style.width = `${pTurf}%`;
+    document.getElementById('enemy-turf-fill').style.width = `${eTurf}%`;
+}
+
+// Tessarune Steal Mechanic
+function startTessaruneStealCheck() {
+    let checkCount = 0;
+
+    // Check every 5 seconds real time (equivalent to 10 seconds game time)
+    turfWarState.stealInterval = setInterval(() => {
+        if (!turfWarState.isRunning) return;
+
+        checkCount++;
+        // Alternating teams: odd = player, even = enemy (or vice versa)
+        const isPlayerTurn = checkCount % 2 !== 0;
+        const teamToCheck = isPlayerTurn ? 'player' : 'enemy';
+
+        // 5% chance
+        if (Math.random() < 0.05) {
+            // Success!
+            const aliveTeamMembers = Object.keys(turfWarState.playerStats).filter(
+                name => turfWarState.playerStats[name].team === teamToCheck && turfWarState.playerStats[name].isAlive
+            );
+
+            if (aliveTeamMembers.length > 0) {
+                const heroName = aliveTeamMembers[Math.floor(Math.random() * aliveTeamMembers.length)];
+
+                // Show message
+                const msg = isPlayerTurn
+                    ? `${heroName} STOLE THE TESSARUNE!`
+                    : `${heroName} STOLE THE RESSATUNE!`;
+
+                const killFeed = document.getElementById('kill-feed');
+                // Creating a custom feed item for this special event
+                // Reusing kill feed elements but styled differently if possible
+                // Just use the standard feed with special text
+
+                const killerImg = document.getElementById('feed-killer-img');
+                const victimImg = document.getElementById('feed-victim-img');
+                const abilityEl = document.getElementById('feed-ability');
+                const messageEl = document.getElementById('feed-message');
+
+                const heroData = turfWarState.playerStats[heroName].heroData;
+                killerImg.src = `images/heroes-thumbnails/${heroData.image}`;
+                // Hide victim image for this event? Or show the object?
+                victimImg.style.opacity = '0';
+
+                abilityEl.textContent = "GAME WINNING STEAL!";
+                messageEl.textContent = msg;
+
+                killFeed.classList.add('active');
+
+                setTimeout(() => {
+                    endTurfWar(isPlayerTurn ? 'steal-player' : 'steal-enemy', heroName);
+                }, 2000);
+            }
+        }
+
+    }, 5000); // 5000ms = 5s real time = 10s game time
+}
+
+// Simulate Kill (similar to deathmatch/squirt)
+function simulateNextTurfWarKill() {
+    if (!turfWarState.isRunning) return;
+
+    const delay = 1000 + Math.random() * 2000;
+
+    setTimeout(() => {
+        // Get alive players
+        const alivePlayers = Object.keys(turfWarState.playerStats).filter(
+            name => turfWarState.playerStats[name].team === 'player' && turfWarState.playerStats[name].isAlive
+        );
+        const aliveEnemies = Object.keys(turfWarState.playerStats).filter(
+            name => turfWarState.playerStats[name].team === 'enemy' && turfWarState.playerStats[name].isAlive
+        );
+
+        if (alivePlayers.length === 0 || aliveEnemies.length === 0) {
+            setTimeout(() => simulateNextTurfWarKill(), 500);
+            return;
+        }
+
+        // Pick fighters
+        const playerFighter = alivePlayers[Math.floor(Math.random() * alivePlayers.length)];
+        const enemyFighter = aliveEnemies[Math.floor(Math.random() * aliveEnemies.length)];
+
+        const playerHero = turfWarState.playerStats[playerFighter].heroData;
+        const enemyHero = turfWarState.playerStats[enemyFighter].heroData;
+
+        // Determine winner
+        const playerWinChance = getClassAdvantage(playerHero.class, enemyHero.class);
+        const playerWins = Math.random() < playerWinChance;
+
+        const killer = playerWins ? playerFighter : enemyFighter;
+        const victim = playerWins ? enemyFighter : playerFighter;
+        const killerTeam = playerWins ? 'player' : 'enemy';
+
+        const killerHero = turfWarState.playerStats[killer].heroData;
+        const victimHero = turfWarState.playerStats[victim].heroData;
+        const deathEvent = getRandomDeathMessage(killerHero, victimHero);
+
+        // Update stats
+        turfWarState.playerStats[killer].kills++;
+        turfWarState.playerStats[victim].deaths++;
+        turfWarState.playerStats[victim].isAlive = false;
+
+        // TURF WAR MECHANIC: Killer's team gains 5% turf
+        if (killerTeam === 'player') {
+            turfWarState.playerTurf += 5;
+        } else {
+            turfWarState.playerTurf -= 5;
+        }
+        updateTurfDisplay();
+
+        // Show kill in feed
+        // Restore victim image opacity if it was hidden by steal event
+        document.getElementById('feed-victim-img').style.opacity = '1';
+        displayKillFeed(killerHero, victimHero, deathEvent);
+
+        // Mark victim as dead
+        markPlayerDead(victim);
+
+        // Check for 100% win condition
+        if (turfWarState.playerTurf >= 100) {
+            endTurfWar('turf-player');
+            return;
+        } else if (turfWarState.playerTurf <= 0) {
+            endTurfWar('turf-enemy');
+            return;
+        }
+
+        // Respawn after 5 seconds
+        setTimeout(() => {
+            if (turfWarState.isRunning) {
+                respawnPlayer(victim);
+                turfWarState.playerStats[victim].isAlive = true;
+                simulateNextTurfWarKill();
+            }
+        }, 5000);
+
+    }, delay);
+}
+
+function endTurfWar(reason, stealerName) {
+    if (!turfWarState.isRunning) return;
+
+    turfWarState.isRunning = false;
+    clearInterval(turfWarState.timerInterval);
+    clearInterval(turfWarState.turfInterval);
+    clearInterval(turfWarState.stealInterval);
+
+    let winningTeam = 'player'; // default
+    let victoryTitle = "";
+
+    if (reason === 'timeout') {
+        if (turfWarState.playerTurf > 50) {
+            winningTeam = 'player';
+            victoryTitle = "TIME UP! YOU CONTROL MORE TURF!";
+        } else if (turfWarState.playerTurf < 50) {
+            winningTeam = 'enemy';
+            victoryTitle = "TIME UP! ENEMY CONTROLS MORE TURF!";
+        } else {
+            // Draw? Randomize or give to player
+            winningTeam = 'player';
+            victoryTitle = "TIME UP! IT'S A DRAW (YOU WIN!)";
+        }
+    } else if (reason === 'turf-player') {
+        winningTeam = 'player';
+        victoryTitle = "TOTAL DOMINATION! YOU CONTROL ALL TURF!";
+    } else if (reason === 'turf-enemy') {
+        winningTeam = 'enemy';
+        victoryTitle = "DEFEAT! ENEMY CONTROLS ALL TURF!";
+    } else if (reason === 'steal-player') {
+        winningTeam = 'player';
+        victoryTitle = `${stealerName} STOLE THE TESSARUNE!`;
+    } else if (reason === 'steal-enemy') {
+        winningTeam = 'enemy';
+        victoryTitle = `${stealerName} STOLE THE RESSATUNE!`;
+    }
+
+    setTimeout(() => {
+        showTurfWarVictory(winningTeam, victoryTitle);
+    }, 1000);
+}
+
+function showTurfWarVictory(winningTeam, titleText) {
+    const victoryOverlay = document.getElementById('victory-overlay');
+    const victoryTitle = document.getElementById('victory-title');
+
+    victoryTitle.textContent = titleText || (winningTeam === 'player' ? 'YOUR TEAM WINS!' : 'ENEMY TEAM WINS!');
+
+    // Populate stats tables
+    populateStatsTable('player-stats-table', window.currentPlayerTeam); // Reusing deathmatch function as structure is same
+    populateStatsTable('enemy-stats-table', window.currentEnemyTeam);
+
+    // Star player
+    const starPlayer = determineStarPlayer(); // Reusing deathmatch function
+    if (starPlayer) {
+        displayTurfWarStarPlayer();
+    }
+
+    victoryOverlay.classList.remove('hidden');
+}
+
+function displayTurfWarStarPlayer() {
+    const allPlayers = Object.keys(turfWarState.playerStats);
+    let starPlayer = null;
+    let bestRatio = -1;
+    let mostKills = -1;
+
+    allPlayers.forEach(heroName => {
+        const stats = turfWarState.playerStats[heroName];
+        const kd = stats.kills / Math.max(stats.deaths, 1);
+
+        if (kd > bestRatio || (kd === bestRatio && stats.kills > mostKills)) {
+            bestRatio = kd;
+            mostKills = stats.kills;
+            starPlayer = heroName;
+        }
+    });
+
+    if (starPlayer) {
+        const stats = turfWarState.playerStats[starPlayer];
+        const heroData = stats.heroData;
+
+        document.getElementById('star-player-img').src = `images/heroes-thumbnails/${heroData.image}`;
+        document.getElementById('star-player-name').textContent = starPlayer;
+
+        const kdRatio = (stats.kills / Math.max(stats.deaths, 1)).toFixed(2);
+        document.getElementById('star-player-stats').textContent = `${stats.kills} Kills / ${stats.deaths} Deaths (${kdRatio} K/D)`;
+    }
 }

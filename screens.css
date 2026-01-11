@@ -980,3 +980,106 @@
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: repeat(2, 1fr);
 }
+
+/* Turf War Bar */
+.turf-war-bar {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 15px 30px;
+    background: rgba(10, 22, 40, 0.9);
+    border: 4px solid var(--comic-purple);
+    box-shadow: var(--shadow-dark);
+    margin-bottom: 20px;
+}
+
+.turf-stats {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 120px;
+}
+
+.turf-stats .team-label {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.2rem;
+    letter-spacing: 1px;
+    margin-bottom: 5px;
+}
+
+.turf-stats.player-side .team-label {
+    color: var(--comic-blue); /* Blue for player */
+}
+
+.turf-stats.enemy-side .team-label {
+    color: var(--comic-purple); /* Purple for enemy */
+}
+
+.turf-percent {
+    font-family: 'Bangers', cursive;
+    font-size: 2.5rem;
+    text-shadow: var(--text-stroke);
+}
+
+.turf-stats.player-side .turf-percent {
+    color: var(--comic-blue);
+}
+
+.turf-stats.enemy-side .turf-percent {
+    color: var(--comic-purple);
+}
+
+.turf-track-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.turf-track {
+    width: 100%;
+    height: 40px;
+    background: #000;
+    border: 3px solid var(--comic-white);
+    display: flex;
+    position: relative;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+}
+
+.turf-fill {
+    height: 100%;
+    transition: width 0.5s ease-out;
+}
+
+.turf-fill.player-turf {
+    background: linear-gradient(180deg, #4da6ff 0%, #0066cc 100%); /* Blue */
+    border-right: 2px solid #fff;
+    box-shadow: inset 0 0 20px rgba(0, 0, 255, 0.5);
+}
+
+.turf-fill.enemy-turf {
+    background: linear-gradient(180deg, #b366ff 0%, #6600cc 100%); /* Purple */
+    border-left: 2px solid #fff;
+    box-shadow: inset 0 0 20px rgba(128, 0, 128, 0.5);
+}
+
+.turf-timer {
+    font-family: 'Bangers', cursive;
+    font-size: 2.5rem;
+    color: var(--comic-yellow);
+    text-shadow: var(--text-stroke);
+    background: rgba(0, 0, 0, 0.7);
+    padding: 0 15px;
+    border: 2px solid var(--comic-white);
+    border-radius: 4px;
+    min-width: 100px;
+    text-align: center;
+}
+
+.turf-timer.warning {
+    color: var(--comic-red);
+    animation: timerPulse 0.5s ease-in-out infinite;
+}
