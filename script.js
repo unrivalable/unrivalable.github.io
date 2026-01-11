@@ -2671,9 +2671,11 @@ function startDeathmatch() {
     populateTeamGrid('player-team-grid', window.currentPlayerTeam, 'player');
     populateTeamGrid('enemy-team-grid', window.currentEnemyTeam, 'enemy');
 
-    // Show kill counter, hide barrel bar
+    // Show kill counter, hide others
     document.getElementById('kill-counter-bar').style.display = 'flex';
     document.getElementById('barrel-position-bar').style.display = 'none';
+    document.getElementById('turf-war-bar').style.display = 'none';
+    document.getElementById('capture-overlay').classList.add('hidden');
 
     // Reset kill counter
     document.getElementById('player-score').textContent = '0';
@@ -3079,9 +3081,11 @@ function startSquirt() {
         barrelInterval: null
     };
 
-    // Show barrel bar, hide kill counter
+    // Show barrel bar, hide others
     document.getElementById('barrel-position-bar').style.display = 'flex';
     document.getElementById('kill-counter-bar').style.display = 'none';
+    document.getElementById('turf-war-bar').style.display = 'none';
+    document.getElementById('capture-overlay').classList.add('hidden');
 
     // Initialize player stats (reuse from deathmatch but with squirtState)
     window.currentPlayerTeam.forEach(heroName => {
@@ -3411,6 +3415,7 @@ function startTurfWar() {
     document.getElementById('turf-war-bar').style.display = 'flex';
     document.getElementById('kill-counter-bar').style.display = 'none';
     document.getElementById('barrel-position-bar').style.display = 'none';
+    document.getElementById('capture-overlay').classList.add('hidden');
 
     // Initialize player stats
     initializeTurfWarStats();
