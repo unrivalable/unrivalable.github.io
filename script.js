@@ -3214,11 +3214,12 @@ function startBarrelMovement() {
     }, 100);
 }
 
-// Simulate squirt kill (5 second respawn)
+// Simulate squirt battles (runs every 5-10 game seconds)
 function simulateNextSquirtKill() {
     if (!squirtState.isRunning) return;
 
-    const delay = 1000 + Math.random() * 2000;
+    // 5-10 game seconds = 1000-2000ms real time (at 5x speed)
+    const delay = 1000 + Math.random() * 1000;
 
     setTimeout(() => {
         // Get alive players from each team
@@ -3263,15 +3264,18 @@ function simulateNextSquirtKill() {
         // Mark victim as dead
         markPlayerDead(victim);
 
-        // Respawn after 5 seconds
+        // Respawn after 10 game seconds (2 seconds real time)
         setTimeout(() => {
-            respawnPlayer(victim);
-            squirtState.playerStats[victim].isAlive = true;
-
             if (squirtState.isRunning) {
-                simulateNextSquirtKill();
+                respawnPlayer(victim);
+                squirtState.playerStats[victim].isAlive = true;
             }
-        }, 5000);
+        }, 2000);
+
+        // Trigger next battle loop immediately (don't wait for respawn)
+        if (squirtState.isRunning) {
+            simulateNextSquirtKill();
+        }
     }, delay);
 }
 
@@ -3588,85 +3592,97 @@ function startTessaruneStealCheck() {
     }, 5000); // 5000ms = 5s real time = 10s game time
 }
 
-// Simulate Kill (similar to deathmatch/squirt)
+// Simulate Battles (runs every 5-10 game seconds)
 function simulateNextTurfWarKill() {
     if (!turfWarState.isRunning) return;
 
-    const delay = 1000 + Math.random() * 2000;
+    // 5-10 game seconds = 2500-5000ms real time (at 2x speed)
+    const delay = 2500 + Math.random() * 2500;
 
     setTimeout(() => {
-        // Get alive players
-        const alivePlayers = Object.keys(turfWarState.playerStats).filter(
-            name => turfWarState.playerStats[name].team === 'player' && turfWarState.playerStats[name].isAlive
-        );
-        const aliveEnemies = Object.keys(turfWarState.playerStats).filter(
-            name => turfWarState.playerStats[name].team === 'enemy' && turfWarState.playerStats[name].isAlive
-        );
-
-        if (alivePlayers.length === 0 || aliveEnemies.length === 0) {
-            setTimeout(() => simulateNextTurfWarKill(), 500);
-            return;
+        // Run 2 concurrent battles to ensure action
+        for (let i = 0; i < 2; i++) {
+            resolveTurfWarBattle();
+            // Stop if game ended in first battle
+            if (!turfWarState.isRunning) return;
         }
 
-        // Pick fighters
-        const playerFighter = alivePlayers[Math.floor(Math.random() * alivePlayers.length)];
-        const enemyFighter = aliveEnemies[Math.floor(Math.random() * aliveEnemies.length)];
-
-        const playerHero = turfWarState.playerStats[playerFighter].heroData;
-        const enemyHero = turfWarState.playerStats[enemyFighter].heroData;
-
-        // Determine winner
-        const playerWinChance = getClassAdvantage(playerHero.class, enemyHero.class);
-        const playerWins = Math.random() < playerWinChance;
-
-        const killer = playerWins ? playerFighter : enemyFighter;
-        const victim = playerWins ? enemyFighter : playerFighter;
-        const killerTeam = playerWins ? 'player' : 'enemy';
-
-        const killerHero = turfWarState.playerStats[killer].heroData;
-        const victimHero = turfWarState.playerStats[victim].heroData;
-        const deathEvent = getRandomDeathMessage(killerHero, victimHero);
-
-        // Update stats
-        turfWarState.playerStats[killer].kills++;
-        turfWarState.playerStats[victim].deaths++;
-        turfWarState.playerStats[victim].isAlive = false;
-
-        // TURF WAR MECHANIC: Killer's team gains 5% turf
-        if (killerTeam === 'player') {
-            turfWarState.playerTurf += 5;
-        } else {
-            turfWarState.playerTurf -= 5;
+        // Trigger next battle loop
+        if (turfWarState.isRunning) {
+            simulateNextTurfWarKill();
         }
-        updateTurfDisplay();
-
-        // Show kill in feed
-        // Restore victim image opacity if it was hidden by steal event
-        document.getElementById('feed-victim-img').style.opacity = '1';
-        displayKillFeed(killerHero, victimHero, deathEvent);
-
-        // Mark victim as dead
-        markPlayerDead(victim);
-
-        // Check for 100% win condition
-        if (turfWarState.playerTurf >= 100) {
-            endTurfWar('turf-player');
-            return;
-        } else if (turfWarState.playerTurf <= 0) {
-            endTurfWar('turf-enemy');
-            return;
-        }
-
-        // Respawn after 5 seconds
-        setTimeout(() => {
-            if (turfWarState.isRunning) {
-                respawnPlayer(victim);
-                turfWarState.playerStats[victim].isAlive = true;
-                simulateNextTurfWarKill();
-            }
-        }, 5000);
-
     }, delay);
+}
+
+function resolveTurfWarBattle() {
+    // Get alive players
+    const alivePlayers = Object.keys(turfWarState.playerStats).filter(
+        name => turfWarState.playerStats[name].team === 'player' && turfWarState.playerStats[name].isAlive
+    );
+    const aliveEnemies = Object.keys(turfWarState.playerStats).filter(
+        name => turfWarState.playerStats[name].team === 'enemy' && turfWarState.playerStats[name].isAlive
+    );
+
+    if (alivePlayers.length === 0 || aliveEnemies.length === 0) {
+        return;
+    }
+
+    // Pick fighters
+    const playerFighter = alivePlayers[Math.floor(Math.random() * alivePlayers.length)];
+    const enemyFighter = aliveEnemies[Math.floor(Math.random() * aliveEnemies.length)];
+
+    const playerHero = turfWarState.playerStats[playerFighter].heroData;
+    const enemyHero = turfWarState.playerStats[enemyFighter].heroData;
+
+    // Determine winner
+    const playerWinChance = getClassAdvantage(playerHero.class, enemyHero.class);
+    const playerWins = Math.random() < playerWinChance;
+
+    const killer = playerWins ? playerFighter : enemyFighter;
+    const victim = playerWins ? enemyFighter : playerFighter;
+    const killerTeam = playerWins ? 'player' : 'enemy';
+
+    const killerHero = turfWarState.playerStats[killer].heroData;
+    const victimHero = turfWarState.playerStats[victim].heroData;
+    const deathEvent = getRandomDeathMessage(killerHero, victimHero);
+
+    // Update stats
+    turfWarState.playerStats[killer].kills++;
+    turfWarState.playerStats[victim].deaths++;
+    turfWarState.playerStats[victim].isAlive = false;
+
+    // TURF WAR MECHANIC: Killer's team gains 5% turf
+    if (killerTeam === 'player') {
+        turfWarState.playerTurf += 5;
+    } else {
+        turfWarState.playerTurf -= 5;
+    }
+    updateTurfDisplay();
+
+    // Show kill in feed
+    // Restore victim image opacity if it was hidden by steal event
+    document.getElementById('feed-victim-img').style.opacity = '1';
+    displayKillFeed(killerHero, victimHero, deathEvent);
+
+    // Mark victim as dead
+    markPlayerDead(victim);
+
+    // Check for 100% win condition
+    if (turfWarState.playerTurf >= 100) {
+        endTurfWar('turf-player');
+        return;
+    } else if (turfWarState.playerTurf <= 0) {
+        endTurfWar('turf-enemy');
+        return;
+    }
+
+    // Respawn after 10 game seconds (5 seconds real time)
+    setTimeout(() => {
+        if (turfWarState.isRunning) {
+            respawnPlayer(victim);
+            turfWarState.playerStats[victim].isAlive = true;
+        }
+    }, 5000);
 }
 
 function endTurfWar(reason, stealerName) {
