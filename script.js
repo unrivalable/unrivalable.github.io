@@ -3537,36 +3537,27 @@ function updateTurfDisplay() {
 
 // Tessarune Steal Mechanic
 function startTessaruneStealCheck() {
-    let checkCount = 0;
-
     // Check every 5 seconds real time (equivalent to 10 seconds game time)
     turfWarState.stealInterval = setInterval(() => {
         if (!turfWarState.isRunning) return;
 
-        checkCount++;
-        // Alternating teams: odd = player, even = enemy (or vice versa)
-        const isPlayerTurn = checkCount % 2 !== 0;
-        const teamToCheck = isPlayerTurn ? 'player' : 'enemy';
+        // Get all alive players from both teams
+        const allAlivePlayers = Object.keys(turfWarState.playerStats).filter(
+            name => turfWarState.playerStats[name].isAlive
+        );
 
-        // 5% chance
-        if (Math.random() < 0.05) {
-            // Success!
-            const aliveTeamMembers = Object.keys(turfWarState.playerStats).filter(
-                name => turfWarState.playerStats[name].team === teamToCheck && turfWarState.playerStats[name].isAlive
-            );
-
-            if (aliveTeamMembers.length > 0) {
-                const heroName = aliveTeamMembers[Math.floor(Math.random() * aliveTeamMembers.length)];
+        // Give each alive player a 5% chance to steal
+        for (const heroName of allAlivePlayers) {
+            if (Math.random() < 0.05) {
+                // Success!
+                const team = turfWarState.playerStats[heroName].team;
 
                 // Show message
-                const msg = isPlayerTurn
+                const msg = team === 'player'
                     ? `${heroName} STOLE THE TESSARUNE!`
                     : `${heroName} STOLE THE RESSATUNE!`;
 
                 const killFeed = document.getElementById('kill-feed');
-                // Creating a custom feed item for this special event
-                // Reusing kill feed elements but styled differently if possible
-                // Just use the standard feed with special text
 
                 const killerImg = document.getElementById('feed-killer-img');
                 const victimImg = document.getElementById('feed-victim-img');
@@ -3575,7 +3566,7 @@ function startTessaruneStealCheck() {
 
                 const heroData = turfWarState.playerStats[heroName].heroData;
                 killerImg.src = `images/heroes-thumbnails/${heroData.image}`;
-                // Hide victim image for this event? Or show the object?
+                // Hide victim image for this event
                 victimImg.style.opacity = '0';
 
                 abilityEl.textContent = "GAME WINNING STEAL!";
@@ -3584,27 +3575,29 @@ function startTessaruneStealCheck() {
                 killFeed.classList.add('active');
 
                 setTimeout(() => {
-                    endTurfWar(isPlayerTurn ? 'steal-player' : 'steal-enemy', heroName);
+                    endTurfWar(team === 'player' ? 'steal-player' : 'steal-enemy', heroName);
                 }, 2000);
+
+                // Stop checking other players if someone won
+                return;
             }
         }
 
     }, 5000); // 5000ms = 5s real time = 10s game time
 }
 
-// Simulate Battles (runs every 5-10 game seconds)
+// Simulate Battles (runs every 8-10 game seconds)
 function simulateNextTurfWarKill() {
     if (!turfWarState.isRunning) return;
 
-    // 5-10 game seconds = 2500-5000ms real time (at 2x speed)
-    const delay = 2500 + Math.random() * 2500;
+    // 8-10 game seconds = 4000-5000ms real time (at 2x speed)
+    const delay = 4000 + Math.random() * 1000;
 
     setTimeout(() => {
-        // Run 2 concurrent battles to ensure action
-        for (let i = 0; i < 2; i++) {
+        try {
             resolveTurfWarBattle();
-            // Stop if game ended in first battle
-            if (!turfWarState.isRunning) return;
+        } catch (error) {
+            console.error("Error in turf war battle:", error);
         }
 
         // Trigger next battle loop
