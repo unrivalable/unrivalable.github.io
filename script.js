@@ -3192,9 +3192,9 @@ function startBarrelMovement() {
         const baseRate = 0.5;
         const movementRate = baseRate * timeMultiplier;
 
-        // Negative force pushes toward 100% (enemy wins)
-        // Positive force pushes toward 0% (player wins)
-        const movement = -pushingForce * movementRate * 0.1; // 0.1s update interval
+        // Positive force pushes toward 100% (player wins, away from team)
+        // Negative force pushes toward 0% (enemy wins, away from team)
+        const movement = pushingForce * movementRate * 0.1; // 0.1s update interval
 
         squirtState.barrelPosition += movement;
         squirtState.barrelPosition = Math.max(0, Math.min(100, squirtState.barrelPosition));
@@ -3208,22 +3208,22 @@ function startBarrelMovement() {
             squirtState.isRunning = false;
             clearInterval(squirtState.barrelInterval);
             clearInterval(squirtState.timerInterval);
-            endSquirtGame('barrel-player');
+            endSquirtGame('barrel-enemy');
         } else if (squirtState.barrelPosition >= 100) {
             squirtState.isRunning = false;
             clearInterval(squirtState.barrelInterval);
             clearInterval(squirtState.timerInterval);
-            endSquirtGame('barrel-enemy');
+            endSquirtGame('barrel-player');
         }
     }, 100);
 }
 
-// Simulate squirt battles (runs every 5-10 game seconds)
+// Simulate squirt battles (runs every 8-10 game seconds)
 function simulateNextSquirtKill() {
     if (!squirtState.isRunning) return;
 
-    // 5-10 game seconds = 1000-2000ms real time (at 5x speed)
-    const delay = 1000 + Math.random() * 1000;
+    // 8-10 game seconds = 1600-2000ms real time (at 5x speed)
+    const delay = 1600 + Math.random() * 400;
 
     setTimeout(() => {
         // Get alive players from each team
@@ -3294,7 +3294,7 @@ function endSquirtGame(reason) {
     } else if (reason === 'barrel-enemy') {
         winningTeam = 'enemy';
     } else if (reason === 'timeout') {
-        winningTeam = squirtState.barrelPosition < 50 ? 'player' : 'enemy';
+        winningTeam = squirtState.barrelPosition > 50 ? 'player' : 'enemy';
     }
 
     setTimeout(() => showSquirtVictory(winningTeam), 2000);
