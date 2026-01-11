@@ -3672,7 +3672,7 @@ function resolveTurfWarBattle() {
     // Respawn after 10 game seconds (5 seconds real time)
     setTimeout(() => {
         if (turfWarState.isRunning) {
-            respawnPlayer(victim);
+            respawnTurfWarPlayer(victim);
             turfWarState.playerStats[victim].isAlive = true;
         }
     }, 5000);
@@ -3727,14 +3727,11 @@ function showTurfWarVictory(winningTeam, titleText) {
     victoryTitle.textContent = titleText || (winningTeam === 'player' ? 'YOUR TEAM WINS!' : 'ENEMY TEAM WINS!');
 
     // Populate stats tables
-    populateStatsTable('player-stats-table', window.currentPlayerTeam); // Reusing deathmatch function as structure is same
-    populateStatsTable('enemy-stats-table', window.currentEnemyTeam);
+    populateTurfWarStatsTable('player-stats-table', window.currentPlayerTeam);
+    populateTurfWarStatsTable('enemy-stats-table', window.currentEnemyTeam);
 
     // Star player
-    const starPlayer = determineStarPlayer(); // Reusing deathmatch function
-    if (starPlayer) {
-        displayTurfWarStarPlayer();
-    }
+    displayTurfWarStarPlayer();
 
     victoryOverlay.classList.remove('hidden');
 }
@@ -3765,5 +3762,41 @@ function displayTurfWarStarPlayer() {
 
         const kdRatio = (stats.kills / Math.max(stats.deaths, 1)).toFixed(2);
         document.getElementById('star-player-stats').textContent = `${stats.kills} Kills / ${stats.deaths} Deaths (${kdRatio} K/D)`;
+    }
+}
+
+// Populate stats table for Turf War
+function populateTurfWarStatsTable(tableId, teamHeroes) {
+    const container = document.getElementById(tableId);
+    const table = document.createElement('div');
+    table.className = 'stats-table';
+
+    teamHeroes.forEach(heroName => {
+        const stats = turfWarState.playerStats[heroName];
+        const row = document.createElement('div');
+        row.className = 'stat-row';
+
+        const name = document.createElement('div');
+        name.className = 'stat-name';
+        name.textContent = heroName;
+
+        const values = document.createElement('div');
+        values.className = 'stat-values';
+        values.textContent = `${stats.kills}K / ${stats.deaths}D`;
+
+        row.appendChild(name);
+        row.appendChild(values);
+        table.appendChild(row);
+    });
+
+    container.innerHTML = '';
+    container.appendChild(table);
+}
+
+// Respawn player visual only (for Turf War)
+function respawnTurfWarPlayer(heroName) {
+    const card = document.querySelector(`.player-card[data-hero="${heroName}"]`);
+    if (card) {
+        card.classList.remove('dead');
     }
 }
