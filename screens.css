@@ -549,7 +549,7 @@
     grid-template-rows: repeat(2, 1fr);
     gap: 15px;
     flex: 1;
-    max-width: 45%;
+    max-width: 22.5%;
 }
 
 .team-grid.player-team {
@@ -565,11 +565,11 @@
     background: rgba(10, 22, 40, 0.8);
     border: 3px solid var(--comic-blue);
     box-shadow: 3px 3px 0 var(--comic-black);
-    padding: 10px;
+    padding: 5px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 8px;
+    gap: 4px;
     transform: rotate(-1deg);
     transition: all 0.3s ease;
     position: relative;
@@ -589,7 +589,7 @@
 
 .player-card-name {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 0.9rem;
+    font-size: 0.7rem;
     color: var(--comic-white);
     text-align: center;
     overflow: hidden;
@@ -609,14 +609,14 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-size: 5rem;
+    font-size: 2.5rem;
     color: var(--comic-red);
     text-shadow:
-        -3px -3px 0 #000,
-        3px -3px 0 #000,
-        -3px 3px 0 #000,
-        3px 3px 0 #000,
-        0 0 20px rgba(255, 51, 102, 1);
+        -2px -2px 0 #000,
+        2px -2px 0 #000,
+        -2px 2px 0 #000,
+        2px 2px 0 #000,
+        0 0 15px rgba(255, 51, 102, 1);
     font-weight: bold;
     pointer-events: none;
     animation: deathX 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
@@ -916,7 +916,7 @@
 
 .barrel-track {
     flex: 1;
-    height: 60px;
+    height: 87px;
     background: linear-gradient(90deg,
         rgba(0, 255, 136, 0.3) 0%,
         rgba(255, 215, 0, 0.3) 50%,
@@ -931,13 +931,15 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 50px;
-    height: 50px;
-    background: var(--comic-orange);
-    border: 3px solid var(--comic-black);
-    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+    background-image: url('images/barrel.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
     transition: left 0.3s ease-out;
-    box-shadow: 0 0 15px rgba(255, 140, 0, 0.6);
+    filter: drop-shadow(0 0 10px rgba(255, 140, 0, 0.6));
+    z-index: 10;
 }
 
 .position-line {
@@ -948,6 +950,36 @@
     height: 100%;
     background: var(--comic-white);
     opacity: 0.5;
+}
+
+/* Water Beams for Squirt Mode */
+.water-beam {
+    position: absolute;
+    top: 50%;
+    height: 80px;
+    background-image: url('images/WaterBeam.gif');
+    background-size: cover;
+    background-repeat: no-repeat;
+    pointer-events: none;
+    opacity: 0.9;
+    z-index: 5;
+    transition: width 0.3s ease-out, left 0.3s ease-out;
+}
+
+.player-beam {
+    left: 0;
+    width: 50%;
+    transform: translateY(-50%);
+    transform-origin: left center;
+    background-position: right center;
+}
+
+.enemy-beam {
+    left: 50%;
+    width: 50%;
+    transform: translateY(-50%) scaleX(-1);
+    transform-origin: left center;
+    background-position: left center;
 }
 
 .timer-display {

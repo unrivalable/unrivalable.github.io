@@ -3067,6 +3067,15 @@ let squirtState = {
     barrelInterval: null
 };
 
+// Enemy beam offset (adjustable for visual tuning)
+window.enemyBeamOffset = 250;
+
+// Helper function to adjust enemy beam position in real-time
+window.adjustEnemyBeam = function(offsetPx) {
+    window.enemyBeamOffset = offsetPx;
+    console.log(`Enemy beam offset set to ${offsetPx}px`);
+};
+
 // Start Squirt Mode
 function startSquirt() {
     console.log('Starting Squirt Mode!');
@@ -3125,6 +3134,11 @@ function startSquirt() {
     document.getElementById('timer-display').textContent = '2:00';
     document.getElementById('timer-display').classList.remove('warning');
     document.getElementById('barrel-icon').style.left = '50%';
+
+    // Reset water beams to center position
+    document.getElementById('player-beam').style.width = '50%';
+    document.getElementById('enemy-beam').style.left = `calc(50% + ${window.enemyBeamOffset}px)`;
+    document.getElementById('enemy-beam').style.width = '50%';
 
     // Hide kill feed and victory overlay
     document.getElementById('kill-feed').classList.remove('active');
@@ -3202,6 +3216,14 @@ function startBarrelMovement() {
         // Update visual
         const barrelIcon = document.getElementById('barrel-icon');
         barrelIcon.style.left = `${squirtState.barrelPosition}%`;
+
+        // Update water beams - player beam to left edge, enemy beam from right edge of barrel
+        const playerBeam = document.getElementById('player-beam');
+        const enemyBeam = document.getElementById('enemy-beam');
+        playerBeam.style.width = `${squirtState.barrelPosition}%`;
+        // Enemy beam uses adjustable offset (use window.adjustEnemyBeam(value) to tune)
+        enemyBeam.style.left = `calc(${squirtState.barrelPosition}% + ${window.enemyBeamOffset}px)`;
+        enemyBeam.style.width = `${100 - squirtState.barrelPosition}%`;
 
         // Check victory
         if (squirtState.barrelPosition <= 0) {
