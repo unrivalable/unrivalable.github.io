@@ -2366,6 +2366,9 @@ async function startGame() {
                     } else if (selectedGameMode === 'squirt') {
                         transitionToScreen('loading-screen', 'gameplay-screen');
                         setTimeout(() => startSquirt(), 500);
+                    } else if (selectedGameMode === 'turfwar') {
+                        transitionToScreen('loading-screen', 'gameplay-screen');
+                        setTimeout(() => startTurfWar(), 500);
                     } else {
                         await showGameOver();
                     }
@@ -2668,9 +2671,11 @@ function startDeathmatch() {
     populateTeamGrid('player-team-grid', window.currentPlayerTeam, 'player');
     populateTeamGrid('enemy-team-grid', window.currentEnemyTeam, 'enemy');
 
-    // Show kill counter, hide barrel bar
+    // Show kill counter, hide others
     document.getElementById('kill-counter-bar').style.display = 'flex';
     document.getElementById('barrel-position-bar').style.display = 'none';
+    document.getElementById('turf-war-bar').style.display = 'none';
+    document.getElementById('capture-overlay').classList.add('hidden');
 
     // Reset kill counter
     document.getElementById('player-score').textContent = '0';
@@ -3032,9 +3037,21 @@ function displayStarPlayer(starPlayerName) {
 // Return to menu button
 document.getElementById('return-to-menu-btn').addEventListener('click', () => {
     deathmatchState.isRunning = false;
+
+    // Clear Squirt intervals
     if (squirtState.timerInterval) clearInterval(squirtState.timerInterval);
     if (squirtState.barrelInterval) clearInterval(squirtState.barrelInterval);
     squirtState.isRunning = false;
+
+    // Clear Turf War intervals
+    if (turfWarState) {
+        turfWarState.isRunning = false;
+        if (turfWarState.timerInterval) clearInterval(turfWarState.timerInterval);
+        if (turfWarState.turfInterval) clearInterval(turfWarState.turfInterval);
+        if (turfWarState.stealInterval) clearInterval(turfWarState.stealInterval);
+        if (turfWarState.killInterval) clearInterval(turfWarState.killInterval);
+    }
+
     transitionToScreen('gameplay-screen', 'home-screen');
 });
 
@@ -3064,9 +3081,11 @@ function startSquirt() {
         barrelInterval: null
     };
 
-    // Show barrel bar, hide kill counter
+    // Show barrel bar, hide others
     document.getElementById('barrel-position-bar').style.display = 'flex';
     document.getElementById('kill-counter-bar').style.display = 'none';
+    document.getElementById('turf-war-bar').style.display = 'none';
+    document.getElementById('capture-overlay').classList.add('hidden');
 
     // Initialize player stats (reuse from deathmatch but with squirtState)
     window.currentPlayerTeam.forEach(heroName => {
@@ -3125,7 +3144,7 @@ function startSquirt() {
     }, 1500);
 }
 
-// Start squirt timer (5x real time speed)
+// Start squirt timer (2x real time speed)
 function startSquirtTimer() {
     squirtState.timerInterval = setInterval(() => {
         squirtState.timeRemaining -= 1;
@@ -3148,7 +3167,7 @@ function startSquirtTimer() {
             squirtState.isRunning = false;
             endSquirtGame('timeout');
         }
-    }, 200); // 200ms real time = 1 second game time (5x speed)
+    }, 500); // 500ms real time = 1 second game time (2x speed)
 }
 
 // Start barrel movement
@@ -3173,9 +3192,9 @@ function startBarrelMovement() {
         const baseRate = 0.5;
         const movementRate = baseRate * timeMultiplier;
 
-        // Negative force pushes toward 100% (enemy wins)
-        // Positive force pushes toward 0% (player wins)
-        const movement = -pushingForce * movementRate * 0.1; // 0.1s update interval
+        // Positive force pushes toward 100% (player wins, away from team)
+        // Negative force pushes toward 0% (enemy wins, away from team)
+        const movement = pushingForce * movementRate * 0.1; // 0.1s update interval
 
         squirtState.barrelPosition += movement;
         squirtState.barrelPosition = Math.max(0, Math.min(100, squirtState.barrelPosition));
@@ -3189,21 +3208,22 @@ function startBarrelMovement() {
             squirtState.isRunning = false;
             clearInterval(squirtState.barrelInterval);
             clearInterval(squirtState.timerInterval);
-            endSquirtGame('barrel-player');
+            endSquirtGame('barrel-enemy');
         } else if (squirtState.barrelPosition >= 100) {
             squirtState.isRunning = false;
             clearInterval(squirtState.barrelInterval);
             clearInterval(squirtState.timerInterval);
-            endSquirtGame('barrel-enemy');
+            endSquirtGame('barrel-player');
         }
     }, 100);
 }
 
-// Simulate squirt kill (5 second respawn)
+// Simulate squirt battles (runs every 8-10 game seconds)
 function simulateNextSquirtKill() {
     if (!squirtState.isRunning) return;
 
-    const delay = 1000 + Math.random() * 2000;
+    // 8-10 game seconds = 4000-5000ms real time (at 2x speed)
+    const delay = 4000 + Math.random() * 1000;
 
     setTimeout(() => {
         // Get alive players from each team
@@ -3248,15 +3268,18 @@ function simulateNextSquirtKill() {
         // Mark victim as dead
         markPlayerDead(victim);
 
-        // Respawn after 5 seconds
+        // Respawn after 10 game seconds (5 seconds real time)
         setTimeout(() => {
-            respawnPlayer(victim);
-            squirtState.playerStats[victim].isAlive = true;
-
             if (squirtState.isRunning) {
-                simulateNextSquirtKill();
+                respawnSquirtPlayer(victim);
+                squirtState.playerStats[victim].isAlive = true;
             }
         }, 5000);
+
+        // Trigger next battle loop immediately (don't wait for respawn)
+        if (squirtState.isRunning) {
+            simulateNextSquirtKill();
+        }
     }, delay);
 }
 
@@ -3271,7 +3294,7 @@ function endSquirtGame(reason) {
     } else if (reason === 'barrel-enemy') {
         winningTeam = 'enemy';
     } else if (reason === 'timeout') {
-        winningTeam = squirtState.barrelPosition < 50 ? 'player' : 'enemy';
+        winningTeam = squirtState.barrelPosition > 50 ? 'player' : 'enemy';
     }
 
     setTimeout(() => showSquirtVictory(winningTeam), 2000);
@@ -3356,4 +3379,468 @@ function displaySquirtStarPlayer(starPlayerName) {
 
     const kdRatio = (stats.kills / Math.max(stats.deaths, 1)).toFixed(2);
     document.getElementById('star-player-stats').textContent = `${stats.kills} Kills / ${stats.deaths} Deaths (${kdRatio} K/D)`;
+}
+
+// ===== TESSARUNE TURF WAR GAMEPLAY =====
+
+// Global state for turf war
+let turfWarState = {
+    playerTurf: 50, // Percentage
+    timeRemaining: 120, // Seconds
+    playerStats: {},
+    isRunning: false,
+    timerInterval: null,
+    turfInterval: null,
+    stealInterval: null,
+    killInterval: null
+};
+
+// Start Turf War Mode
+function startTurfWar() {
+    console.log('Starting Tessarune Turf War!');
+
+    // Reset state
+    turfWarState = {
+        playerTurf: 50,
+        timeRemaining: 120,
+        playerStats: {},
+        isRunning: true,
+        timerInterval: null,
+        turfInterval: null,
+        stealInterval: null,
+        killInterval: null
+    };
+
+    // Show turf war bar, hide others
+    document.getElementById('turf-war-bar').style.display = 'flex';
+    document.getElementById('kill-counter-bar').style.display = 'none';
+    document.getElementById('barrel-position-bar').style.display = 'none';
+    document.getElementById('capture-overlay').classList.add('hidden');
+
+    // Initialize player stats
+    initializeTurfWarStats();
+
+    // Ensure grids are in standard mode (2x3)
+    const playerGrid = document.getElementById('player-team-grid');
+    const enemyGrid = document.getElementById('enemy-team-grid');
+    playerGrid.classList.remove('squirt-mode');
+    enemyGrid.classList.remove('squirt-mode');
+
+    // Populate team grids
+    populateTeamGrid('player-team-grid', window.currentPlayerTeam, 'player');
+    populateTeamGrid('enemy-team-grid', window.currentEnemyTeam, 'enemy');
+
+    // Reset display
+    updateTurfDisplay();
+    document.getElementById('turf-timer').textContent = '2:00';
+    document.getElementById('turf-timer').classList.remove('warning');
+
+    // Hide kill feed and victory overlay
+    document.getElementById('kill-feed').classList.remove('active');
+    document.getElementById('victory-overlay').classList.add('hidden');
+
+    // Start systems
+    startTurfWarTimer();
+    startTurfSimulation();
+    startTessaruneStealCheck();
+
+    // Start kill simulation
+    setTimeout(() => {
+        if (turfWarState.isRunning) {
+            simulateNextTurfWarKill();
+        }
+    }, 1500);
+}
+
+function initializeTurfWarStats() {
+    // Initialize player team
+    window.currentPlayerTeam.forEach(heroName => {
+        const heroData = findHeroByName(heroName);
+        turfWarState.playerStats[heroName] = {
+            kills: 0,
+            deaths: 0,
+            isAlive: true,
+            team: 'player',
+            heroData: heroData
+        };
+    });
+
+    // Initialize enemy team
+    window.currentEnemyTeam.forEach(heroName => {
+        const heroData = findHeroByName(heroName);
+        turfWarState.playerStats[heroName] = {
+            kills: 0,
+            deaths: 0,
+            isAlive: true,
+            team: 'enemy',
+            heroData: heroData
+        };
+    });
+}
+
+// Timer: 2x faster than real time
+function startTurfWarTimer() {
+    turfWarState.timerInterval = setInterval(() => {
+        if (!turfWarState.isRunning) return;
+
+        turfWarState.timeRemaining -= 1;
+
+        const minutes = Math.floor(turfWarState.timeRemaining / 60);
+        const seconds = turfWarState.timeRemaining % 60;
+
+        const display = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        const timerEl = document.getElementById('turf-timer');
+        timerEl.textContent = display;
+
+        if (turfWarState.timeRemaining <= 30 && !timerEl.classList.contains('warning')) {
+            timerEl.classList.add('warning');
+        }
+
+        if (turfWarState.timeRemaining <= 0) {
+            endTurfWar('timeout');
+        }
+    }, 500); // 500ms real time = 1 second game time (2x speed)
+}
+
+// Simulate turf shifting back and forth
+function startTurfSimulation() {
+    turfWarState.turfInterval = setInterval(() => {
+        if (!turfWarState.isRunning) return;
+
+        // Random small shift (-2% to +2%)
+        const shift = (Math.random() * 4) - 2;
+
+        // Bias towards team with more alive players
+        const alivePlayers = Object.values(turfWarState.playerStats)
+            .filter(s => s.team === 'player' && s.isAlive).length;
+        const aliveEnemies = Object.values(turfWarState.playerStats)
+            .filter(s => s.team === 'enemy' && s.isAlive).length;
+
+        const advantage = alivePlayers - aliveEnemies;
+        const bias = advantage * 0.5; // 0.5% per player advantage
+
+        turfWarState.playerTurf += (shift + bias);
+
+        // Clamp (but don't end game here unless 100/0, handled in update)
+        turfWarState.playerTurf = Math.max(0.1, Math.min(99.9, turfWarState.playerTurf));
+
+        updateTurfDisplay();
+    }, 2000);
+}
+
+function updateTurfDisplay() {
+    // Round for display
+    const pTurf = Math.round(turfWarState.playerTurf);
+    const eTurf = 100 - pTurf;
+
+    document.getElementById('player-turf-percent').textContent = `${pTurf}%`;
+    document.getElementById('enemy-turf-percent').textContent = `${eTurf}%`;
+
+    document.getElementById('player-turf-fill').style.width = `${pTurf}%`;
+    document.getElementById('enemy-turf-fill').style.width = `${eTurf}%`;
+}
+
+// Tessarune Steal Mechanic
+function startTessaruneStealCheck() {
+    // Check every 5 seconds real time (equivalent to 10 seconds game time)
+    turfWarState.stealInterval = setInterval(() => {
+        if (!turfWarState.isRunning) return;
+
+        // Calculate chance based on time remaining (120s total)
+        // 0-30s elapsed (120-90 left): 0.5%
+        // 30-60s elapsed (90-60 left): 1%
+        // 60-90s elapsed (60-30 left): 3%
+        // 90-120s elapsed (30-0 left): 6%
+
+        let chance = 0.005;
+        if (turfWarState.timeRemaining <= 90) chance = 0.01;
+        if (turfWarState.timeRemaining <= 60) chance = 0.03;
+        if (turfWarState.timeRemaining <= 30) chance = 0.06;
+
+        // Get all alive players from both teams
+        const allAlivePlayers = Object.keys(turfWarState.playerStats).filter(
+            name => turfWarState.playerStats[name].isAlive
+        );
+
+        // Give each alive player a chance to steal
+        for (const heroName of allAlivePlayers) {
+            if (Math.random() < chance) {
+                // Success!
+                const team = turfWarState.playerStats[heroName].team;
+
+                // Show message via kill feed as well
+                const msg = team === 'player'
+                    ? `${heroName} STOLE THE TESSARUNE!`
+                    : `${heroName} STOLE THE RESSATUNE!`;
+
+                const killFeed = document.getElementById('kill-feed');
+                const killerImg = document.getElementById('feed-killer-img');
+                const victimImg = document.getElementById('feed-victim-img');
+                const abilityEl = document.getElementById('feed-ability');
+                const messageEl = document.getElementById('feed-message');
+
+                const heroData = turfWarState.playerStats[heroName].heroData;
+                killerImg.src = `images/heroes-thumbnails/${heroData.image}`;
+                victimImg.style.opacity = '0';
+
+                abilityEl.textContent = "GAME WINNING STEAL!";
+                messageEl.textContent = msg;
+
+                killFeed.classList.add('active');
+
+                // End game logic
+                setTimeout(() => {
+                    endTurfWar(team === 'player' ? 'steal-player' : 'steal-enemy', heroName);
+                }, 1000);
+
+                return;
+            }
+        }
+
+    }, 5000); // 5000ms = 5s real time = 10s game time
+}
+
+// Simulate Battles (runs every 8-10 game seconds)
+function simulateNextTurfWarKill() {
+    if (!turfWarState.isRunning) return;
+
+    // 8-10 game seconds = 4000-5000ms real time (at 2x speed)
+    const delay = 4000 + Math.random() * 1000;
+
+    setTimeout(() => {
+        try {
+            resolveTurfWarBattle();
+        } catch (error) {
+            console.error("Error in turf war battle:", error);
+        }
+
+        // Trigger next battle loop
+        if (turfWarState.isRunning) {
+            simulateNextTurfWarKill();
+        }
+    }, delay);
+}
+
+function resolveTurfWarBattle() {
+    // Get alive players
+    const alivePlayers = Object.keys(turfWarState.playerStats).filter(
+        name => turfWarState.playerStats[name].team === 'player' && turfWarState.playerStats[name].isAlive
+    );
+    const aliveEnemies = Object.keys(turfWarState.playerStats).filter(
+        name => turfWarState.playerStats[name].team === 'enemy' && turfWarState.playerStats[name].isAlive
+    );
+
+    if (alivePlayers.length === 0 || aliveEnemies.length === 0) {
+        return;
+    }
+
+    // Pick fighters
+    const playerFighter = alivePlayers[Math.floor(Math.random() * alivePlayers.length)];
+    const enemyFighter = aliveEnemies[Math.floor(Math.random() * aliveEnemies.length)];
+
+    const playerHero = turfWarState.playerStats[playerFighter].heroData;
+    const enemyHero = turfWarState.playerStats[enemyFighter].heroData;
+
+    // Determine winner
+    const playerWinChance = getClassAdvantage(playerHero.class, enemyHero.class);
+    const playerWins = Math.random() < playerWinChance;
+
+    const killer = playerWins ? playerFighter : enemyFighter;
+    const victim = playerWins ? enemyFighter : playerFighter;
+    const killerTeam = playerWins ? 'player' : 'enemy';
+
+    const killerHero = turfWarState.playerStats[killer].heroData;
+    const victimHero = turfWarState.playerStats[victim].heroData;
+    const deathEvent = getRandomDeathMessage(killerHero, victimHero);
+
+    // Update stats
+    turfWarState.playerStats[killer].kills++;
+    turfWarState.playerStats[victim].deaths++;
+    turfWarState.playerStats[victim].isAlive = false;
+
+    // TURF WAR MECHANIC: Killer's team gains 5% turf
+    if (killerTeam === 'player') {
+        turfWarState.playerTurf += 5;
+    } else {
+        turfWarState.playerTurf -= 5;
+    }
+    updateTurfDisplay();
+
+    // Show kill in feed
+    // Restore victim image opacity if it was hidden by steal event
+    document.getElementById('feed-victim-img').style.opacity = '1';
+    displayKillFeed(killerHero, victimHero, deathEvent);
+
+    // Mark victim as dead
+    markPlayerDead(victim);
+
+    // Check for 100% win condition
+    if (turfWarState.playerTurf >= 100) {
+        endTurfWar('turf-player');
+        return;
+    } else if (turfWarState.playerTurf <= 0) {
+        endTurfWar('turf-enemy');
+        return;
+    }
+
+    // Respawn after 10 game seconds (5 seconds real time)
+    setTimeout(() => {
+        if (turfWarState.isRunning) {
+            respawnTurfWarPlayer(victim);
+            turfWarState.playerStats[victim].isAlive = true;
+        }
+    }, 5000);
+}
+
+function endTurfWar(reason, stealerName) {
+    if (!turfWarState.isRunning) return;
+
+    turfWarState.isRunning = false;
+    clearInterval(turfWarState.timerInterval);
+    clearInterval(turfWarState.turfInterval);
+    clearInterval(turfWarState.stealInterval);
+
+    let winningTeam = 'player'; // default
+    let victoryTitle = "";
+
+    if (reason === 'timeout') {
+        if (turfWarState.playerTurf > 50) {
+            winningTeam = 'player';
+            victoryTitle = "TIME UP! YOU CONTROL MORE TURF!";
+        } else if (turfWarState.playerTurf < 50) {
+            winningTeam = 'enemy';
+            victoryTitle = "TIME UP! ENEMY CONTROLS MORE TURF!";
+        } else {
+            // Draw? Randomize or give to player
+            winningTeam = 'player';
+            victoryTitle = "TIME UP! IT'S A DRAW (YOU WIN!)";
+        }
+    } else if (reason === 'turf-player') {
+        winningTeam = 'player';
+        victoryTitle = "TOTAL DOMINATION! YOU CONTROL ALL TURF!";
+    } else if (reason === 'turf-enemy') {
+        winningTeam = 'enemy';
+        victoryTitle = "DEFEAT! ENEMY CONTROLS ALL TURF!";
+    } else if (reason === 'steal-player') {
+        winningTeam = 'player';
+        victoryTitle = `${stealerName} STOLE THE TESSARUNE!`;
+    } else if (reason === 'steal-enemy') {
+        winningTeam = 'enemy';
+        victoryTitle = `${stealerName} STOLE THE RESSATUNE!`;
+    }
+
+    let delay = 1000;
+
+    // If it was a steal, show the capture overlay first
+    if (reason === 'steal-player' || reason === 'steal-enemy') {
+        showCaptureOverlay(stealerName);
+        delay = 4000;
+    }
+
+    setTimeout(() => {
+        hideCaptureOverlay();
+        showTurfWarVictory(winningTeam, victoryTitle);
+    }, delay);
+}
+
+function showTurfWarVictory(winningTeam, titleText) {
+    const victoryOverlay = document.getElementById('victory-overlay');
+    const victoryTitle = document.getElementById('victory-title');
+
+    victoryTitle.textContent = titleText || (winningTeam === 'player' ? 'YOUR TEAM WINS!' : 'ENEMY TEAM WINS!');
+
+    // Populate stats tables
+    populateTurfWarStatsTable('player-stats-table', window.currentPlayerTeam);
+    populateTurfWarStatsTable('enemy-stats-table', window.currentEnemyTeam);
+
+    // Star player
+    displayTurfWarStarPlayer();
+
+    victoryOverlay.classList.remove('hidden');
+}
+
+function displayTurfWarStarPlayer() {
+    const allPlayers = Object.keys(turfWarState.playerStats);
+    let starPlayer = null;
+    let bestRatio = -1;
+    let mostKills = -1;
+
+    allPlayers.forEach(heroName => {
+        const stats = turfWarState.playerStats[heroName];
+        const kd = stats.kills / Math.max(stats.deaths, 1);
+
+        if (kd > bestRatio || (kd === bestRatio && stats.kills > mostKills)) {
+            bestRatio = kd;
+            mostKills = stats.kills;
+            starPlayer = heroName;
+        }
+    });
+
+    if (starPlayer) {
+        const stats = turfWarState.playerStats[starPlayer];
+        const heroData = stats.heroData;
+
+        document.getElementById('star-player-img').src = `images/heroes-thumbnails/${heroData.image}`;
+        document.getElementById('star-player-name').textContent = starPlayer;
+
+        const kdRatio = (stats.kills / Math.max(stats.deaths, 1)).toFixed(2);
+        document.getElementById('star-player-stats').textContent = `${stats.kills} Kills / ${stats.deaths} Deaths (${kdRatio} K/D)`;
+    }
+}
+
+// Populate stats table for Turf War
+function populateTurfWarStatsTable(tableId, teamHeroes) {
+    const container = document.getElementById(tableId);
+    const table = document.createElement('div');
+    table.className = 'stats-table';
+
+    teamHeroes.forEach(heroName => {
+        const stats = turfWarState.playerStats[heroName];
+        const row = document.createElement('div');
+        row.className = 'stat-row';
+
+        const name = document.createElement('div');
+        name.className = 'stat-name';
+        name.textContent = heroName;
+
+        const values = document.createElement('div');
+        values.className = 'stat-values';
+        values.textContent = `${stats.kills}K / ${stats.deaths}D`;
+
+        row.appendChild(name);
+        row.appendChild(values);
+        table.appendChild(row);
+    });
+
+    container.innerHTML = '';
+    container.appendChild(table);
+}
+
+// Respawn player visual only (for Turf War)
+function respawnTurfWarPlayer(heroName) {
+    const card = document.querySelector(`.player-card[data-hero="${heroName}"]`);
+    if (card) {
+        card.classList.remove('dead');
+    }
+}
+
+// Show/Hide Capture Overlay
+function showCaptureOverlay(heroName) {
+    const overlay = document.getElementById('capture-overlay');
+    const nameEl = document.getElementById('capture-hero-name');
+    nameEl.textContent = heroName;
+    overlay.classList.remove('hidden');
+}
+
+function hideCaptureOverlay() {
+    const overlay = document.getElementById('capture-overlay');
+    overlay.classList.add('hidden');
+}
+
+// Respawn player visual only (for Squirt)
+function respawnSquirtPlayer(heroName) {
+    const card = document.querySelector(`.player-card[data-hero="${heroName}"]`);
+    if (card) {
+        card.classList.remove('dead');
+    }
 }

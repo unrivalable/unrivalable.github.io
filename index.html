@@ -288,6 +288,25 @@
                 <div class="timer-display" id="timer-display">2:00</div>
             </div>
 
+            <!-- Turf War Bar -->
+            <div class="turf-war-bar" id="turf-war-bar" style="display: none;">
+                <div class="turf-stats player-side">
+                    <div class="team-label">YOUR TURF</div>
+                    <div class="turf-percent" id="player-turf-percent">50%</div>
+                </div>
+                <div class="turf-track-container">
+                    <div class="turf-track">
+                        <div class="turf-fill player-turf" id="player-turf-fill" style="width: 50%;"></div>
+                        <div class="turf-fill enemy-turf" id="enemy-turf-fill" style="width: 50%;"></div>
+                    </div>
+                    <div class="turf-timer" id="turf-timer">2:00</div>
+                </div>
+                <div class="turf-stats enemy-side">
+                    <div class="team-label">ENEMY TURF</div>
+                    <div class="turf-percent" id="enemy-turf-percent">50%</div>
+                </div>
+            </div>
+
             <!-- Kill Counter Bar (for Deathmatch) -->
             <div class="kill-counter-bar" id="kill-counter-bar">
                 <div class="player-kills" id="player-kills-display">
@@ -320,6 +339,14 @@
                     <div class="feed-message" id="feed-message"></div>
                 </div>
                 <img class="victim-thumb dead-x" id="feed-victim-img" src="" alt="Victim">
+            </div>
+
+            <!-- Tessarune Capture Overlay -->
+            <div class="capture-overlay hidden" id="capture-overlay">
+                <div class="capture-message">
+                    <span id="capture-hero-name" class="capture-name">HERO NAME</span>
+                    <br>CAPTURED THE TESSARUNE!
+                </div>
             </div>
 
             <!-- Victory Overlay -->
