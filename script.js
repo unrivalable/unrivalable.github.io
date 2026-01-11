@@ -3541,24 +3541,34 @@ function startTessaruneStealCheck() {
     turfWarState.stealInterval = setInterval(() => {
         if (!turfWarState.isRunning) return;
 
+        // Calculate chance based on time remaining (120s total)
+        // 0-30s elapsed (120-90 left): 0.5%
+        // 30-60s elapsed (90-60 left): 1%
+        // 60-90s elapsed (60-30 left): 3%
+        // 90-120s elapsed (30-0 left): 6%
+
+        let chance = 0.005;
+        if (turfWarState.timeRemaining <= 90) chance = 0.01;
+        if (turfWarState.timeRemaining <= 60) chance = 0.03;
+        if (turfWarState.timeRemaining <= 30) chance = 0.06;
+
         // Get all alive players from both teams
         const allAlivePlayers = Object.keys(turfWarState.playerStats).filter(
             name => turfWarState.playerStats[name].isAlive
         );
 
-        // Give each alive player a 5% chance to steal
+        // Give each alive player a chance to steal
         for (const heroName of allAlivePlayers) {
-            if (Math.random() < 0.05) {
+            if (Math.random() < chance) {
                 // Success!
                 const team = turfWarState.playerStats[heroName].team;
 
-                // Show message
+                // Show message via kill feed as well
                 const msg = team === 'player'
                     ? `${heroName} STOLE THE TESSARUNE!`
                     : `${heroName} STOLE THE RESSATUNE!`;
 
                 const killFeed = document.getElementById('kill-feed');
-
                 const killerImg = document.getElementById('feed-killer-img');
                 const victimImg = document.getElementById('feed-victim-img');
                 const abilityEl = document.getElementById('feed-ability');
@@ -3566,7 +3576,6 @@ function startTessaruneStealCheck() {
 
                 const heroData = turfWarState.playerStats[heroName].heroData;
                 killerImg.src = `images/heroes-thumbnails/${heroData.image}`;
-                // Hide victim image for this event
                 victimImg.style.opacity = '0';
 
                 abilityEl.textContent = "GAME WINNING STEAL!";
@@ -3574,11 +3583,11 @@ function startTessaruneStealCheck() {
 
                 killFeed.classList.add('active');
 
+                // End game logic
                 setTimeout(() => {
                     endTurfWar(team === 'player' ? 'steal-player' : 'steal-enemy', heroName);
-                }, 2000);
+                }, 1000);
 
-                // Stop checking other players if someone won
                 return;
             }
         }
@@ -3715,9 +3724,18 @@ function endTurfWar(reason, stealerName) {
         victoryTitle = `${stealerName} STOLE THE RESSATUNE!`;
     }
 
+    let delay = 1000;
+
+    // If it was a steal, show the capture overlay first
+    if (reason === 'steal-player' || reason === 'steal-enemy') {
+        showCaptureOverlay(stealerName);
+        delay = 4000;
+    }
+
     setTimeout(() => {
+        hideCaptureOverlay();
         showTurfWarVictory(winningTeam, victoryTitle);
-    }, 1000);
+    }, delay);
 }
 
 function showTurfWarVictory(winningTeam, titleText) {
@@ -3799,4 +3817,17 @@ function respawnTurfWarPlayer(heroName) {
     if (card) {
         card.classList.remove('dead');
     }
+}
+
+// Show/Hide Capture Overlay
+function showCaptureOverlay(heroName) {
+    const overlay = document.getElementById('capture-overlay');
+    const nameEl = document.getElementById('capture-hero-name');
+    nameEl.textContent = heroName;
+    overlay.classList.remove('hidden');
+}
+
+function hideCaptureOverlay() {
+    const overlay = document.getElementById('capture-overlay');
+    overlay.classList.add('hidden');
 }
