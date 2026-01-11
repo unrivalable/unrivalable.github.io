@@ -2369,6 +2369,9 @@ async function startGame() {
                     } else if (selectedGameMode === 'turfwar') {
                         transitionToScreen('loading-screen', 'gameplay-screen');
                         setTimeout(() => startTurfWar(), 500);
+                    } else if (selectedGameMode === 'hoedown') {
+                        transitionToScreen('loading-screen', 'gameplay-screen');
+                        setTimeout(() => startDuoShowdown(), 500);
                     } else {
                         await showGameOver();
                     }
@@ -2735,7 +2738,7 @@ function findHeroByName(heroName) {
 }
 
 // Populate team grid with player cards
-function populateTeamGrid(gridId, teamHeroes, teamType) {
+function populateTeamGrid(gridId, teamHeroes, teamType, useFullSizeImages = false) {
     const grid = document.getElementById(gridId);
     grid.innerHTML = '';
 
@@ -2750,8 +2753,13 @@ function populateTeamGrid(gridId, teamHeroes, teamType) {
 
         const thumb = document.createElement('img');
         thumb.className = 'player-card-thumb';
-        thumb.src = `images/heroes-thumbnails/${heroData.image}`;
+        // Use full-size images for 1v1 modes, thumbnails for team modes
+        const imagePath = useFullSizeImages
+            ? `images/heroes/${heroData.image}`
+            : `images/heroes-thumbnails/${heroData.image}`;
+        thumb.src = imagePath;
         thumb.alt = heroName;
+        console.log(`Loading image for ${heroName}: ${imagePath} (fullsize: ${useFullSizeImages})`);
 
         const name = document.createElement('div');
         name.className = 'player-card-name';
@@ -2894,6 +2902,9 @@ function respawnPlayer(heroName) {
     const card = document.querySelector(`.player-card[data-hero="${heroName}"]`);
     if (card) {
         card.classList.remove('dead');
+        console.log(`Removed 'dead' class from ${heroName}`);
+    } else {
+        console.warn(`Could not find player card for ${heroName}`);
     }
 }
 
@@ -3865,4 +3876,224 @@ function respawnSquirtPlayer(heroName) {
     if (card) {
         card.classList.remove('dead');
     }
+}
+
+// ===== DUO SHOWDOWN GAMEPLAY (1v1, first to 3 kills) =====
+
+// Global state for duo showdown
+let duoShowdownState = {
+    playerKills: 0,
+    enemyKills: 0,
+    playerStats: {}, // { heroName: { kills, deaths, isAlive, team, heroData } }
+    isRunning: false,
+    killHistory: []
+};
+
+// Start Duo Showdown
+function startDuoShowdown() {
+    console.log('=== Starting Duo Hoedown (1v1, first to 3) ===');
+    console.log('Using full-size images:', true);
+
+    // Reset state
+    duoShowdownState = {
+        playerKills: 0,
+        enemyKills: 0,
+        playerStats: {},
+        isRunning: true,
+        killHistory: []
+    };
+
+    // Initialize player stats for all players
+    initializeDuoShowdownStats();
+
+    // Ensure grids are in 1v1 mode for larger images
+    const playerGrid = document.getElementById('player-team-grid');
+    const enemyGrid = document.getElementById('enemy-team-grid');
+    playerGrid.classList.remove('squirt-mode');
+    enemyGrid.classList.remove('squirt-mode');
+    playerGrid.classList.add('duo-mode');
+    enemyGrid.classList.add('duo-mode');
+
+    // Populate team grids with full-size images for 1v1
+    console.log('Populating grids with FULL SIZE images');
+    populateTeamGrid('player-team-grid', window.currentPlayerTeam, 'player', true);
+    populateTeamGrid('enemy-team-grid', window.currentEnemyTeam, 'enemy', true);
+
+    // Show kill counter, hide barrel bar and turf bar
+    document.getElementById('kill-counter-bar').style.display = 'flex';
+    document.getElementById('barrel-position-bar').style.display = 'none';
+    document.getElementById('turf-war-bar').style.display = 'none';
+
+    // Reset kill counter
+    document.getElementById('player-score').textContent = '0';
+    document.getElementById('enemy-score').textContent = '0';
+    document.getElementById('player-kills-display').innerHTML = '';
+    document.getElementById('enemy-kills-display').innerHTML = '';
+
+    // Hide kill feed and victory overlay
+    document.getElementById('kill-feed').classList.remove('active');
+    document.getElementById('victory-overlay').classList.add('hidden');
+
+    // Start kill simulation after a brief delay
+    setTimeout(() => {
+        if (duoShowdownState.isRunning) {
+            simulateNextDuoShowdownKill();
+        }
+    }, 1500);
+}
+
+// Initialize stats for duo showdown players
+function initializeDuoShowdownStats() {
+    // Initialize player team
+    window.currentPlayerTeam.forEach(heroName => {
+        const heroData = findHeroByName(heroName);
+        duoShowdownState.playerStats[heroName] = {
+            kills: 0,
+            deaths: 0,
+            isAlive: true,
+            team: 'player',
+            heroData: heroData
+        };
+    });
+
+    // Initialize enemy team
+    window.currentEnemyTeam.forEach(heroName => {
+        const heroData = findHeroByName(heroName);
+        duoShowdownState.playerStats[heroName] = {
+            kills: 0,
+            deaths: 0,
+            isAlive: true,
+            team: 'enemy',
+            heroData: heroData
+        };
+    });
+}
+
+// Simulate next kill in duo showdown
+function simulateNextDuoShowdownKill() {
+    if (!duoShowdownState.isRunning) return;
+
+    // Random delay 1-3 seconds
+    const delay = 1000 + Math.random() * 2000;
+
+    setTimeout(() => {
+        // Get alive players from each team
+        const alivePlayers = Object.keys(duoShowdownState.playerStats).filter(
+            name => duoShowdownState.playerStats[name].team === 'player' && duoShowdownState.playerStats[name].isAlive
+        );
+        const aliveEnemies = Object.keys(duoShowdownState.playerStats).filter(
+            name => duoShowdownState.playerStats[name].team === 'enemy' && duoShowdownState.playerStats[name].isAlive
+        );
+
+        if (alivePlayers.length === 0 || aliveEnemies.length === 0) {
+            console.log('No alive players on one team, skipping kill');
+            setTimeout(() => simulateNextDuoShowdownKill(), 500);
+            return;
+        }
+
+        // Pick random fighters (in 1v1, there's only one choice each)
+        const playerFighter = alivePlayers[0];
+        const enemyFighter = aliveEnemies[0];
+
+        const playerHero = duoShowdownState.playerStats[playerFighter].heroData;
+        const enemyHero = duoShowdownState.playerStats[enemyFighter].heroData;
+
+        // Determine winner using class advantage
+        const playerWinChance = getClassAdvantage(playerHero.class, enemyHero.class);
+        const playerWins = Math.random() < playerWinChance;
+
+        const killer = playerWins ? playerFighter : enemyFighter;
+        const victim = playerWins ? enemyFighter : playerFighter;
+        const killerTeam = playerWins ? 'player' : 'enemy';
+        const victimTeam = playerWins ? 'enemy' : 'player';
+
+        // Get random death message
+        const killerHero = duoShowdownState.playerStats[killer].heroData;
+        const victimHero = duoShowdownState.playerStats[victim].heroData;
+        const deathEvent = getRandomDeathMessage(killerHero, victimHero);
+
+        // Update stats
+        duoShowdownState.playerStats[killer].kills++;
+        duoShowdownState.playerStats[victim].deaths++;
+        duoShowdownState.playerStats[victim].isAlive = false;
+
+        // Update kill counter
+        if (killerTeam === 'player') {
+            duoShowdownState.playerKills++;
+        } else {
+            duoShowdownState.enemyKills++;
+        }
+
+        // Record kill event
+        duoShowdownState.killHistory.push({
+            killer,
+            victim,
+            killerTeam,
+            victimTeam,
+            ability: deathEvent.ability,
+            message: deathEvent.message,
+            timestamp: Date.now()
+        });
+
+        // Show kill in feed
+        displayKillFeed(killerHero, victimHero, deathEvent);
+
+        // Mark victim as dead
+        markPlayerDead(victim);
+
+        // Update kill counter display
+        updateKillCounter(killerTeam, victimHero);
+
+        // Update score
+        document.getElementById('player-score').textContent = duoShowdownState.playerKills;
+        document.getElementById('enemy-score').textContent = duoShowdownState.enemyKills;
+
+        // Respawn after 2 seconds
+        setTimeout(() => {
+            console.log(`Respawning ${victim} after 2 seconds`);
+            duoShowdownState.playerStats[victim].isAlive = true;
+            const card = document.querySelector(`.player-card[data-hero="${victim}"]`);
+            if (card) {
+                card.classList.remove('dead');
+                console.log(`Successfully respawned ${victim}`);
+            } else {
+                console.warn(`Could not find card for ${victim} to respawn`);
+            }
+
+            // Check victory condition (first to 3)
+            if (duoShowdownState.playerKills >= 3 || duoShowdownState.enemyKills >= 3) {
+                duoShowdownState.isRunning = false;
+                setTimeout(() => showDuoShowdownVictoryScreen(), 2000);
+            } else {
+                // Continue simulation
+                simulateNextDuoShowdownKill();
+            }
+        }, 2000);
+    }, delay);
+}
+
+// Show victory screen for duo showdown
+function showDuoShowdownVictoryScreen() {
+    // Copy duo showdown state to deathmatch state so we can reuse existing victory functions
+    deathmatchState.playerKills = duoShowdownState.playerKills;
+    deathmatchState.enemyKills = duoShowdownState.enemyKills;
+    deathmatchState.playerStats = duoShowdownState.playerStats;
+
+    const winningTeam = duoShowdownState.playerKills >= 3 ? 'player' : 'enemy';
+    const victoryOverlay = document.getElementById('victory-overlay');
+    const victoryTitle = document.getElementById('victory-title');
+
+    // Set title
+    victoryTitle.textContent = winningTeam === 'player' ? 'YOU WIN!' : 'YOU LOSE!';
+
+    // Populate stats tables (reuse deathmatch function)
+    populateStatsTable('player-stats-table', window.currentPlayerTeam);
+    populateStatsTable('enemy-stats-table', window.currentEnemyTeam);
+
+    // Determine and display star player (winner of the duel)
+    const starPlayer = duoShowdownState.playerKills >= 3 ? window.currentPlayerTeam[0] : window.currentEnemyTeam[0];
+    displayStarPlayer(starPlayer);
+
+    // Show overlay
+    victoryOverlay.classList.remove('hidden');
 }

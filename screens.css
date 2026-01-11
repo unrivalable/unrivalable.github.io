@@ -560,6 +560,31 @@
     justify-self: flex-end;
 }
 
+/* Duo Mode (1v1) - Larger cards for full-size images */
+.team-grid.duo-mode {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+    max-width: 35%;
+    gap: 0;
+}
+
+.team-grid.duo-mode .player-card {
+    padding: 15px;
+    gap: 10px;
+}
+
+.team-grid.duo-mode .player-card-thumb {
+    width: 80%;
+    height: auto;
+    aspect-ratio: unset;
+    max-height: 400px;
+    object-fit: contain;
+}
+
+.team-grid.duo-mode .player-card-name {
+    font-size: 1.2rem;
+}
+
 /* Player Cards */
 .player-card {
     background: rgba(10, 22, 40, 0.8);
@@ -740,9 +765,9 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 30px;
+    gap: 15px;
     z-index: 300;
-    padding: 40px;
+    padding: 20px;
     overflow-y: auto;
 }
 
@@ -752,13 +777,13 @@
 
 .victory-title {
     font-family: 'Bangers', cursive;
-    font-size: 5rem;
+    font-size: 3rem;
     color: var(--comic-yellow);
     text-shadow:
         var(--text-stroke),
         0 0 30px rgba(255, 215, 0, 0.8);
-    letter-spacing: 4px;
-    margin-bottom: 20px;
+    letter-spacing: 3px;
+    margin-bottom: 10px;
     animation: victoryPulse 2s ease-in-out infinite;
 }
 
@@ -779,43 +804,43 @@
 
 .stats-container {
     display: flex;
-    gap: 40px;
+    gap: 20px;
     width: 100%;
-    max-width: 900px;
+    max-width: 800px;
 }
 
 .team-stats {
     flex: 1;
     background: rgba(10, 22, 40, 0.8);
-    border: 4px solid var(--comic-cyan);
+    border: 3px solid var(--comic-cyan);
     box-shadow: var(--shadow-dark);
-    padding: 20px;
+    padding: 12px;
 }
 
 .team-stats h3 {
     font-family: 'Bangers', cursive;
-    font-size: 2rem;
+    font-size: 1.5rem;
     color: var(--comic-cyan);
     text-shadow: var(--text-stroke);
     text-align: center;
-    margin-bottom: 15px;
+    margin-bottom: 8px;
     letter-spacing: 2px;
 }
 
 .stats-table {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 4px;
 }
 
 .stat-row {
     display: flex;
     justify-content: space-between;
-    padding: 10px;
+    padding: 6px 8px;
     background: rgba(0, 191, 255, 0.1);
-    border-left: 3px solid var(--comic-blue);
+    border-left: 2px solid var(--comic-blue);
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.1rem;
+    font-size: 0.9rem;
 }
 
 .stat-name {
@@ -830,20 +855,20 @@
 /* Star Player Section */
 .star-player {
     background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 140, 0, 0.2));
-    border: 4px solid var(--comic-yellow);
-    box-shadow: 0 0 30px rgba(255, 215, 0, 0.6), 5px 5px 0 var(--comic-black);
-    padding: 15px;
+    border: 3px solid var(--comic-yellow);
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.6), 3px 3px 0 var(--comic-black);
+    padding: 10px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 8px;
-    max-width: 200px;
+    gap: 5px;
+    max-width: 160px;
     transform: rotate(-1deg);
 }
 
 .star-label {
     font-family: 'Bangers', cursive;
-    font-size: 1.25rem;
+    font-size: 1rem;
     color: var(--comic-yellow);
     text-shadow: var(--text-stroke);
     letter-spacing: 1.5px;
@@ -860,17 +885,17 @@
 }
 
 #star-player-img {
-    width: 75px;
-    height: 75px;
+    width: 60px;
+    height: 60px;
     border: 2px solid var(--comic-yellow);
     border-radius: 4px;
     object-fit: cover;
-    box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
 }
 
 #star-player-name {
     font-family: 'Bangers', cursive;
-    font-size: 1rem;
+    font-size: 0.9rem;
     color: var(--comic-white);
     text-shadow: var(--text-stroke);
     letter-spacing: 1px;
@@ -878,7 +903,7 @@
 
 #star-player-stats {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     color: var(--comic-cyan);
 }
 
