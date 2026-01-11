@@ -3144,7 +3144,7 @@ function startSquirt() {
     }, 1500);
 }
 
-// Start squirt timer (5x real time speed)
+// Start squirt timer (2x real time speed)
 function startSquirtTimer() {
     squirtState.timerInterval = setInterval(() => {
         squirtState.timeRemaining -= 1;
@@ -3167,7 +3167,7 @@ function startSquirtTimer() {
             squirtState.isRunning = false;
             endSquirtGame('timeout');
         }
-    }, 200); // 200ms real time = 1 second game time (5x speed)
+    }, 500); // 500ms real time = 1 second game time (2x speed)
 }
 
 // Start barrel movement
@@ -3222,8 +3222,8 @@ function startBarrelMovement() {
 function simulateNextSquirtKill() {
     if (!squirtState.isRunning) return;
 
-    // 8-10 game seconds = 1600-2000ms real time (at 5x speed)
-    const delay = 1600 + Math.random() * 400;
+    // 8-10 game seconds = 4000-5000ms real time (at 2x speed)
+    const delay = 4000 + Math.random() * 1000;
 
     setTimeout(() => {
         // Get alive players from each team
@@ -3268,13 +3268,13 @@ function simulateNextSquirtKill() {
         // Mark victim as dead
         markPlayerDead(victim);
 
-        // Respawn after 10 game seconds (2 seconds real time)
+        // Respawn after 10 game seconds (5 seconds real time)
         setTimeout(() => {
             if (squirtState.isRunning) {
-                respawnPlayer(victim);
+                respawnSquirtPlayer(victim);
                 squirtState.playerStats[victim].isAlive = true;
             }
-        }, 2000);
+        }, 5000);
 
         // Trigger next battle loop immediately (don't wait for respawn)
         if (squirtState.isRunning) {
@@ -3835,4 +3835,12 @@ function showCaptureOverlay(heroName) {
 function hideCaptureOverlay() {
     const overlay = document.getElementById('capture-overlay');
     overlay.classList.add('hidden');
+}
+
+// Respawn player visual only (for Squirt)
+function respawnSquirtPlayer(heroName) {
+    const card = document.querySelector(`.player-card[data-hero="${heroName}"]`);
+    if (card) {
+        card.classList.remove('dead');
+    }
 }
