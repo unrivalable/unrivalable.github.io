@@ -209,6 +209,20 @@
                         </div>
                     </div>
 
+                    <div class="carousel-slide" data-mode="hideandseek">
+                        <div class="carousel-image">
+                            <img src="images/backgrounds/atlantis.png" alt="Hide and Seek">
+                        </div>
+                        <div class="carousel-info">
+                            <h3 class="carousel-title">Hide and Seek</h3>
+                            <div class="carousel-team">Local Multiplayer</div>
+                            <div class="carousel-objective">
+                                Take turns hiding and seeking characters. Last player found wins!
+                            </div>
+                            <button class="select-mode-btn">JUICE IT UP?</button>
+                        </div>
+                    </div>
+
                     <div class="carousel-slide" data-mode="story" data-disabled="true">
                         <div class="carousel-image">
                             <img src="images/story-mode.png" alt="Story mode">
@@ -420,6 +434,64 @@
         </div>
     </div>
 
+
+    <!-- Hide and Seek Screens -->
+    <div id="hideandseek-setup-screen" class="screen">
+        <div class="crt-container">
+            <h1 class="screen-title">HIDE AND SEEK</h1>
+
+            <!-- Player Count Selection -->
+            <div id="player-count-panel" class="setup-panel">
+                <h2 class="panel-title">HOW MANY PLAYERS?</h2>
+                <div class="player-count-buttons">
+                    <button class="count-btn" data-count="2">2</button>
+                    <button class="count-btn" data-count="3">3</button>
+                    <button class="count-btn" data-count="4">4</button>
+                    <button class="count-btn" data-count="5">5</button>
+                </div>
+            </div>
+
+            <!-- Player Name Input -->
+            <div id="player-name-panel" class="setup-panel" style="display: none;">
+                <h2 class="panel-title">PLAYER <span id="name-player-number">1</span></h2>
+                <p class="panel-subtitle">ENTER YOUR NAME</p>
+                <input type="text" id="player-name-input" class="name-input" maxlength="20">
+                <button id="name-submit-btn" class="select-mode-btn">CONTINUE</button>
+            </div>
+
+            <!-- Character Selection for Each Player -->
+            <div id="player-character-panel" class="setup-panel" style="display: none;">
+                <h2 class="panel-title"><span id="char-player-name">PLAYER</span></h2>
+                <p class="panel-subtitle">SELECT YOUR CHARACTER</p>
+                <div id="character-grid" class="character-selection-grid"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hide and Seek Game Screen -->
+    <div id="hideandseek-game-screen" class="screen">
+        <!-- Hiding Phase -->
+        <div id="hiding-panel" style="display: none;">
+            <div class="phase-title"><span id="hiding-player-name">PLAYER</span> - HIDE YOUR CHARACTER</div>
+            <div id="hiding-background" class="game-background"></div>
+        </div>
+
+        <!-- Seeking Phase -->
+        <div id="seeking-panel" style="display: none;">
+            <div class="seek-header">
+                <div class="phase-title"><span id="seeking-player-name">PLAYER</span> - FIND A CHARACTER</div>
+                <div class="players-found">FOUND: <span id="found-count">0</span>/<span id="total-humans">0</span></div>
+            </div>
+            <div id="seeking-background" class="game-background"></div>
+        </div>
+
+        <!-- Hide and Seek Victory Screen -->
+        <div id="hideandseek-victory" class="victory-overlay hidden">
+            <h1 class="victory-title" id="hideandseek-winner-title">WINNER!</h1>
+            <div id="hideandseek-winner-name" class="winner-display"></div>
+            <button class="back-button" onclick="location.reload()">PLAY AGAIN</button>
+        </div>
+    </div>
     <script src="script.js"></script>
 </body>
 </html>

@@ -1181,3 +1181,158 @@
     0% { transform: scale(0) rotate(-15deg); opacity: 0; }
     100% { transform: scale(1) rotate(-3deg); opacity: 1; }
 }
+
+/* ===== HIDE AND SEEK STYLES ===== */
+
+.setup-panel {
+    background: rgba(10, 22, 40, 0.9);
+    border: 4px solid var(--comic-cyan);
+    box-shadow: var(--shadow-dark);
+    padding: 40px;
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.panel-title {
+    font-family: 'Bangers', cursive;
+    font-size: 2.5rem;
+    color: var(--comic-yellow);
+    text-shadow: var(--text-stroke);
+    margin-bottom: 20px;
+}
+
+.panel-subtitle {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.2rem;
+    color: var(--comic-cyan);
+    margin-bottom: 20px;
+}
+
+.player-count-buttons {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.count-btn {
+    font-family: 'Bangers', cursive;
+    font-size: 3rem;
+    width: 100px;
+    height: 100px;
+    background: linear-gradient(135deg, var(--comic-blue), var(--comic-cyan));
+    color: var(--comic-white);
+    border: 3px solid var(--comic-white);
+    border-radius: 10px;
+    cursor: pointer;
+    text-shadow: var(--text-stroke);
+    transition: all 0.3s ease;
+}
+
+.count-btn:hover {
+    transform: scale(1.1) rotate(2deg);
+    box-shadow: 0 0 20px rgba(0, 191, 255, 0.8);
+}
+
+.name-input {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    padding: 15px;
+    width: 100%;
+    max-width: 400px;
+    background: rgba(0, 0, 0, 0.5);
+    border: 3px solid var(--comic-cyan);
+    color: var(--comic-white);
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.name-input:focus {
+    outline: none;
+    border-color: var(--comic-yellow);
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+}
+
+.character-selection-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 15px;
+    max-height: 500px;
+    overflow-y: auto;
+    padding: 20px;
+}
+
+.character-choice {
+    cursor: pointer;
+    border: 3px solid var(--comic-blue);
+    transition: all 0.3s ease;
+    background: rgba(10, 22, 40, 0.8);
+    padding: 5px;
+}
+
+.character-choice:hover {
+    transform: scale(1.1);
+    border-color: var(--comic-yellow);
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+}
+
+.character-choice img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.game-background {
+    position: relative;
+    width: 100%;
+    height: 80vh;
+    background-size: cover;
+    background-position: center;
+    cursor: pointer;
+}
+
+.hidden-character {
+    position: absolute;
+    width: 100px;
+    height: auto;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.hidden-character.revealed {
+    opacity: 1;
+}
+
+.phase-title {
+    font-family: 'Bangers', cursive;
+    font-size: 2rem;
+    color: var(--comic-yellow);
+    text-shadow: var(--text-stroke);
+    text-align: center;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.8);
+}
+
+.seek-header {
+    background: rgba(0, 0, 0, 0.9);
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.players-found {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem;
+    color: var(--comic-cyan);
+}
+
+.winner-display {
+    font-family: 'Bangers', cursive;
+    font-size: 4rem;
+    color: var(--comic-cyan);
+    text-shadow: var(--text-stroke);
+    margin: 30px 0;
+}
