@@ -2107,6 +2107,13 @@ async function startGame() {
     const gameModeSlide = document.querySelector(`.carousel-slide[data-mode="${selectedGameMode}"]`);
     const gameModeImgSrc = gameModeSlide.querySelector('.carousel-image img').src;
 
+    // Special case: Hide and Seek skips loading screen
+    if (selectedGameMode === 'hideandseek') {
+        transitionToScreen('home-screen', 'hideandseek-setup-screen');
+        startHideAndSeekSetup();
+        return;
+    }
+
     // Transition to Loading Screen
     transitionToScreen('home-screen', 'loading-screen');
 
@@ -2373,9 +2380,6 @@ async function startGame() {
                     } else if (selectedGameMode === 'hoedown') {
                         transitionToScreen('loading-screen', 'gameplay-screen');
                         setTimeout(() => startDuoShowdown(), 500);
-                    } else if (selectedGameMode === 'hideandseek') {
-                        transitionToScreen('character-screen', 'hideandseek-setup-screen');
-                        startHideAndSeekSetup();
                     } else {
                         await showGameOver();
                     }
@@ -4114,15 +4118,13 @@ let hideAndSeekState = {
     gridRows: 8,
     gridOccupied: [], // Array of occupied grid positions
     phase: 'setup', // 'setup', 'hiding', 'seeking', 'victory'
-    humanPlayersFound: 0
+    humanPlayersFound: 0,
+    hasClickedThisTurn: false
 };
 
 // Start Hide and Seek Setup
 function startHideAndSeekSetup() {
     console.log('Starting Hide and Seek Setup');
-
-    // Get player 1's already-selected hero
-    const player1Hero = selectedHero;
 
     hideAndSeekState = {
         playerCount: 0,
@@ -4142,23 +4144,25 @@ function startHideAndSeekSetup() {
     document.getElementById('player-name-panel').style.display = 'none';
     document.getElementById('player-character-panel').style.display = 'none';
 
-    // Add event listeners for player count buttons
+    // Remove old event listeners by cloning and replacing
+    const nameInput = document.getElementById('player-name-input');
+    const newNameInput = nameInput.cloneNode(true);
+    nameInput.parentNode.replaceChild(newNameInput, nameInput);
+
+    const nameBtn = document.getElementById('name-submit-btn');
+    const newNameBtn = nameBtn.cloneNode(true);
+    nameBtn.parentNode.replaceChild(newNameBtn, nameBtn);
+
+    // Add event listeners for player count buttons (one-time use)
     document.querySelectorAll('.count-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
+        const newBtn = btn.cloneNode(true);
+        btn.parentNode.replaceChild(newBtn, btn);
+
+        newBtn.addEventListener('click', function() {
             hideAndSeekState.playerCount = parseInt(this.dataset.count);
             console.log(`Selected ${hideAndSeekState.playerCount} players`);
 
-            // Add player 1 with their already-selected hero
-            hideAndSeekState.players.push({
-                name: 'Player 1',
-                character: player1Hero,
-                gridPosition: null,
-                isHuman: true,
-                found: false
-            });
-
-            // If only 2 players, ask for player 2's name
-            // Otherwise start collecting names from player 2
+            // Start collecting names from all players
             showNameInput();
         });
     });
@@ -4205,13 +4209,17 @@ function submitPlayerName() {
 }
 
 function showCharacterSelection() {
-    // Start at player 2 (index 1) since player 1 already selected
-    hideAndSeekState.currentPlayerIndex = 1;
+    // Start at player 1 (index 0) - all players select characters
+    hideAndSeekState.currentPlayerIndex = 0;
+    console.log('Starting character selection at player index:', hideAndSeekState.currentPlayerIndex);
+    console.log('Total players:', hideAndSeekState.players.length);
     displayCharacterSelectionForPlayer();
 }
 
 function displayCharacterSelectionForPlayer() {
     const player = hideAndSeekState.players[hideAndSeekState.currentPlayerIndex];
+
+    console.log('Displaying character selection for:', player.name);
 
     document.getElementById('player-name-panel').style.display = 'none';
     document.getElementById('player-character-panel').style.display = 'block';
@@ -4221,8 +4229,27 @@ function displayCharacterSelectionForPlayer() {
     const grid = document.getElementById('character-grid');
     grid.innerHTML = '';
 
+    // Build list of all available heroes from heroesData
+    const allHeroes = [];
+    heroesData.classes.forEach(heroClass => {
+        if (heroClass.hero_count > 0) {
+            heroClass.heroes.forEach(hero => {
+                allHeroes.push({
+                    name: hero.name,
+                    image: hero.image,
+                    class: heroClass.name
+                });
+            });
+        }
+    });
+
     // Filter out already-selected characters
-    const usedCharacters = hideAndSeekState.players.map(p => p.character ? p.character.name : null).filter(n => n);
+    const usedCharacters = hideAndSeekState.players
+        .map(p => p.character ? p.character.name : null)
+        .filter(n => n);
+
+    console.log('Used characters:', usedCharacters);
+    console.log('Building grid with', allHeroes.length, 'total heroes');
 
     allHeroes.forEach(hero => {
         // Skip if already selected
@@ -4239,6 +4266,8 @@ function displayCharacterSelectionForPlayer() {
         choice.addEventListener('click', () => selectCharacter(hero));
         grid.appendChild(choice);
     });
+
+    console.log('Grid built with', grid.children.length, 'characters');
 }
 
 function selectCharacter(hero) {
@@ -4247,12 +4276,15 @@ function selectCharacter(hero) {
     console.log(`${player.name} selected ${hero.name}`);
 
     hideAndSeekState.currentPlayerIndex++;
+    console.log(`Next player index: ${hideAndSeekState.currentPlayerIndex}, Total players: ${hideAndSeekState.players.length}`);
 
     if (hideAndSeekState.currentPlayerIndex < hideAndSeekState.players.length) {
         // More players need to select
+        console.log('Showing selection for next player');
         displayCharacterSelectionForPlayer();
     } else {
         // All players selected, start hiding phase
+        console.log('All players selected, starting hiding phase');
         startHidingPhase();
     }
 }
@@ -4353,6 +4385,21 @@ function findNearestEmptyGrid(targetPos) {
 function addNPCCharacters() {
     const totalNeeded = 10 - hideAndSeekState.players.length;
     const usedCharacters = hideAndSeekState.players.map(p => p.character.name);
+
+    // Build list of all heroes
+    const allHeroes = [];
+    heroesData.classes.forEach(heroClass => {
+        if (heroClass.hero_count > 0) {
+            heroClass.heroes.forEach(hero => {
+                allHeroes.push({
+                    name: hero.name,
+                    image: hero.image,
+                    class: heroClass.name
+                });
+            });
+        }
+    });
+
     const availableHeroes = allHeroes.filter(h => !usedCharacters.includes(h.name));
 
     for (let i = 0; i < totalNeeded; i++) {
@@ -4445,6 +4492,14 @@ function updateSeekingDisplay() {
 }
 
 function handleSeekClick(e) {
+    // Enforce one click per turn
+    if (hideAndSeekState.hasClickedThisTurn) {
+        return; // Ignore subsequent clicks
+    }
+
+    // Mark that this turn has been clicked
+    hideAndSeekState.hasClickedThisTurn = true;
+
     const bg = document.getElementById('seeking-background');
     const rect = bg.getBoundingClientRect();
 
@@ -4482,11 +4537,14 @@ function handleSeekClick(e) {
                 return;
             }
         }
-
-        // Next player's turn
-        hideAndSeekState.currentPlayerIndex++;
-        updateSeekingDisplay();
     }
+
+    // Wait 1.5 seconds to show reveal animation, then advance to next player's turn
+    setTimeout(() => {
+        hideAndSeekState.currentPlayerIndex++;
+        hideAndSeekState.hasClickedThisTurn = false; // Reset for next turn
+        updateSeekingDisplay();
+    }, 1500);
 }
 
 function showHideAndSeekVictory(winner) {
