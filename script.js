@@ -4442,7 +4442,9 @@ function startSeekingPhase() {
     // Place all characters as hidden elements
     hideAndSeekState.players.forEach((player, idx) => {
         const charEl = document.createElement('img');
-        charEl.src = `images/heroes-toon/${player.character.image}`;
+        // Convert image extension to .png for toon images
+        const toonImage = player.character.image.replace(/\.(jpg|png)$/, '.png');
+        charEl.src = `images/heroes-toon/${toonImage}`;
         charEl.className = 'hidden-character';
         charEl.dataset.playerIndex = idx;
 
@@ -4466,7 +4468,9 @@ function startSeekingPhase() {
     // Re-add all character elements
     hideAndSeekState.players.forEach((player, idx) => {
         const charEl = document.createElement('img');
-        charEl.src = `images/heroes-toon/${player.character.image}`;
+        // Convert image extension to .png for toon images
+        const toonImage = player.character.image.replace(/\.(jpg|png)$/, '.png');
+        charEl.src = `images/heroes-toon/${toonImage}`;
         charEl.className = 'hidden-character';
         charEl.dataset.playerIndex = idx;
 
@@ -4486,9 +4490,29 @@ function updateSeekingDisplay() {
     const humanPlayer = hideAndSeekState.players.filter(p => p.isHuman)[hideAndSeekState.currentPlayerIndex % hideAndSeekState.players.filter(p => p.isHuman).length];
     document.getElementById('seeking-player-name').textContent = humanPlayer.name.toUpperCase();
 
-    const totalHumans = hideAndSeekState.players.filter(p => p.isHuman).length;
-    document.getElementById('found-count').textContent = hideAndSeekState.humanPlayersFound;
-    document.getElementById('total-humans').textContent = totalHumans;
+    // Show total characters found (all characters, not just humans)
+    const totalFound = hideAndSeekState.players.filter(p => p.found).length;
+    const totalCharacters = hideAndSeekState.players.length; // Should be 10
+    document.getElementById('found-count').textContent = totalFound;
+    document.getElementById('total-humans').textContent = totalCharacters;
+
+    // Show turn announcement
+    showTurnAnnouncement(humanPlayer.name);
+}
+
+function showTurnAnnouncement(playerName) {
+    const announcement = document.getElementById('turn-announcement');
+    document.getElementById('announcement-player-name').textContent = playerName.toUpperCase();
+    announcement.classList.remove('hidden');
+
+    // Set up start turn button
+    const startBtn = document.getElementById('start-turn-btn');
+    const newStartBtn = startBtn.cloneNode(true);
+    startBtn.parentNode.replaceChild(newStartBtn, startBtn);
+
+    newStartBtn.addEventListener('click', () => {
+        announcement.classList.add('hidden');
+    });
 }
 
 function handleSeekClick(e) {
