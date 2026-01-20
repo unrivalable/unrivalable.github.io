@@ -4537,14 +4537,31 @@ function handleSeekClick(e) {
                 return;
             }
         }
-    }
 
-    // Wait 1.5 seconds to show reveal animation, then advance to next player's turn
-    setTimeout(() => {
-        hideAndSeekState.currentPlayerIndex++;
-        hideAndSeekState.hasClickedThisTurn = false; // Reset for next turn
-        updateSeekingDisplay();
-    }, 1500);
+        // Wait 1.5 seconds to show reveal animation, then advance to next player's turn
+        setTimeout(() => {
+            hideAndSeekState.currentPlayerIndex++;
+            hideAndSeekState.hasClickedThisTurn = false; // Reset for next turn
+            updateSeekingDisplay();
+        }, 1500);
+    } else {
+        // Show miss indicator - no character at this location
+        const missIndicator = document.createElement('div');
+        missIndicator.className = 'miss-indicator';
+        missIndicator.style.left = `${e.clientX - rect.left - 50}px`;
+        missIndicator.style.top = `${e.clientY - rect.top - 50}px`;
+        bg.appendChild(missIndicator);
+
+        console.log('Miss! No character at this location.');
+
+        // Remove miss indicator and advance turn after animation
+        setTimeout(() => {
+            missIndicator.remove();
+            hideAndSeekState.currentPlayerIndex++;
+            hideAndSeekState.hasClickedThisTurn = false; // Reset for next turn
+            updateSeekingDisplay();
+        }, 800);
+    }
 }
 
 function showHideAndSeekVictory(winner) {
