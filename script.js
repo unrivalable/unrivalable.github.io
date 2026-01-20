@@ -4337,10 +4337,13 @@ function hideCharacter(e, player) {
     const gridRow = Math.floor((y / rect.height) * hideAndSeekState.gridRows);
     const gridPos = gridRow * hideAndSeekState.gridCols + gridCol;
 
-    // Check if occupied, find nearest if so
+    // Check if occupied, pick random empty position if so
     let finalGridPos = gridPos;
     if (hideAndSeekState.gridOccupied.includes(gridPos)) {
-        finalGridPos = findNearestEmptyGrid(gridPos);
+        // Pick a truly random empty grid position
+        do {
+            finalGridPos = Math.floor(Math.random() * (hideAndSeekState.gridCols * hideAndSeekState.gridRows));
+        } while (hideAndSeekState.gridOccupied.includes(finalGridPos));
     }
 
     player.gridPosition = finalGridPos;
@@ -4359,28 +4362,6 @@ function hideCharacter(e, player) {
     }
 }
 
-function findNearestEmptyGrid(targetPos) {
-    const targetRow = Math.floor(targetPos / hideAndSeekState.gridCols);
-    const targetCol = targetPos % hideAndSeekState.gridCols;
-
-    let minDist = Infinity;
-    let nearest = targetPos;
-
-    for (let row = 0; row < hideAndSeekState.gridRows; row++) {
-        for (let col = 0; col < hideAndSeekState.gridCols; col++) {
-            const gridPos = row * hideAndSeekState.gridCols + col;
-            if (!hideAndSeekState.gridOccupied.includes(gridPos)) {
-                const dist = Math.abs(row - targetRow) + Math.abs(col - targetCol);
-                if (dist < minDist) {
-                    minDist = dist;
-                    nearest = gridPos;
-                }
-            }
-        }
-    }
-
-    return nearest;
-}
 
 function addNPCCharacters() {
     const totalNeeded = 10 - hideAndSeekState.players.length;
@@ -4406,8 +4387,11 @@ function addNPCCharacters() {
         const randomHero = availableHeroes[Math.floor(Math.random() * availableHeroes.length)];
         availableHeroes.splice(availableHeroes.indexOf(randomHero), 1);
 
-        // Find empty grid position
-        let gridPos = findNearestEmptyGrid(Math.floor(Math.random() * (hideAndSeekState.gridCols * hideAndSeekState.gridRows)));
+        // Find truly random empty grid position
+        let gridPos;
+        do {
+            gridPos = Math.floor(Math.random() * (hideAndSeekState.gridCols * hideAndSeekState.gridRows));
+        } while (hideAndSeekState.gridOccupied.includes(gridPos));
 
         hideAndSeekState.players.push({
             name: randomHero.name,
@@ -4521,15 +4505,31 @@ function handleSeekClick(e) {
     const bg = document.getElementById('seeking-background');
     const rect = bg.getBoundingClientRect();
 
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    const clickX = e.clientX - rect.left;
+    const clickY = e.clientY - rect.top;
 
-    const gridCol = Math.floor((x / rect.width) * hideAndSeekState.gridCols);
-    const gridRow = Math.floor((y / rect.height) * hideAndSeekState.gridRows);
-    const gridPos = gridRow * hideAndSeekState.gridCols + gridCol;
+    // Find the nearest character within 100px radius
+    let foundPlayer = null;
+    let minDistance = 100; // 100px search radius
 
-    // Find if any character is at this grid position
-    const foundPlayer = hideAndSeekState.players.find(p => p.gridPosition === gridPos && !p.found);
+    hideAndSeekState.players.forEach(player => {
+        if (player.found) return; // Skip already found characters
+
+        // Calculate character's pixel position from grid position
+        const row = Math.floor(player.gridPosition / hideAndSeekState.gridCols);
+        const col = player.gridPosition % hideAndSeekState.gridCols;
+
+        const charX = (col / hideAndSeekState.gridCols) * rect.width + (rect.width / hideAndSeekState.gridCols / 2);
+        const charY = (row / hideAndSeekState.gridRows) * rect.height + (rect.height / hideAndSeekState.gridRows / 2);
+
+        // Calculate distance from click to character center
+        const distance = Math.sqrt(Math.pow(clickX - charX, 2) + Math.pow(clickY - charY, 2));
+
+        if (distance < minDistance) {
+            minDistance = distance;
+            foundPlayer = player;
+        }
+    });
 
     if (foundPlayer) {
         foundPlayer.found = true;
