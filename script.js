@@ -4110,16 +4110,15 @@ function showDuoShowdownVictoryScreen() {
 
 let hideAndSeekState = {
     playerCount: 0,
-    players: [], // {name, character, gridPosition, isHuman, found}
+    players: [], // {name, character, gridPosition, isHuman, found, eliminated}
     currentPlayerIndex: 0,
     backgrounds: ['atlantis.png', 'chexico.png', 'costco.png'],
     selectedBackground: '',
-    gridCols: 4,
+    gridCols: 16,
     gridRows: 8,
     gridOccupied: [], // Array of occupied grid positions
     phase: 'setup', // 'setup', 'hiding', 'seeking', 'victory'
-    humanPlayersFound: 0,
-    hasClickedThisTurn: false
+    humanPlayersFound: 0
 };
 
 // Start Hide and Seek Setup
@@ -4132,7 +4131,7 @@ function startHideAndSeekSetup() {
         currentPlayerIndex: 0,
         backgrounds: ['atlantis.png', 'chexico.png', 'costco.png'],
         selectedBackground: '',
-        gridCols: 4,
+        gridCols: 16,
         gridRows: 8,
         gridOccupied: [],
         phase: 'setup',
@@ -4194,7 +4193,8 @@ function submitPlayerName() {
         character: null,
         gridPosition: null,
         isHuman: true,
-        found: false
+        found: false,
+        eliminated: false
     });
 
     console.log(`Added player: ${name}`);
@@ -4414,7 +4414,8 @@ function addNPCCharacters() {
             character: randomHero,
             gridPosition: gridPos,
             isHuman: false,
-            found: false
+            found: false,
+            eliminated: false
         });
 
         hideAndSeekState.gridOccupied.push(gridPos);
@@ -4487,7 +4488,8 @@ function startSeekingPhase() {
 }
 
 function updateSeekingDisplay() {
-    const humanPlayer = hideAndSeekState.players.filter(p => p.isHuman)[hideAndSeekState.currentPlayerIndex % hideAndSeekState.players.filter(p => p.isHuman).length];
+    const humanPlayers = hideAndSeekState.players.filter(p => p.isHuman && !p.eliminated);
+    const humanPlayer = humanPlayers[hideAndSeekState.currentPlayerIndex % humanPlayers.length];
     document.getElementById('seeking-player-name').textContent = humanPlayer.name.toUpperCase();
 
     // Show total characters found (all characters, not just humans)
@@ -4516,14 +4518,6 @@ function showTurnAnnouncement(playerName) {
 }
 
 function handleSeekClick(e) {
-    // Enforce one click per turn
-    if (hideAndSeekState.hasClickedThisTurn) {
-        return; // Ignore subsequent clicks
-    }
-
-    // Mark that this turn has been clicked
-    hideAndSeekState.hasClickedThisTurn = true;
-
     const bg = document.getElementById('seeking-background');
     const rect = bg.getBoundingClientRect();
 
@@ -4549,25 +4543,39 @@ function handleSeekClick(e) {
         console.log(`Found ${foundPlayer.name}!`);
 
         if (foundPlayer.isHuman) {
+            // Mark player as eliminated
+            foundPlayer.eliminated = true;
             hideAndSeekState.humanPlayersFound++;
-            updateSeekingDisplay();
 
             // Check if game is over (all humans but one found)
             const totalHumans = hideAndSeekState.players.filter(p => p.isHuman).length;
-            if (hideAndSeekState.humanPlayersFound >= totalHumans - 1) {
-                // Game over - find the winner (last human not found)
-                const winner = hideAndSeekState.players.find(p => p.isHuman && !p.found);
-                showHideAndSeekVictory(winner);
+            const remainingHumans = totalHumans - hideAndSeekState.humanPlayersFound;
+
+            if (remainingHumans <= 1) {
+                // Game over - find the winner (last human not eliminated)
+                const winner = hideAndSeekState.players.find(p => p.isHuman && !p.eliminated);
+
+                // Show elimination first, then victory
+                setTimeout(() => {
+                    showEliminationAnnouncement(foundPlayer.name, () => {
+                        showHideAndSeekVictory(winner);
+                    });
+                }, 1500);
                 return;
             }
-        }
 
-        // Wait 1.5 seconds to show reveal animation, then advance to next player's turn
-        setTimeout(() => {
-            hideAndSeekState.currentPlayerIndex++;
-            hideAndSeekState.hasClickedThisTurn = false; // Reset for next turn
-            updateSeekingDisplay();
-        }, 1500);
+            // Show elimination announcement
+            setTimeout(() => {
+                showEliminationAnnouncement(foundPlayer.name, () => {
+                    advanceToNextPlayer();
+                });
+            }, 1500);
+        } else {
+            // NPC found - just advance to next turn after reveal
+            setTimeout(() => {
+                advanceToNextPlayer();
+            }, 1500);
+        }
     } else {
         // Show miss indicator - no character at this location
         const missIndicator = document.createElement('div');
@@ -4578,14 +4586,38 @@ function handleSeekClick(e) {
 
         console.log('Miss! No character at this location.');
 
-        // Remove miss indicator and advance turn after animation
+        // Remove miss indicator after animation (don't advance turn)
         setTimeout(() => {
             missIndicator.remove();
-            hideAndSeekState.currentPlayerIndex++;
-            hideAndSeekState.hasClickedThisTurn = false; // Reset for next turn
-            updateSeekingDisplay();
         }, 800);
     }
+}
+
+function advanceToNextPlayer() {
+    // Get all non-eliminated human players
+    const activePlayers = hideAndSeekState.players.filter(p => p.isHuman && !p.eliminated);
+
+    // Increment and wrap around
+    hideAndSeekState.currentPlayerIndex++;
+    hideAndSeekState.currentPlayerIndex = hideAndSeekState.currentPlayerIndex % activePlayers.length;
+
+    updateSeekingDisplay();
+}
+
+function showEliminationAnnouncement(playerName, callback) {
+    const announcement = document.getElementById('elimination-announcement');
+    document.getElementById('eliminated-player-name').textContent = playerName.toUpperCase();
+    announcement.classList.remove('hidden');
+
+    // Set up continue button
+    const continueBtn = document.getElementById('continue-game-btn');
+    const newContinueBtn = continueBtn.cloneNode(true);
+    continueBtn.parentNode.replaceChild(newContinueBtn, continueBtn);
+
+    newContinueBtn.addEventListener('click', () => {
+        announcement.classList.add('hidden');
+        if (callback) callback();
+    });
 }
 
 function showHideAndSeekVictory(winner) {

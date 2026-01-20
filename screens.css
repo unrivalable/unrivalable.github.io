@@ -1297,7 +1297,7 @@
 
 .hidden-character {
     position: absolute;
-    width: 120px;
+    width: 60px;
     height: auto;
     pointer-events: none;
     opacity: 0;
@@ -1514,6 +1514,102 @@
     100% {
         transform: scale(1) rotate(0deg);
         opacity: 1;
+    }
+}
+
+.elimination-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.95);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1100;
+}
+
+.elimination-overlay.hidden {
+    display: none;
+}
+
+.elimination-content {
+    background: linear-gradient(135deg, #FF3366, #AA0033);
+    border: 10px solid var(--comic-yellow);
+    border-radius: 20px;
+    padding: 80px 100px;
+    text-align: center;
+    box-shadow: 0 0 60px rgba(255, 51, 102, 1);
+    animation: shakeIn 0.5s ease-out;
+}
+
+.elimination-title {
+    font-family: 'Bangers', cursive;
+    font-size: 84px;
+    color: var(--comic-yellow);
+    text-shadow:
+        5px 5px 0 #000,
+        -2px -2px 0 #000,
+        2px -2px 0 #000,
+        -2px 2px 0 #000,
+        8px 8px 16px rgba(255, 215, 0, 1);
+    letter-spacing: 4px;
+    margin-bottom: 30px;
+    animation: shake 0.5s ease-in-out infinite;
+}
+
+.elimination-message {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    color: var(--comic-white);
+    text-shadow: 3px 3px 0 #000;
+    margin-bottom: 50px;
+    letter-spacing: 2px;
+}
+
+.continue-game-btn {
+    font-family: 'Bangers', cursive;
+    font-size: 36px;
+    padding: 20px 60px;
+    background: linear-gradient(135deg, var(--comic-yellow), #FFD700);
+    color: #000;
+    border: 4px solid var(--comic-white);
+    border-radius: 10px;
+    cursor: pointer;
+    text-shadow: 2px 2px 0 rgba(255, 255, 255, 0.5);
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+    transition: all 0.3s ease;
+}
+
+.continue-game-btn:hover {
+    transform: scale(1.1) rotate(-2deg);
+    box-shadow: 0 0 40px rgba(255, 215, 0, 1);
+}
+
+@keyframes shakeIn {
+    0% {
+        transform: scale(0) rotate(-30deg);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.1) rotate(5deg);
+    }
+    100% {
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+    }
+}
+
+@keyframes shake {
+    0%, 100% {
+        transform: translateX(0) rotate(0deg);
+    }
+    25% {
+        transform: translateX(-5px) rotate(-2deg);
+    }
+    75% {
+        transform: translateX(5px) rotate(2deg);
     }
 }
 
