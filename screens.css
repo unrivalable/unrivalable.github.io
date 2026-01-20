@@ -755,7 +755,7 @@
 
 /* Victory Overlay */
 .victory-overlay {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
@@ -765,8 +765,8 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    z-index: 1500;
     gap: 15px;
-    z-index: 300;
     padding: 20px;
     overflow-y: auto;
 }
@@ -1734,4 +1734,17 @@
     transform: translateY(-100%);
     margin-top: -5px;
     white-space: nowrap;
+}
+
+#reveal-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 2000;
+}
+
+#reveal-screen.hidden {
+    display: none;
 }

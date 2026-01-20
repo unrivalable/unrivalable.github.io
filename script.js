@@ -4529,9 +4529,9 @@ function handleSeekClick(e) {
     const clickX = e.clientX - rect.left;
     const clickY = e.clientY - rect.top;
 
-    // Find the nearest character within 100px radius
+    // Find the nearest character within 150px radius
     let foundPlayer = null;
-    let minDistance = 100; // 100px search radius
+    let minDistance = 150; // 150px search radius
 
     hideAndSeekState.players.forEach(player => {
         if (player.found) return; // Skip already found characters
@@ -4650,24 +4650,35 @@ function showHideAndSeekVictory(winner) {
         el.classList.add('revealed');
     });
 
-    // Set up reveal all button
-    const revealBtn = document.getElementById('reveal-all-btn');
-    const newRevealBtn = revealBtn.cloneNode(true);
-    revealBtn.parentNode.replaceChild(newRevealBtn, revealBtn);
+    // Set up reveal all button with a small delay to ensure DOM is ready
+    setTimeout(() => {
+        const revealBtn = document.getElementById('reveal-all-btn');
+        console.log('Setting up reveal button:', revealBtn);
 
-    newRevealBtn.addEventListener('click', () => {
-        showRevealScreen();
-    });
+        if (revealBtn) {
+            const newRevealBtn = revealBtn.cloneNode(true);
+            revealBtn.parentNode.replaceChild(newRevealBtn, revealBtn);
+
+            newRevealBtn.addEventListener('click', () => {
+                console.log('Reveal all clicked!');
+                showRevealScreen();
+            });
+        }
+    }, 100);
 }
 
 function showRevealScreen() {
+    console.log('showRevealScreen called');
+
     // Hide victory screen
     document.getElementById('hideandseek-victory').classList.add('hidden');
     document.getElementById('seeking-panel').style.display = 'none';
 
     // Show reveal screen
     const revealScreen = document.getElementById('reveal-screen');
+    console.log('Reveal screen element:', revealScreen);
     revealScreen.classList.remove('hidden');
+    revealScreen.style.display = 'block';
 
     const bg = document.getElementById('reveal-background');
     bg.style.backgroundImage = `url('images/backgrounds/${hideAndSeekState.selectedBackground}')`;
