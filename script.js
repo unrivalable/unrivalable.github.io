@@ -4351,15 +4351,36 @@ function hideCharacter(e, player) {
 
     console.log(`${player.name} hidden at grid ${finalGridPos}`);
 
-    hideAndSeekState.currentPlayerIndex++;
+    // Show the character image at hiding location
+    const charImg = document.createElement('img');
+    const toonImage = player.character.image.replace(/\.(jpg|png)$/, '.png');
+    charImg.src = `images/heroes-toon/${toonImage}`;
+    charImg.className = 'hiding-preview';
+    charImg.style.position = 'absolute';
+    charImg.style.width = '60px';
+    charImg.style.height = 'auto';
 
-    if (hideAndSeekState.currentPlayerIndex < hideAndSeekState.players.length) {
-        // Next player hides
-        promptPlayerToHide();
-    } else {
-        // All human players hidden, add NPCs
-        addNPCCharacters();
-    }
+    // Position at grid location
+    const row = Math.floor(finalGridPos / hideAndSeekState.gridCols);
+    const col = finalGridPos % hideAndSeekState.gridCols;
+    charImg.style.left = `${(col / hideAndSeekState.gridCols) * 100}%`;
+    charImg.style.top = `${(row / hideAndSeekState.gridRows) * 100}%`;
+
+    bg.appendChild(charImg);
+
+    // Wait 1.5 seconds, then clear and proceed
+    setTimeout(() => {
+        bg.innerHTML = ''; // Clear the preview
+        hideAndSeekState.currentPlayerIndex++;
+
+        if (hideAndSeekState.currentPlayerIndex < hideAndSeekState.players.length) {
+            // Next player hides
+            promptPlayerToHide();
+        } else {
+            // All human players hidden, add NPCs
+            addNPCCharacters();
+        }
+    }, 1500);
 }
 
 
@@ -4627,5 +4648,66 @@ function showHideAndSeekVictory(winner) {
     // Reveal all remaining characters
     document.querySelectorAll('.hidden-character').forEach(el => {
         el.classList.add('revealed');
+    });
+
+    // Set up reveal all button
+    const revealBtn = document.getElementById('reveal-all-btn');
+    const newRevealBtn = revealBtn.cloneNode(true);
+    revealBtn.parentNode.replaceChild(newRevealBtn, revealBtn);
+
+    newRevealBtn.addEventListener('click', () => {
+        showRevealScreen();
+    });
+}
+
+function showRevealScreen() {
+    // Hide victory screen
+    document.getElementById('hideandseek-victory').classList.add('hidden');
+    document.getElementById('seeking-panel').style.display = 'none';
+
+    // Show reveal screen
+    const revealScreen = document.getElementById('reveal-screen');
+    revealScreen.classList.remove('hidden');
+
+    const bg = document.getElementById('reveal-background');
+    bg.style.backgroundImage = `url('images/backgrounds/${hideAndSeekState.selectedBackground}')`;
+    bg.innerHTML = ''; // Clear previous
+
+    // Show all characters with labels
+    hideAndSeekState.players.forEach((player, idx) => {
+        const charEl = document.createElement('img');
+        const toonImage = player.character.image.replace(/\.(jpg|png)$/, '.png');
+        charEl.src = `images/heroes-toon/${toonImage}`;
+        charEl.className = 'hidden-character revealed';
+        charEl.dataset.playerIndex = idx;
+
+        // Position based on grid
+        const row = Math.floor(player.gridPosition / hideAndSeekState.gridCols);
+        const col = player.gridPosition % hideAndSeekState.gridCols;
+
+        charEl.style.left = `${(col / hideAndSeekState.gridCols) * 100}%`;
+        charEl.style.top = `${(row / hideAndSeekState.gridRows) * 100}%`;
+
+        bg.appendChild(charEl);
+
+        // Add label with player name
+        if (player.isHuman) {
+            const label = document.createElement('div');
+            label.className = 'revealed-character-label';
+            label.textContent = player.name.toUpperCase();
+            label.style.left = `${(col / hideAndSeekState.gridCols) * 100}%`;
+            label.style.top = `${(row / hideAndSeekState.gridRows) * 100}%`;
+            bg.appendChild(label);
+        }
+    });
+
+    // Set up back button
+    const backBtn = document.getElementById('back-to-victory-btn');
+    const newBackBtn = backBtn.cloneNode(true);
+    backBtn.parentNode.replaceChild(newBackBtn, backBtn);
+
+    newBackBtn.addEventListener('click', () => {
+        revealScreen.classList.add('hidden');
+        document.getElementById('hideandseek-victory').classList.remove('hidden');
     });
 }

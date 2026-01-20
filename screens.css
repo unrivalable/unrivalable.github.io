@@ -1653,3 +1653,85 @@
     text-shadow: var(--text-stroke);
     margin: 30px 0;
 }
+
+.victory-buttons {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.reveal-button {
+    font-family: 'Bangers', cursive;
+    font-size: 2rem;
+    padding: 15px 40px;
+    background: linear-gradient(135deg, var(--comic-cyan), var(--comic-blue));
+    color: var(--comic-white);
+    border: 3px solid var(--comic-white);
+    border-radius: 5px;
+    cursor: pointer;
+    text-shadow: 2px 2px 0 #000;
+    box-shadow: var(--shadow-dark);
+    transition: all 0.3s ease;
+}
+
+.reveal-button:hover {
+    transform: scale(1.1) rotate(-2deg);
+    box-shadow: 0 0 20px rgba(0, 191, 255, 0.8);
+}
+
+.back-button {
+    font-family: 'Bangers', cursive;
+    font-size: 2rem;
+    padding: 15px 40px;
+    background: linear-gradient(135deg, var(--comic-red), var(--comic-purple));
+    color: var(--comic-white);
+    border: 3px solid var(--comic-white);
+    border-radius: 5px;
+    cursor: pointer;
+    text-shadow: 2px 2px 0 #000;
+    box-shadow: var(--shadow-dark);
+    transition: all 0.3s ease;
+}
+
+.back-button:hover {
+    transform: scale(1.1) rotate(2deg);
+    box-shadow: 0 0 20px rgba(255, 51, 102, 0.8);
+}
+
+.reveal-header {
+    background: rgba(0, 0, 0, 0.9);
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    border-bottom: 4px solid var(--comic-yellow);
+}
+
+.reveal-title {
+    font-family: 'Bangers', cursive;
+    font-size: 48px;
+    color: var(--comic-yellow);
+    text-shadow: var(--text-stroke);
+    letter-spacing: 2px;
+}
+
+.revealed-character-label {
+    position: absolute;
+    background: rgba(0, 0, 0, 0.8);
+    color: var(--comic-white);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 14px;
+    padding: 4px 8px;
+    border-radius: 3px;
+    border: 2px solid var(--comic-yellow);
+    pointer-events: none;
+    transform: translateY(-100%);
+    margin-top: -5px;
+    white-space: nowrap;
+}

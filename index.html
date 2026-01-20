@@ -509,7 +509,19 @@
         <div id="hideandseek-victory" class="victory-overlay hidden">
             <h1 class="victory-title" id="hideandseek-winner-title">WINNER!</h1>
             <div id="hideandseek-winner-name" class="winner-display"></div>
-            <button class="back-button" onclick="location.reload()">PLAY AGAIN</button>
+            <div class="victory-buttons">
+                <button id="reveal-all-btn" class="reveal-button">REVEAL ALL</button>
+                <button class="back-button" onclick="location.reload()">PLAY AGAIN</button>
+            </div>
+        </div>
+
+        <!-- Reveal All Screen -->
+        <div id="reveal-screen" class="screen hidden">
+            <div class="reveal-header">
+                <h1 class="reveal-title">ALL HIDING SPOTS</h1>
+                <button id="back-to-victory-btn" class="back-button">BACK</button>
+            </div>
+            <div id="reveal-background" class="game-background"></div>
         </div>
     </div>
     <script src="script.js"></script>
