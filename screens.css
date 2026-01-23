@@ -1912,6 +1912,7 @@
 .match-player img {
     width: 100px;
     height: auto;
+    max-height: 140px;
     object-fit: contain;
     border: 3px solid var(--comic-white);
     box-shadow: 3px 3px 0 var(--comic-black);
@@ -1965,6 +1966,7 @@
 .versus-side img {
     width: 250px;
     height: auto;
+    max-height: 350px;
     object-fit: contain;
     border: 5px solid var(--comic-white);
     box-shadow: 10px 10px 0 var(--comic-black);
@@ -2006,6 +2008,25 @@
 .vs-huge {
     font-family: 'Bangers', cursive;
     font-size: 8rem;
+    color: var(--comic-yellow);
+    text-shadow:
+        var(--text-stroke),
+        0 0 30px rgba(255, 215, 0, 0.8);
+    animation: vsPulse 1s infinite alternate;
+}
+
+@keyframes vsPulse {
+    from { transform: scale(1); }
+    to { transform: scale(1.1); }
+}
+
+.vs-small {
+    font-family: 'Bangers', cursive;
+    font-size: 2rem;
+    color: var(--comic-yellow);
+    text-shadow: var(--text-stroke);
+}
+
 /* Characters shown on reveal screen without animation */
 .reveal-character {
     position: absolute;
@@ -2392,6 +2413,7 @@
 #campaign-winner-img {
     width: 200px;
     height: auto;
+    max-height: 280px;
     object-fit: contain;
     border: 5px solid var(--comic-yellow);
     box-shadow: 0 0 30px rgba(255, 215, 0, 0.6);
@@ -2434,10 +2456,6 @@
     text-align: center;
     margin-bottom: 15px;
     text-shadow: var(--text-stroke);
-        -2px 2px 0 #000,
-        0 0 40px rgba(255, 215, 0, 1);
-    letter-spacing: 4px;
-    margin-bottom: 20px;
 }
 
 .bean-bonus-amount {
