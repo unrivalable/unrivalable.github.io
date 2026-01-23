@@ -528,6 +528,203 @@
             <div id="reveal-background" class="game-background"></div>
         </div>
     </div>
+
+    <!-- CAMPAIGN MODE SCREENS -->
+
+    <!-- Campaign Hub Screen -->
+    <div id="campaign-hub-screen" class="screen">
+        <div class="crt-container">
+            <div class="campaign-header">
+                <h1 class="screen-title">CAMPAIGN HQ</h1>
+                <div class="round-display"><span id="campaign-round-number">JANUARY</span></div>
+            </div>
+
+            <div class="campaign-content">
+                <div class="leaderboard-panel">
+                    <h2 class="panel-title">POLLING NUMBERS</h2>
+                    <div id="campaign-leaderboard" class="leaderboard-list">
+                        <!-- Leaderboard items injected here -->
+                    </div>
+                </div>
+
+                <div class="next-match-panel">
+                    <h2 class="panel-title">NEXT DEBATE</h2>
+                    <div class="match-preview">
+                        <div class="match-player you">
+                            <img id="hub-player-img" src="" alt="You">
+                            <div class="match-name">YOU</div>
+                        </div>
+                        <div class="vs-small">VS</div>
+                        <div class="match-player opponent">
+                            <img id="hub-opponent-img" src="" alt="Opponent">
+                            <div id="hub-opponent-name" class="match-name">OPPONENT</div>
+                        </div>
+                    </div>
+                    <button id="start-campaign-match-btn" class="select-mode-btn">START MATCH</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Campaign Matchup Screen -->
+    <div id="campaign-matchup-screen" class="screen">
+        <div class="crt-container">
+            <div class="versus-container">
+                <div class="versus-side player-side">
+                    <img id="matchup-player-img" src="" alt="Player">
+                    <div class="versus-name">YOU</div>
+                </div>
+
+                <div class="versus-center">
+                    <div class="vs-huge">VS</div>
+                </div>
+
+                <div class="versus-side opponent-side">
+                    <img id="matchup-opponent-img" src="" alt="Opponent">
+                    <div id="matchup-opponent-name" class="versus-name">OPPONENT</div>
+                    <div id="matchup-opponent-class" class="versus-class">CLASS</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Campaign Action Screen -->
+    <div id="campaign-action-screen" class="screen">
+        <div class="crt-container">
+            <div class="action-header">
+                <div class="action-opponent-info">
+                    <img id="action-opponent-thumb" src="" alt="Opponent">
+                    <span>VS <span id="action-opponent-name">OPPONENT</span></span>
+                </div>
+                <h2 class="screen-title">MAKE YOUR MOVES</h2>
+            </div>
+
+            <div class="action-area">
+                <!-- Offensive Moves -->
+                <div class="move-section offensive">
+                    <h3 class="section-title">OFFENSIVE MOVE</h3>
+                    <div class="move-options">
+                        <div class="move-card offensive" data-move="muckrake">
+                            <div class="move-icon">📝</div>
+                            <div class="move-name">MUCKRAKE</div>
+                            <div class="move-desc">Dig up dirt. Counters Research.</div>
+                        </div>
+                        <div class="move-card offensive" data-move="assassinate">
+                            <div class="move-icon">🔫</div>
+                            <div class="move-name">ASSASSINATE</div>
+                            <div class="move-desc">Direct attack. Counters Bodyguards.</div>
+                        </div>
+                        <div class="move-card offensive" data-move="attack_ad">
+                            <div class="move-icon">📺</div>
+                            <div class="move-name">ATTACK AD</div>
+                            <div class="move-desc">Slander on TV. Counters Ads.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Defensive Moves -->
+                <div class="move-section defensive">
+                    <h3 class="section-title">DEFENSIVE MOVE</h3>
+                    <div class="move-options">
+                        <div class="move-card defensive" data-move="research">
+                            <div class="move-icon">🔍</div>
+                            <div class="move-name">RESEARCH</div>
+                            <div class="move-desc">Check background. Blocks Muckrake.</div>
+                        </div>
+                        <div class="move-card defensive" data-move="bodyguards">
+                            <div class="move-icon">🕶️</div>
+                            <div class="move-name">BODYGUARDS</div>
+                            <div class="move-desc">Hire protection. Blocks Assassinate.</div>
+                        </div>
+                        <div class="move-card defensive" data-move="ads">
+                            <div class="move-icon">📢</div>
+                            <div class="move-name">INVEST IN ADS</div>
+                            <div class="move-desc">Buy airtime. Blocks Attack Ads.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-footer">
+                <div class="selection-summary">
+                    OFFENSE: <span id="selected-offense">NONE</span> | DEFENSE: <span id="selected-defense">NONE</span>
+                </div>
+                <button id="submit-campaign-moves-btn" class="select-mode-btn" disabled>CONFIRM MOVES</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Campaign Result Screen -->
+    <div id="campaign-result-screen" class="screen">
+        <div class="crt-container">
+            <h1 class="screen-title" id="round-result-title">ROUND COMPLETE</h1>
+
+            <div class="results-display">
+                <div class="result-card player-result">
+                    <h3>YOU CHOSE</h3>
+                    <div class="result-moves">
+                        <div class="move-result" id="result-player-offense">
+                            <span class="label">OFFENSE:</span> <span class="value">ATTACK AD</span>
+                        </div>
+                        <div class="move-result" id="result-player-defense">
+                            <span class="label">DEFENSE:</span> <span class="value">RESEARCH</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="result-vs">VS</div>
+
+                <div class="result-card opponent-result">
+                    <h3 id="result-opponent-name">OPPONENT</h3>
+                    <div class="result-moves">
+                        <div class="move-result" id="result-opponent-offense">
+                            <span class="label">OFFENSE:</span> <span class="value">MUCKRAKE</span>
+                        </div>
+                        <div class="move-result" id="result-opponent-defense">
+                            <span class="label">DEFENSE:</span> <span class="value">BODYGUARDS</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="outcome-box">
+                <div class="outcome-row" id="outcome-attack">
+                    <span class="outcome-label">YOUR ATTACK:</span>
+                    <span class="outcome-value success" id="player-attack-outcome">SUCCESS (+1 POINT)</span>
+                </div>
+                <div class="outcome-row" id="outcome-defense">
+                    <span class="outcome-label">THEIR ATTACK:</span>
+                    <span class="outcome-value fail" id="opponent-attack-outcome">BLOCKED (+0 POINTS)</span>
+                </div>
+            </div>
+
+            <button id="campaign-continue-btn" class="select-mode-btn">CONTINUE</button>
+        </div>
+    </div>
+
+    <!-- Campaign Victory Screen -->
+    <div id="campaign-victory-screen" class="screen">
+        <div class="crt-container">
+            <h1 class="screen-title">ELECTION RESULTS</h1>
+
+            <div class="final-winner-display">
+                <div class="winner-label">THE NEW PRESIDENT IS</div>
+                <img id="campaign-winner-img" src="" alt="Winner">
+                <div id="campaign-winner-name" class="winner-name">PLAYER NAME</div>
+                <div id="campaign-winner-score" class="winner-score">8 POINTS</div>
+            </div>
+
+            <div class="final-standings">
+                <h3>FINAL STANDINGS</h3>
+                <div id="final-leaderboard" class="leaderboard-list">
+                    <!-- Injected via JS -->
+                </div>
+            </div>
+
+            <button id="campaign-exit-btn" class="select-mode-btn">RETURN TO MENU</button>
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html>

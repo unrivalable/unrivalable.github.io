@@ -1774,6 +1774,238 @@
     display: none;
 }
 
+/* ===== CAMPAIGN MODE STYLES ===== */
+
+/* Campaign Hub Screen */
+#campaign-hub-screen .crt-container,
+#campaign-action-screen .crt-container,
+#campaign-result-screen .crt-container,
+#campaign-victory-screen .crt-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+}
+
+.campaign-header {
+    text-align: center;
+    margin-bottom: 20px;
+    border-bottom: 4px solid var(--comic-yellow);
+    padding-bottom: 10px;
+    background: rgba(0, 0, 0, 0.8);
+    width: 100%;
+}
+
+.round-display {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    color: var(--comic-cyan);
+    letter-spacing: 2px;
+}
+
+.campaign-content {
+    display: flex;
+    width: 100%;
+    max-width: 1000px;
+    gap: 40px;
+    flex: 1;
+    overflow: hidden;
+    margin: 0 auto;
+    justify-content: center;
+    align-items: stretch;
+}
+
+.leaderboard-panel {
+    flex: 1;
+    background: rgba(10, 22, 40, 0.9);
+    border: 3px solid var(--comic-blue);
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    box-shadow: 5px 5px 0 var(--comic-black);
+}
+
+.leaderboard-list {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.leaderboard-item {
+    display: flex;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 8px;
+    border-left: 4px solid var(--comic-white);
+    transition: all 0.2s ease;
+}
+
+.leaderboard-item.player {
+    border-left-color: var(--comic-green);
+    background: rgba(0, 255, 136, 0.1);
+}
+
+.leaderboard-item.leader {
+    border-left-color: var(--comic-yellow);
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+}
+
+.rank-badge {
+    font-family: 'Bangers', cursive;
+    font-size: 1.5rem;
+    color: var(--comic-white);
+    width: 30px;
+    text-align: center;
+    margin-right: 10px;
+}
+
+.lb-thumb {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border: 1px solid var(--comic-white);
+    margin-right: 10px;
+}
+
+.lb-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.2rem;
+    color: var(--comic-white);
+    flex: 1;
+}
+
+.lb-score {
+    font-family: 'Bangers', cursive;
+    font-size: 1.5rem;
+    color: var(--comic-cyan);
+}
+
+.next-match-panel {
+    flex: 1;
+    background: rgba(10, 22, 40, 0.9);
+    border: 3px solid var(--comic-red);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    box-shadow: 5px 5px 0 var(--comic-black);
+}
+
+.match-preview {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    width: 100%;
+    margin: 20px 0;
+}
+
+.match-player {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.match-player img {
+    width: 100px;
+    height: auto;
+    object-fit: contain;
+    border: 3px solid var(--comic-white);
+    box-shadow: 3px 3px 0 var(--comic-black);
+}
+
+.match-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.2rem;
+    color: var(--comic-white);
+    text-align: center;
+}
+
+.vs-small {
+    font-family: 'Bangers', cursive;
+    font-size: 2rem;
+    color: var(--comic-yellow);
+    text-shadow: var(--text-stroke);
+}
+
+/* Campaign Matchup Screen */
+.versus-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 1000px;
+    height: 80%;
+}
+
+.versus-side {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 40%;
+    animation: slideInSides 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.versus-side.player-side {
+    transform-origin: left;
+}
+
+.versus-side.opponent-side {
+    transform-origin: right;
+}
+
+@keyframes slideInSides {
+    from { opacity: 0; transform: scale(0.8); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.versus-side img {
+    width: 250px;
+    height: auto;
+    object-fit: contain;
+    border: 5px solid var(--comic-white);
+    box-shadow: 10px 10px 0 var(--comic-black);
+    margin-bottom: 20px;
+}
+
+.versus-name {
+    font-family: 'Bangers', cursive;
+    font-size: 3rem;
+    color: var(--comic-white);
+    text-shadow: var(--text-stroke);
+    text-align: center;
+    background: var(--comic-blue);
+    padding: 5px 20px;
+    transform: rotate(-2deg);
+    box-shadow: 5px 5px 0 var(--comic-black);
+}
+
+.opponent-side .versus-name {
+    background: var(--comic-red);
+    transform: rotate(2deg);
+}
+
+.versus-class {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem;
+    color: var(--comic-yellow);
+    margin-top: 10px;
+    text-shadow: 2px 2px 0 var(--comic-black);
+}
+
+.versus-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 20%;
+}
+
+.vs-huge {
+    font-family: 'Bangers', cursive;
+    font-size: 8rem;
 /* Characters shown on reveal screen without animation */
 .reveal-character {
     position: absolute;
@@ -1881,6 +2113,327 @@
         5px 5px 0 #000,
         -2px -2px 0 #000,
         2px -2px 0 #000,
+        -2px 2px 0 #000;
+    animation: vsPulse 1s infinite alternate;
+}
+
+@keyframes vsPulse {
+    from { transform: scale(1); }
+    to { transform: scale(1.1); }
+}
+
+/* Campaign Action Screen */
+.action-header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 4px solid var(--comic-cyan);
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    background: rgba(0, 0, 0, 0.8);
+    padding: 15px;
+}
+
+.action-opponent-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    font-family: 'Bangers', cursive;
+    font-size: 1.5rem;
+    color: var(--comic-red);
+    text-shadow: var(--text-stroke);
+}
+
+.action-opponent-info img {
+    width: 60px;
+    height: 60px;
+    border: 2px solid var(--comic-white);
+    object-fit: cover;
+}
+
+.action-area {
+    display: flex;
+    width: 100%;
+    max-width: 1100px;
+    gap: 30px;
+    flex: 1;
+}
+
+.move-section {
+    flex: 1;
+    background: rgba(10, 22, 40, 0.8);
+    border: 3px solid var(--comic-white);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.move-section.offensive {
+    border-color: var(--comic-red);
+}
+
+.move-section.defensive {
+    border-color: var(--comic-blue);
+}
+
+.section-title {
+    font-family: 'Bangers', cursive;
+    font-size: 2rem;
+    color: var(--comic-white);
+    text-align: center;
+    text-shadow: var(--text-stroke);
+}
+
+.move-options {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.move-card {
+    background: rgba(0, 0, 0, 0.6);
+    border: 2px solid var(--comic-white);
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.move-card:hover {
+    transform: scale(1.02);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.move-card.selected {
+    background: var(--comic-yellow);
+    border-color: var(--comic-black);
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+}
+
+.move-card.selected .move-name,
+.move-card.selected .move-desc {
+    color: var(--comic-black);
+    text-shadow: none;
+}
+
+.move-icon {
+    font-size: 2.5rem;
+}
+
+.move-name {
+    font-family: 'Bangers', cursive;
+    font-size: 1.5rem;
+    color: var(--comic-white);
+    text-shadow: var(--text-stroke);
+    flex: 1;
+}
+
+.move-desc {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1rem;
+    color: var(--comic-cyan);
+}
+
+.action-footer {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    border-top: 4px solid var(--comic-white);
+}
+
+.selection-summary {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.2rem;
+    color: var(--comic-white);
+}
+
+.selection-summary span {
+    color: var(--comic-yellow);
+}
+
+/* Campaign Result Screen */
+.results-display {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+    width: 100%;
+    margin: 30px 0;
+}
+
+.result-card {
+    background: rgba(10, 22, 40, 0.9);
+    border: 3px solid var(--comic-white);
+    padding: 20px;
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 5px 5px 0 var(--comic-black);
+}
+
+.result-card h3 {
+    font-family: 'Bangers', cursive;
+    font-size: 1.8rem;
+    color: var(--comic-yellow);
+    text-shadow: var(--text-stroke);
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.result-moves {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.move-result {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--comic-cyan);
+}
+
+.move-result .label {
+    font-family: 'Bebas Neue', sans-serif;
+    color: var(--comic-cyan);
+}
+
+.move-result .value {
+    font-family: 'Bangers', cursive;
+    color: var(--comic-white);
+    letter-spacing: 1px;
+}
+
+.result-vs {
+    font-family: 'Bangers', cursive;
+    font-size: 3rem;
+    color: var(--comic-white);
+    text-shadow: var(--text-stroke);
+}
+
+.outcome-box {
+    background: rgba(0, 0, 0, 0.8);
+    border: 4px solid var(--comic-yellow);
+    padding: 20px;
+    width: 100%;
+    max-width: 600px;
+    margin-bottom: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.outcome-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.3);
+    padding-bottom: 10px;
+}
+
+.outcome-row:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.outcome-label {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem;
+    color: var(--comic-white);
+}
+
+.outcome-value {
+    font-family: 'Bangers', cursive;
+    font-size: 1.8rem;
+    text-shadow: var(--text-stroke);
+}
+
+.outcome-value.success {
+    color: var(--comic-green);
+}
+
+.outcome-value.fail {
+    color: var(--comic-red);
+}
+
+/* Campaign Victory Screen */
+.final-winner-display {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px 0;
+    animation: winnerPop 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes winnerPop {
+    from { transform: scale(0); }
+    to { transform: scale(1); }
+}
+
+.winner-label {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem;
+    color: var(--comic-cyan);
+    margin-bottom: 10px;
+}
+
+#campaign-winner-img {
+    width: 200px;
+    height: auto;
+    object-fit: contain;
+    border: 5px solid var(--comic-yellow);
+    box-shadow: 0 0 30px rgba(255, 215, 0, 0.6);
+    margin-bottom: 15px;
+}
+
+.winner-name {
+    font-family: 'Bangers', cursive;
+    font-size: 3rem;
+    color: var(--comic-yellow);
+    text-shadow: var(--text-stroke);
+    margin-bottom: 5px;
+}
+
+.winner-score {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    color: var(--comic-white);
+    background: var(--comic-blue);
+    padding: 5px 20px;
+    border-radius: 5px;
+}
+
+.final-standings {
+    background: rgba(10, 22, 40, 0.9);
+    border: 3px solid var(--comic-white);
+    padding: 20px;
+    width: 100%;
+    max-width: 600px;
+    max-height: 300px;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 30px;
+}
+
+.final-standings h3 {
+    font-family: 'Bangers', cursive;
+    font-size: 1.8rem;
+    color: var(--comic-cyan);
+    text-align: center;
+    margin-bottom: 15px;
+    text-shadow: var(--text-stroke);
         -2px 2px 0 #000,
         0 0 40px rgba(255, 215, 0, 1);
     letter-spacing: 4px;
