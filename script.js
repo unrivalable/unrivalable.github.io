@@ -2109,6 +2109,8 @@ async function startGame() {
 
     // Special case: Hide and Seek skips loading screen
     if (selectedGameMode === 'hideandseek') {
+        // Ensure opening screen is not active if we started from there
+        document.getElementById('opening-screen').classList.remove('active');
         transitionToScreen('home-screen', 'hideandseek-setup-screen');
         startHideAndSeekSetup();
         return;
@@ -4482,24 +4484,6 @@ function startSeekingPhase() {
     bg.replaceWith(bg.cloneNode(true));
     const newBg = document.getElementById('seeking-background');
 
-    // Re-add all character elements
-    hideAndSeekState.players.forEach((player, idx) => {
-        const charEl = document.createElement('img');
-        // Convert image extension to .png for toon images
-        const toonImage = player.character.image.replace(/\.(jpg|png)$/, '.png');
-        charEl.src = `images/heroes-toon/${toonImage}`;
-        charEl.className = 'hidden-character';
-        charEl.dataset.playerIndex = idx;
-
-        const row = Math.floor(player.gridPosition / hideAndSeekState.gridCols);
-        const col = player.gridPosition % hideAndSeekState.gridCols;
-
-        charEl.style.left = `${(col / hideAndSeekState.gridCols) * 100}%`;
-        charEl.style.top = `${(row / hideAndSeekState.gridRows) * 100}%`;
-
-        newBg.appendChild(charEl);
-    });
-
     newBg.addEventListener('click', handleSeekClick);
 }
 
@@ -4798,6 +4782,7 @@ function showRevealScreen() {
     revealScreen.style.display = 'block';
 
     const bg = document.getElementById('reveal-background');
+    bg.style.backgroundColor = '#000'; // Fallback background
     bg.style.backgroundImage = `url('images/backgrounds/${hideAndSeekState.selectedBackground}')`;
     bg.innerHTML = ''; // Clear previous
 
