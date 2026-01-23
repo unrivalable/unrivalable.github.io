@@ -2073,7 +2073,7 @@ const gameModeTeams = {
     'turfwar': { allied: 6, enemy: 6 },
     'squirt': { allied: 4, enemy: 4 },
     'hoedown': { allied: 1, enemy: 1 },
-    'campaign': { allied: 5, enemy: 0 }, // Free for all
+    'campaign': { allied: 6, enemy: 0 }, // Free for all (1 Human + 5 AI)
     'story': { allied: 4, enemy: 0 } // Co-op
 };
 
@@ -2249,7 +2249,7 @@ async function startGame() {
             if (playersAdded >= totalPlayers) {
                 // For FFA: player team is just the player, everyone else is enemy
                 window.currentPlayerTeam = [playerHeroObj.name];
-                window.currentEnemyTeam = ffaHeroes.filter(name => name !== playerHeroObj.name);
+                window.currentEnemyTeam = ffaHeroes;
 
                 setTimeout(() => {
                     startCountdown();
@@ -2380,6 +2380,10 @@ async function startGame() {
                     } else if (selectedGameMode === 'hoedown') {
                         transitionToScreen('loading-screen', 'gameplay-screen');
                         setTimeout(() => startDuoShowdown(), 500);
+                    } else if (selectedGameMode === 'campaign') {
+                        // Start Campaign
+                        transitionToScreen('loading-screen', 'campaign-hub-screen');
+                        setTimeout(() => startCampaign(), 500);
                     } else {
                         await showGameOver();
                     }
@@ -4721,4 +4725,356 @@ function showRevealScreen() {
         revealScreen.classList.add('hidden');
         document.getElementById('hideandseek-victory').classList.remove('hidden');
     });
+}
+
+// ===== CAMPAIGN MODE LOGIC =====
+
+let campaignState = {
+    candidates: [], // List of {name, hero, score, personality, id}
+    round: 1,
+    maxRounds: 8,
+    currentMatchup: null, // {opponent}
+    playerMoves: { offensive: null, defensive: null },
+    history: []
+};
+
+// AI Personality Logic
+const AI_PERSONALITIES = {
+    'Supporter': { research: 0.6, bodyguards: 0.2, ads: 0.2, muckrake: 0.3, assassinate: 0.3, attack_ad: 0.4 },
+    'Defender': { research: 0.2, bodyguards: 0.6, ads: 0.2, muckrake: 0.3, assassinate: 0.3, attack_ad: 0.4 },
+    'Controller': { research: 0.5, bodyguards: 0.1, ads: 0.4, muckrake: 0.2, assassinate: 0.2, attack_ad: 0.6 },
+    'Saboteur': { research: 0.3, bodyguards: 0.3, ads: 0.4, muckrake: 0.2, assassinate: 0.6, attack_ad: 0.2 },
+    'Destroyer': { research: 0.2, bodyguards: 0.2, ads: 0.6, muckrake: 0.2, assassinate: 0.3, attack_ad: 0.5 },
+    'Balanced': { research: 0.33, bodyguards: 0.33, ads: 0.34, muckrake: 0.33, assassinate: 0.33, attack_ad: 0.34 }
+};
+
+function startCampaign() {
+    console.log("Starting Campaign Mode...");
+
+    // Initialize Candidates
+    campaignState.candidates = [];
+    campaignState.round = 1;
+    campaignState.history = [];
+
+    // Add Player
+    campaignState.candidates.push({
+        id: 'player',
+        name: 'You',
+        hero: selectedHero,
+        score: 0,
+        isHuman: true,
+        heroData: findHeroByName(selectedHero.name)
+    });
+
+    // Add 5 AI Opponents (from loading screen teams)
+    // The loading screen logic puts everyone in window.currentEnemyTeam for FFA
+    window.currentEnemyTeam.forEach((heroName, index) => {
+        const heroData = findHeroByName(heroName);
+        const personality = heroData.class; // Use class as personality base
+
+        campaignState.candidates.push({
+            id: `cpu_${index}`,
+            name: heroName,
+            hero: { name: heroName, class: heroData.class },
+            score: 0,
+            isHuman: false,
+            personality: personality,
+            heroData: heroData
+        });
+    });
+
+    // Randomize initial scores slightly to make leaderboard interesting? No, start at 0.
+
+    updateCampaignHub();
+    setupCampaignListeners();
+}
+
+function setupCampaignListeners() {
+    // Start Match Button
+    const startMatchBtn = document.getElementById('start-campaign-match-btn');
+    // Remove old listeners
+    const newStartBtn = startMatchBtn.cloneNode(true);
+    startMatchBtn.parentNode.replaceChild(newStartBtn, startMatchBtn);
+
+    newStartBtn.addEventListener('click', () => {
+        transitionToScreen('campaign-hub-screen', 'campaign-matchup-screen');
+        setTimeout(() => {
+            transitionToScreen('campaign-matchup-screen', 'campaign-action-screen');
+        }, 2500);
+    });
+
+    // Move Selection
+    document.querySelectorAll('.move-card').forEach(card => {
+        card.addEventListener('click', () => {
+            const type = card.classList.contains('offensive') ? 'offensive' : 'defensive';
+            const move = card.getAttribute('data-move');
+
+            // Deselect others in same category
+            document.querySelectorAll(`.move-card.${type}`).forEach(c => c.classList.remove('selected'));
+
+            // Select this one
+            card.classList.add('selected');
+            campaignState.playerMoves[type] = move;
+
+            updateMoveSummary();
+        });
+    });
+
+    // Submit Moves
+    const submitBtn = document.getElementById('submit-campaign-moves-btn');
+    const newSubmitBtn = submitBtn.cloneNode(true);
+    submitBtn.parentNode.replaceChild(newSubmitBtn, submitBtn);
+
+    newSubmitBtn.addEventListener('click', () => {
+        resolveCampaignRound();
+    });
+
+    // Continue from Result
+    const continueBtn = document.getElementById('campaign-continue-btn');
+    const newContinueBtn = continueBtn.cloneNode(true);
+    continueBtn.parentNode.replaceChild(newContinueBtn, continueBtn);
+
+    newContinueBtn.addEventListener('click', () => {
+        if (campaignState.round >= campaignState.maxRounds) {
+            endCampaign();
+        } else {
+            campaignState.round++;
+            prepareNextRound();
+            transitionToScreen('campaign-result-screen', 'campaign-hub-screen');
+        }
+    });
+
+    // Exit Button
+    const exitBtn = document.getElementById('campaign-exit-btn');
+    const newExitBtn = exitBtn.cloneNode(true);
+    exitBtn.parentNode.replaceChild(newExitBtn, exitBtn);
+
+    newExitBtn.addEventListener('click', () => {
+        location.reload(); // Simple reload to go back to main menu cleanly
+    });
+}
+
+function updateMoveSummary() {
+    const off = campaignState.playerMoves.offensive;
+    const def = campaignState.playerMoves.defensive;
+
+    document.getElementById('selected-offense').textContent = off ? formatMoveName(off) : 'NONE';
+    document.getElementById('selected-defense').textContent = def ? formatMoveName(def) : 'NONE';
+
+    const submitBtn = document.getElementById('submit-campaign-moves-btn');
+    if (off && def) {
+        submitBtn.removeAttribute('disabled');
+        submitBtn.style.opacity = '1';
+        submitBtn.style.cursor = 'pointer';
+    } else {
+        submitBtn.setAttribute('disabled', 'true');
+        submitBtn.style.opacity = '0.5';
+        submitBtn.style.cursor = 'not-allowed';
+    }
+}
+
+function formatMoveName(move) {
+    switch(move) {
+        case 'muckrake': return 'MUCKRAKE';
+        case 'assassinate': return 'ASSASSINATE';
+        case 'attack_ad': return 'ATTACK AD';
+        case 'research': return 'RESEARCH';
+        case 'bodyguards': return 'BODYGUARDS';
+        case 'ads': return 'INVEST IN ADS';
+        default: return move;
+    }
+}
+
+function updateCampaignHub() {
+    // Update Round Display
+    document.getElementById('campaign-round-number').textContent = campaignState.round;
+
+    // Sort Leaderboard
+    campaignState.candidates.sort((a, b) => b.score - a.score);
+
+    // Render Leaderboard
+    const lbContainer = document.getElementById('campaign-leaderboard');
+    lbContainer.innerHTML = '';
+
+    campaignState.candidates.forEach((cand, index) => {
+        const item = document.createElement('div');
+        item.className = `leaderboard-item ${cand.isHuman ? 'player' : ''} ${index === 0 ? 'leader' : ''}`;
+
+        item.innerHTML = `
+            <div class="rank-badge">#${index + 1}</div>
+            <img src="images/heroes-thumbnails/${cand.heroData.image}" class="lb-thumb">
+            <div class="lb-name">${cand.name}</div>
+            <div class="lb-score">${cand.score} PTS</div>
+        `;
+
+        lbContainer.appendChild(item);
+    });
+
+    // Determine Matchup (Random opponent from AIs)
+    // In a real tournament we might want specific pairings, but random is fine for "Campaign"
+    // Just make sure we don't fight ourselves.
+    const potentialOpponents = campaignState.candidates.filter(c => !c.isHuman);
+    const opponent = potentialOpponents[Math.floor(Math.random() * potentialOpponents.length)];
+    campaignState.currentMatchup = opponent;
+
+    // Update Next Match Panel
+    const playerHero = campaignState.candidates.find(c => c.isHuman).heroData;
+    document.getElementById('hub-player-img').src = `images/heroes/${playerHero.image}`;
+
+    document.getElementById('hub-opponent-img').src = `images/heroes/${opponent.heroData.image}`;
+    document.getElementById('hub-opponent-name').textContent = opponent.name.toUpperCase();
+
+    // Update Matchup Screen content too
+    document.getElementById('matchup-player-img').src = `images/heroes/${playerHero.image}`;
+    document.getElementById('matchup-opponent-img').src = `images/heroes/${opponent.heroData.image}`;
+    document.getElementById('matchup-opponent-name').textContent = opponent.name.toUpperCase();
+    document.getElementById('matchup-opponent-class').textContent = opponent.hero.class.toUpperCase();
+
+    // Update Action Screen content
+    document.getElementById('action-opponent-thumb').src = `images/heroes-thumbnails/${opponent.heroData.image}`;
+    document.getElementById('action-opponent-name').textContent = opponent.name.toUpperCase();
+
+    // Reset Moves
+    campaignState.playerMoves = { offensive: null, defensive: null };
+    document.querySelectorAll('.move-card').forEach(c => c.classList.remove('selected'));
+    updateMoveSummary();
+}
+
+function prepareNextRound() {
+    updateCampaignHub();
+}
+
+function getAIMoves(personalityType) {
+    const weights = AI_PERSONALITIES[personalityType] || AI_PERSONALITIES['Balanced'];
+
+    // Pick Offensive
+    const offRoll = Math.random();
+    let offMove = 'attack_ad'; // default
+    if (offRoll < weights.muckrake) offMove = 'muckrake';
+    else if (offRoll < weights.muckrake + weights.assassinate) offMove = 'assassinate';
+
+    // Pick Defensive
+    const defRoll = Math.random();
+    let defMove = 'ads';
+    if (defRoll < weights.research) defMove = 'research';
+    else if (defRoll < weights.research + weights.bodyguards) defMove = 'bodyguards';
+
+    return { offensive: offMove, defensive: defMove };
+}
+
+function resolveCampaignRound() {
+    const player = campaignState.candidates.find(c => c.isHuman);
+    const opponent = campaignState.currentMatchup;
+
+    const playerMoves = campaignState.playerMoves;
+    const opponentMoves = getAIMoves(opponent.personality);
+
+    // Calculate Results
+    // Rules:
+    // Attack Ad -> Countered by Ads
+    // Assassinate -> Countered by Bodyguards
+    // Muckrake -> Countered by Research
+
+    const counters = {
+        'attack_ad': 'ads',
+        'assassinate': 'bodyguards',
+        'muckrake': 'research'
+    };
+
+    // Check Player Attack
+    let playerPoints = 0;
+    let playerAttackBlocked = false;
+    if (counters[playerMoves.offensive] === opponentMoves.defensive) {
+        playerAttackBlocked = true;
+    } else {
+        playerPoints = 1;
+    }
+
+    // Check Opponent Attack
+    let opponentPoints = 0;
+    let opponentAttackBlocked = false;
+    if (counters[opponentMoves.offensive] === playerMoves.defensive) {
+        opponentAttackBlocked = true;
+    } else {
+        opponentPoints = 1;
+    }
+
+    // Update Scores
+    player.score += playerPoints;
+    opponent.score += opponentPoints;
+
+    // Simulate other AI matches (Randomly assign points)
+    campaignState.candidates.forEach(cand => {
+        if (cand.id !== player.id && cand.id !== opponent.id) {
+            // 50% chance to gain a point in their theoretical match
+            if (Math.random() > 0.5) {
+                cand.score += 1;
+            }
+        }
+    });
+
+    // Show Results
+    showRoundResults(playerMoves, opponentMoves, playerPoints, opponentPoints, opponent);
+}
+
+function showRoundResults(pMoves, oMoves, pPts, oPts, opponent) {
+    // Update Result UI
+    document.getElementById('result-player-offense').querySelector('.value').textContent = formatMoveName(pMoves.offensive);
+    document.getElementById('result-player-defense').querySelector('.value').textContent = formatMoveName(pMoves.defensive);
+
+    document.getElementById('result-opponent-name').textContent = opponent.name.toUpperCase();
+    document.getElementById('result-opponent-offense').querySelector('.value').textContent = formatMoveName(oMoves.offensive);
+    document.getElementById('result-opponent-defense').querySelector('.value').textContent = formatMoveName(oMoves.defensive);
+
+    const pOutcome = document.getElementById('player-attack-outcome');
+    if (pPts > 0) {
+        pOutcome.textContent = "SUCCESS (+1 POINT)";
+        pOutcome.className = "outcome-value success";
+    } else {
+        pOutcome.textContent = "BLOCKED (+0 POINTS)";
+        pOutcome.className = "outcome-value fail";
+    }
+
+    const oOutcome = document.getElementById('opponent-attack-outcome');
+    if (oPts > 0) {
+        oOutcome.textContent = "HIT (+0 POINTS)"; // Technically opponent gains point, but from player perspective it's a hit taken
+        oOutcome.textContent = "FAILED TO BLOCK";
+        oOutcome.className = "outcome-value fail";
+    } else {
+        oOutcome.textContent = "BLOCKED";
+        oOutcome.className = "outcome-value success";
+    }
+
+    transitionToScreen('campaign-action-screen', 'campaign-result-screen');
+}
+
+function endCampaign() {
+    // Sort Final Standings
+    campaignState.candidates.sort((a, b) => b.score - a.score);
+    const winner = campaignState.candidates[0];
+
+    // Update Victory Screen
+    document.getElementById('campaign-winner-img').src = `images/heroes/${winner.heroData.image}`;
+    document.getElementById('campaign-winner-name').textContent = winner.name.toUpperCase();
+    document.getElementById('campaign-winner-score').textContent = `${winner.score} POINTS`;
+
+    // Final Leaderboard
+    const lbContainer = document.getElementById('final-leaderboard');
+    lbContainer.innerHTML = '';
+
+    campaignState.candidates.forEach((cand, index) => {
+        const item = document.createElement('div');
+        item.className = `leaderboard-item ${cand.isHuman ? 'player' : ''} ${index === 0 ? 'leader' : ''}`;
+
+        item.innerHTML = `
+            <div class="rank-badge">#${index + 1}</div>
+            <img src="images/heroes-thumbnails/${cand.heroData.image}" class="lb-thumb">
+            <div class="lb-name">${cand.name}</div>
+            <div class="lb-score">${cand.score} PTS</div>
+        `;
+
+        lbContainer.appendChild(item);
+    });
+
+    transitionToScreen('campaign-result-screen', 'campaign-victory-screen');
 }
