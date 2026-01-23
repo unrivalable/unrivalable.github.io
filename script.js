@@ -4110,7 +4110,7 @@ function showDuoShowdownVictoryScreen() {
 
 let hideAndSeekState = {
     playerCount: 0,
-    players: [], // {name, character, gridPosition, isHuman, found, eliminated}
+    players: [], // {name, character, gridPosition, isHuman, found, eliminated, beans}
     currentPlayerIndex: 0,
     backgrounds: ['atlantis.png', 'chexico.png', 'costco.png'],
     selectedBackground: '',
@@ -4118,7 +4118,10 @@ let hideAndSeekState = {
     gridRows: 8,
     gridOccupied: [], // Array of occupied grid positions
     phase: 'setup', // 'setup', 'hiding', 'seeking', 'victory'
-    humanPlayersFound: 0
+    humanPlayersFound: 0,
+    beansPerTurn: 3,
+    beansPerClick: 1,
+    beansOnFind: 1
 };
 
 // Start Hide and Seek Setup
@@ -4135,7 +4138,10 @@ function startHideAndSeekSetup() {
         gridRows: 8,
         gridOccupied: [],
         phase: 'setup',
-        humanPlayersFound: 0
+        humanPlayersFound: 0,
+        beansPerTurn: 3,
+        beansPerClick: 1,
+        beansOnFind: 1
     };
 
     // Show player count panel
@@ -4194,7 +4200,8 @@ function submitPlayerName() {
         gridPosition: null,
         isHuman: true,
         found: false,
-        eliminated: false
+        eliminated: false,
+        beans: 0
     });
 
     console.log(`Added player: ${name}`);
@@ -4503,13 +4510,84 @@ function updateSeekingDisplay() {
     document.getElementById('found-count').textContent = totalFound;
     document.getElementById('total-humans').textContent = totalCharacters;
 
+    // Give beans at start of turn
+    humanPlayer.beans += hideAndSeekState.beansPerTurn;
+
+    // Update beans display
+    updateBeansDisplay(humanPlayer.beans);
+
     // Show turn announcement
     showTurnAnnouncement(humanPlayer.name);
+}
+
+function updateBeansDisplay(beanCount) {
+    let beansDisplay = document.getElementById('beans-display');
+    if (!beansDisplay) {
+        // Create beans display if it doesn't exist
+        beansDisplay = document.createElement('div');
+        beansDisplay.id = 'beans-display';
+        beansDisplay.className = 'beans-display';
+        beansDisplay.innerHTML = `
+            <span class="beans-icon">🫘</span>
+            <span class="beans-count" id="beans-count">0</span>
+            <span class="beans-label">BEANS</span>
+        `;
+        document.getElementById('seeking-panel').appendChild(beansDisplay);
+    }
+    document.getElementById('beans-count').textContent = beanCount;
+}
+
+function showBeanBonusAnnouncement(callback) {
+    // Create the overlay if it doesn't exist
+    let overlay = document.getElementById('bean-bonus-overlay');
+    if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.id = 'bean-bonus-overlay';
+        overlay.className = 'bean-bonus-overlay hidden';
+        overlay.innerHTML = `
+            <div class="bean-bonus-content">
+                <div class="bean-bonus-icon">🫘</div>
+                <div class="bean-bonus-title">BONUS BEANS!</div>
+                <div class="bean-bonus-amount">+${hideAndSeekState.beansOnFind}</div>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+    }
+
+    overlay.classList.remove('hidden');
+
+    // Auto-dismiss after 1.5 seconds
+    setTimeout(() => {
+        overlay.classList.add('hidden');
+        if (callback) callback();
+    }, 1500);
+}
+
+function showNoBeans() {
+    const warning = document.createElement('div');
+    warning.className = 'no-beans-warning';
+    warning.textContent = 'NOT ENOUGH BEANS!';
+    document.body.appendChild(warning);
+
+    // Also shake the beans display
+    const beansDisplay = document.getElementById('beans-display');
+    if (beansDisplay) {
+        beansDisplay.classList.add('not-enough');
+        setTimeout(() => beansDisplay.classList.remove('not-enough'), 500);
+    }
+
+    setTimeout(() => warning.remove(), 1000);
 }
 
 function showTurnAnnouncement(playerName) {
     const announcement = document.getElementById('turn-announcement');
     document.getElementById('announcement-player-name').textContent = playerName.toUpperCase();
+
+    // Show the current player's beans in the announcement
+    const humanPlayers = hideAndSeekState.players.filter(p => p.isHuman && !p.eliminated);
+    const currentPlayer = humanPlayers[hideAndSeekState.currentPlayerIndex % humanPlayers.length];
+    document.getElementById('announcement-beans-count').textContent = currentPlayer.beans;
+
     announcement.classList.remove('hidden');
 
     // Set up start turn button
@@ -4529,12 +4607,29 @@ function handleSeekClick(e) {
     const clickX = e.clientX - rect.left;
     const clickY = e.clientY - rect.top;
 
+    // Get current player
+    const humanPlayers = hideAndSeekState.players.filter(p => p.isHuman && !p.eliminated);
+    const currentSeeker = humanPlayers[hideAndSeekState.currentPlayerIndex % humanPlayers.length];
+
+    // Check if player has enough beans
+    if (currentSeeker.beans < hideAndSeekState.beansPerClick) {
+        showNoBeans();
+        return;
+    }
+
+    // Deduct beans for the click
+    currentSeeker.beans -= hideAndSeekState.beansPerClick;
+    updateBeansDisplay(currentSeeker.beans);
+
     // Find the nearest character within 150px radius
     let foundPlayer = null;
     let minDistance = 150; // 150px search radius
 
     hideAndSeekState.players.forEach(player => {
         if (player.found) return; // Skip already found characters
+
+        // Prevent finding yourself
+        if (player === currentSeeker) return;
 
         // Calculate character's pixel position from grid position
         const row = Math.floor(player.gridPosition / hideAndSeekState.gridCols);
@@ -4554,6 +4649,14 @@ function handleSeekClick(e) {
 
     if (foundPlayer) {
         foundPlayer.found = true;
+
+        // Award bonus beans for finding someone
+        currentSeeker.beans += hideAndSeekState.beansOnFind;
+        updateBeansDisplay(currentSeeker.beans);
+
+        // Update found count immediately
+        const totalFound = hideAndSeekState.players.filter(p => p.found).length;
+        document.getElementById('found-count').textContent = totalFound;
 
         // Reveal the character
         const charEl = document.querySelector(`.hidden-character[data-player-index="${hideAndSeekState.players.indexOf(foundPlayer)}"]`);
@@ -4576,26 +4679,40 @@ function handleSeekClick(e) {
                 // Game over - find the winner (last human not eliminated)
                 const winner = hideAndSeekState.players.find(p => p.isHuman && !p.eliminated);
 
-                // Show elimination first, then victory
+                // Show bean bonus, then elimination, then victory
                 setTimeout(() => {
-                    showEliminationAnnouncement(foundPlayer.name, () => {
-                        showHideAndSeekVictory(winner);
+                    showBeanBonusAnnouncement(() => {
+                        showEliminationAnnouncement(foundPlayer.name, () => {
+                            showHideAndSeekVictory(winner);
+                        });
                     });
-                }, 1500);
+                }, 2000);
                 return;
             }
 
-            // Show elimination announcement
+            // Show bean bonus then elimination announcement, then check if turn continues
             setTimeout(() => {
-                showEliminationAnnouncement(foundPlayer.name, () => {
-                    advanceToNextPlayer();
+                showBeanBonusAnnouncement(() => {
+                    showEliminationAnnouncement(foundPlayer.name, () => {
+                        // Check if player still has beans to continue
+                        if (currentSeeker.beans < hideAndSeekState.beansPerClick) {
+                            advanceToNextPlayer();
+                        }
+                        // Otherwise player can keep clicking
+                    });
                 });
-            }, 1500);
+            }, 2000);
         } else {
-            // NPC found - just advance to next turn after reveal
+            // NPC found - show bean bonus, then check if turn continues
             setTimeout(() => {
-                advanceToNextPlayer();
-            }, 1500);
+                showBeanBonusAnnouncement(() => {
+                    // Check if player still has beans to continue
+                    if (currentSeeker.beans < hideAndSeekState.beansPerClick) {
+                        advanceToNextPlayer();
+                    }
+                    // Otherwise player can keep clicking
+                });
+            }, 2000);
         }
     } else {
         // Show miss indicator - no character at this location
@@ -4607,9 +4724,16 @@ function handleSeekClick(e) {
 
         console.log('Miss! No character at this location.');
 
-        // Remove miss indicator after animation (don't advance turn)
+        // Remove miss indicator after animation
         setTimeout(() => {
             missIndicator.remove();
+
+            // If player is out of beans, advance to next player's turn
+            if (currentSeeker.beans < hideAndSeekState.beansPerClick) {
+                setTimeout(() => {
+                    advanceToNextPlayer();
+                }, 500);
+            }
         }, 800);
     }
 }
@@ -4645,26 +4769,16 @@ function showHideAndSeekVictory(winner) {
     document.getElementById('hideandseek-victory').classList.remove('hidden');
     document.getElementById('hideandseek-winner-name').textContent = winner.name.toUpperCase();
 
+    // Hide beans display during victory
+    const beansDisplay = document.getElementById('beans-display');
+    if (beansDisplay) {
+        beansDisplay.style.display = 'none';
+    }
+
     // Reveal all remaining characters
     document.querySelectorAll('.hidden-character').forEach(el => {
         el.classList.add('revealed');
     });
-
-    // Set up reveal all button with a small delay to ensure DOM is ready
-    setTimeout(() => {
-        const revealBtn = document.getElementById('reveal-all-btn');
-        console.log('Setting up reveal button:', revealBtn);
-
-        if (revealBtn) {
-            const newRevealBtn = revealBtn.cloneNode(true);
-            revealBtn.parentNode.replaceChild(newRevealBtn, revealBtn);
-
-            newRevealBtn.addEventListener('click', () => {
-                console.log('Reveal all clicked!');
-                showRevealScreen();
-            });
-        }
-    }, 100);
 }
 
 function showRevealScreen() {
@@ -4676,7 +4790,6 @@ function showRevealScreen() {
 
     // Show reveal screen
     const revealScreen = document.getElementById('reveal-screen');
-    console.log('Reveal screen element:', revealScreen);
     revealScreen.classList.remove('hidden');
     revealScreen.style.display = 'block';
 
@@ -4684,12 +4797,12 @@ function showRevealScreen() {
     bg.style.backgroundImage = `url('images/backgrounds/${hideAndSeekState.selectedBackground}')`;
     bg.innerHTML = ''; // Clear previous
 
-    // Show all characters with labels
+    // Show all characters with labels (no animation)
     hideAndSeekState.players.forEach((player, idx) => {
         const charEl = document.createElement('img');
         const toonImage = player.character.image.replace(/\.(jpg|png)$/, '.png');
         charEl.src = `images/heroes-toon/${toonImage}`;
-        charEl.className = 'hidden-character revealed';
+        charEl.className = 'reveal-character';
         charEl.dataset.playerIndex = idx;
 
         // Position based on grid
@@ -4711,14 +4824,10 @@ function showRevealScreen() {
             bg.appendChild(label);
         }
     });
+}
 
-    // Set up back button
-    const backBtn = document.getElementById('back-to-victory-btn');
-    const newBackBtn = backBtn.cloneNode(true);
-    backBtn.parentNode.replaceChild(newBackBtn, backBtn);
-
-    newBackBtn.addEventListener('click', () => {
-        revealScreen.classList.add('hidden');
-        document.getElementById('hideandseek-victory').classList.remove('hidden');
-    });
+function hideRevealScreen() {
+    document.getElementById('reveal-screen').classList.add('hidden');
+    document.getElementById('reveal-screen').style.display = 'none';
+    document.getElementById('hideandseek-victory').classList.remove('hidden');
 }
