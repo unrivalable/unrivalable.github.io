@@ -481,7 +481,7 @@
             <div class="seek-header">
                 <div class="turn-indicator">
                     <div class="current-turn"><span id="seeking-player-name">PLAYER</span>'S TURN</div>
-                    <div class="turn-instruction">CLICK ONCE TO FIND A CHARACTER!</div>
+                    <div class="turn-instruction">SPEND 1 BEAN TO SEARCH!</div>
                 </div>
                 <div class="players-found">FOUND: <span id="found-count">0</span>/<span id="total-humans">0</span></div>
             </div>
@@ -492,6 +492,10 @@
         <div id="turn-announcement" class="turn-announcement-overlay hidden">
             <div class="turn-announcement-content">
                 <h1 class="turn-announcement-title"><span id="announcement-player-name">PLAYER</span>'S TURN!</h1>
+                <div class="announcement-beans">
+                    <span class="beans-icon">🫘</span>
+                    <span id="announcement-beans-count">3</span> BEANS
+                </div>
                 <button id="start-turn-btn" class="start-turn-btn">START TURN</button>
             </div>
         </div>
@@ -510,7 +514,7 @@
             <h1 class="victory-title" id="hideandseek-winner-title">WINNER!</h1>
             <div id="hideandseek-winner-name" class="winner-display"></div>
             <div class="victory-buttons">
-                <button id="reveal-all-btn" class="reveal-button">REVEAL ALL</button>
+                <button id="reveal-all-btn" class="reveal-button" onclick="showRevealScreen()">REVEAL ALL</button>
                 <button class="back-button" onclick="location.reload()">PLAY AGAIN</button>
             </div>
         </div>
@@ -519,7 +523,7 @@
         <div id="reveal-screen" class="screen hidden">
             <div class="reveal-header">
                 <h1 class="reveal-title">ALL HIDING SPOTS</h1>
-                <button id="back-to-victory-btn" class="back-button">BACK</button>
+                <button id="back-to-victory-btn" class="back-button" onclick="hideRevealScreen()">BACK</button>
             </div>
             <div id="reveal-background" class="game-background"></div>
         </div>
