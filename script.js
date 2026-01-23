@@ -4886,8 +4886,9 @@ function formatMoveName(move) {
 }
 
 function updateCampaignHub() {
-    // Update Round Display
-    document.getElementById('campaign-round-number').textContent = campaignState.round;
+    // Update Round Display with month name
+    const months = ['JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE', 'JULY', 'AUGUST'];
+    document.getElementById('campaign-round-number').textContent = months[campaignState.round - 1] || 'JANUARY';
 
     // Sort Leaderboard
     campaignState.candidates.sort((a, b) => b.score - a.score);

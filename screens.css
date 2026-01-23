@@ -1752,6 +1752,17 @@
 /* ===== CAMPAIGN MODE STYLES ===== */
 
 /* Campaign Hub Screen */
+#campaign-hub-screen .crt-container,
+#campaign-action-screen .crt-container,
+#campaign-result-screen .crt-container,
+#campaign-victory-screen .crt-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+}
+
 .campaign-header {
     text-align: center;
     margin-bottom: 20px;
@@ -1775,6 +1786,9 @@
     gap: 40px;
     flex: 1;
     overflow: hidden;
+    margin: 0 auto;
+    justify-content: center;
+    align-items: stretch;
 }
 
 .leaderboard-panel {
@@ -1872,8 +1886,8 @@
 
 .match-player img {
     width: 100px;
-    height: 100px;
-    object-fit: cover;
+    height: auto;
+    object-fit: contain;
     border: 3px solid var(--comic-white);
     box-shadow: 3px 3px 0 var(--comic-black);
 }
@@ -1925,8 +1939,8 @@
 
 .versus-side img {
     width: 250px;
-    height: 250px;
-    object-fit: cover;
+    height: auto;
+    object-fit: contain;
     border: 5px solid var(--comic-white);
     box-shadow: 10px 10px 0 var(--comic-black);
     margin-bottom: 20px;
@@ -2250,8 +2264,8 @@
 
 #campaign-winner-img {
     width: 200px;
-    height: 200px;
-    object-fit: cover;
+    height: auto;
+    object-fit: contain;
     border: 5px solid var(--comic-yellow);
     box-shadow: 0 0 30px rgba(255, 215, 0, 0.6);
     margin-bottom: 15px;
